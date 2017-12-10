@@ -1,0 +1,8 @@
+{
+  "validation.characters.exactly.x": "Please enter exactly {num} characters.",
+  "validation.characters.atMost.x": "Please enter at most {num} characters.",
+  "validation.characters.atLeast.x": "Please enter at least {num} characters.",
+  "validation.value.incompatible": "Please enter something valid.",
+  "validation.value.mismatch": "The entered value is invalid.",
+  "validation.value.onlyNumbers": "Only numbers are allowed."
+}

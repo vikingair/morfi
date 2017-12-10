@@ -1,0 +1,39 @@
+// @flow
+
+import React from 'react';
+import type { _ErrorMessage } from '../form/Form-classes';
+import messages from '../../messages';
+
+const __ = (m: _ErrorMessage): string => {
+    let result = messages[m.id];
+    const values = m.values;
+    if (result && values) {
+        for (const key in values) {
+            if (values.hasOwnProperty(key)) {
+                result = result.replace(`{${key}}`, values[key]);
+            }
+        }
+    }
+    return result;
+};
+
+export const Label = ({ label, required = false }: { label: string, required?: boolean }) => {
+    return <label className="control-label">{label + (required ? ' *' : '')}</label>;
+};
+
+export const Error = ({ error }: { error: _ErrorMessage }) => {
+    return <span className="control-label">{__(error)}</span>;
+};
+
+type EventHandler = (SyntheticInputEvent<*>) => void;
+
+export const onActionWrap = (cb?: any => void, preventDefault: boolean = true): EventHandler => {
+    return event => {
+        if (preventDefault) {
+            event.preventDefault();
+        }
+        if (cb) {
+            cb(event.target.value);
+        }
+    };
+};
