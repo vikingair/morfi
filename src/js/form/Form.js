@@ -21,6 +21,8 @@ class _Form<V: *> extends Component<FormProps<V>> {
         fieldIsRequired: ReactPropTypesAny,
     };
 
+    static hasErrors = FormUtil.hasErrors;
+
     getChildContext() {
         return { onFieldChange: this.onFieldChange, fieldIsRequired: this.fieldIsRequired };
     }
