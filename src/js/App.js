@@ -31,7 +31,7 @@ const genderOptions = [{ value: 'M', label: 'male' }, { value: 'F', label: 'fema
 class App extends Component<{}, AppState> {
     state: AppState = { data: { values: { gender: 'M', firstName: 'Nick', age: '12' }, errors: {} } };
 
-    onChange = (data: *) => this.setState({ data });
+    onChange = (data: FormData<MyFormValues>) => this.setState({ data });
 
     onSubmit = ({ gender, firstName, lastName, age }: MyFormValues): void => {
         this.setState({
