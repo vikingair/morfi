@@ -1,4 +1,6 @@
 [![npm package][npm-image]][npm-url]
+[![Travis][build-image]][build-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
 
 # form4react
 Abstract form handling for any purpose (1 kb gzipped)
@@ -292,3 +294,7 @@ Now if we hit the clear button all entered values will be cleared.
   
 [npm-image]: https://img.shields.io/npm/v/form4react.svg?style=flat-square
 [npm-url]: https://www.npmjs.org/package/form4react
+[build-image]: https://img.shields.io/travis/fdc-viktor-luft/form4react/master.svg?style=flat-square
+[build-url]: https://travis-ci.org/fdc-viktor-luft/form4react
+[coveralls-image]: https://coveralls.io/repos/github/fdc-viktor-luft/form4react/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/fdc-viktor-luft/form4react?branch=master
