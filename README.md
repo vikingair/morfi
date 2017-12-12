@@ -123,6 +123,9 @@ In this table you get an overview of relevant types.
 
 ### Example
 
+In this chapter we will examine how a sample form could be implemented.
+The [sample](https://fdc-viktor-luft.github.io/form4react/) is hosted be GitHub Pages.
+
 We first define the types of the form values...
 ```js
 type MyFormValues = {
