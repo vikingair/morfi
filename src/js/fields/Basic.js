@@ -28,7 +28,7 @@ export const Label = ({ label, required = false }: { label: string, required?: b
 };
 
 export const Error = ({ error }: { error: _ErrorMessage }) => {
-    return <span className="control-label">{__(error)}</span>;
+    return <span className="invalid-feedback">{__(error)}</span>;
 };
 
 type EventHandler = (SyntheticInputEvent<*>) => void;

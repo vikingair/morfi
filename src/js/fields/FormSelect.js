@@ -32,7 +32,7 @@ const Select = ({ value, label, error, required, className, onChange, onBlur, op
         <div className={className}>
             {label && <Label {...{ label, required }} />}
             <select
-                className="form-control"
+                className={'form-control custom-select' + (error ? ' is-invalid' : '')}
                 disabled={disabled}
                 onChange={onActionWrap(onChange)}
                 onBlur={onActionWrap(onBlur)}

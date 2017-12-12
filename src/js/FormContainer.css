@@ -1,0 +1,23 @@
+.FormContainer-logo {
+    height: 80px;
+}
+
+.FormContainer-header {
+    background-color: #000;
+    height: 150px;
+    padding: 20px 0;
+    color: white;
+    text-align: center;
+}
+
+.FormContainer-title {
+    font-size: 1.5em;
+}
+
+.FormContainer-intro {
+    font-size: large;
+}
+
+.FormContainer form {
+    margin-top: 2em;
+}

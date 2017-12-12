@@ -35,13 +35,13 @@ export const NumberInput = ({
     disabled,
 }: NumberInputProps) => {
     return (
-        <div className={(className || '') + (error ? ' has-error' : '')}>
+        <div className={className}>
             {label && <Label {...{ label, required }} />}
             <input
                 type="number"
                 onChange={onActionWrap(onChange)}
                 onBlur={onActionWrap(onBlur)}
-                className="form-control"
+                className={'form-control' + (error ? ' is-invalid' : '')}
                 {...{ value, autoFocus, disabled }}
             />
             {error && <Error error={error} />}
