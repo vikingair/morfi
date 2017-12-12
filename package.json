@@ -4,13 +4,13 @@
   "version": "0.1.3",
   "license": "MIT",
   "author": "Viktor Luft <viktor.luft@freiheit.com> (https://github.com/fdc-viktor-luft)",
-  "homepage": "https://github.com/fdc-viktor-luft/form4react/build",
+  "homepage": "https://fdc-viktor-luft.github.io/form4react/",
   "repository": {
     "type": "git",
     "url": "https://github.com/fdc-viktor-luft/form4react"
   },
   "bugs": {
-      "url": "https://github.com/fdc-viktor-luft/form4react/issues"
+    "url": "https://github.com/fdc-viktor-luft/form4react/issues"
   },
   "dependencies": {
     "react": "^16.1.0",
@@ -21,7 +21,7 @@
     "dist": "bin/dist.sh",
     "bh": "babel --help",
     "start": "react-scripts start",
-    "build": "react-scripts build && mv build docs",
+    "build": "react-scripts build && rm -rf docs && mv build docs",
     "test": "react-scripts test --env=jsdom",
     "flow": "flow --quiet",
     "eslint": "eslint --cache --cache-location 'misc/.eslintcache' src/",
