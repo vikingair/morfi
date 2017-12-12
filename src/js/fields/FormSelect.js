@@ -11,7 +11,7 @@ import type { _ErrorMessage } from '../form/Form-classes';
 import { _Field as Field } from '../form/Field';
 import { Error, Label, onActionWrap } from './Basic';
 
-export type SelectOption = { label: string, value: string };
+export type SelectOption = {| label: string, value: string |};
 
 type SelectProps = {
     value?: string,
@@ -44,7 +44,7 @@ const Select = ({ value, label, error, required, className, onChange, onBlur, op
     );
 };
 
-type FormSelectProps = {
+type FormSelectProps = {|
     name: string,
     value?: string,
     error?: _ErrorMessage,
@@ -52,9 +52,9 @@ type FormSelectProps = {
     className?: string,
     options: Array<SelectOption>,
     disabled?: boolean,
-};
+|};
 
-export const FormSelect = ({
+export const _FormSelect = ({
     name,
     value,
     error,

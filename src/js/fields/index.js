@@ -7,5 +7,7 @@
  */
 
 import { _FormInput as FormInput } from './FormInput';
+import { _FormNumberInput as FormNumberInput } from './FormNumberInput';
+import { _FormSelect as FormSelect } from './FormSelect';
 
-export { FormInput };
+export { FormInput, FormNumberInput, FormSelect };

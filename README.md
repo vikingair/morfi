@@ -36,7 +36,7 @@ yarn add form4react
 npm install --save form4react
 ```
 
-### Example
+### Introduction
 
 First take a look at the outer form element.
 ```js
@@ -51,7 +51,7 @@ const render = () => (
     </Form>
 );
 ```
-It expects the following props: (See below for the [Flow types](#Flow types))
+It expects the following props: (See below for the missing [Flow types](#flow-types))
 
 Props            | Type                        | Description                                                | Example
 ---------------- | --------------------------- | ---------------------------------------------------------- | ------------------------------------------                                                 
@@ -118,4 +118,168 @@ In this table you get an overview of relevant types.
  `ValidationType`    | `'onChange' \ 'onBlur'`                                       | Currently only those to validation types can be specified
  `FormValidation<V>` | `{ [$Keys<V>]: { [ValidationType]: _Validator \ void } }`     | For each key of the specified form values V here can be specified all validations for this field
 
-### More to come...
+### Example
+
+We first define the types of the form values...
+```js
+type MyFormValues = {
+    gender: string,
+    firstName: string,
+    lastName?: string,
+    age: number,
+};
+// gender can be selected with the following available options
+const genderOptions = [{ value: 'M', label: 'male' }, { value: 'F', label: 'female' }];
+```
+Then we define the validations... (see [here](https://github.com/fdc-viktor-luft/form4react/blob/master/src/js/validators/validators.js) for the used validators below)
+```js
+const validation = {
+    firstName: { onChange: Validators.string({ min: 1, max: 10 }) },
+    lastName: { onBlur: Validators.string({ min: 1, max: 10 }) },
+    age: { onChange: Validators.number({ minLength: 1, maxLength: 3 }) },
+};
+```
+Let's say we decide to control the form state inside our app state...
+```js
+type AppState = { data: FormData<MyFormValues> };
+```
+Now we define the first version of the app... (see [here](https://github.com/fdc-viktor-luft/form4react/tree/master/src/js/fields) for all used custom components below)
+```js
+import React, { Component } from 'react';
+import { Form } from 'form4react';
+import type { FormData } from 'form4react';
+
+class App extends Component<{}, AppState> {
+    // first we initialize the defaults (if we would not, flow would complain for all mandatory fields missing)
+    // we could also start with initial errors, but here we don't
+    state: AppState = { data: { values: { gender: 'M', firstName: 'Nick', age: 21 }, errors: {} } };
+
+    // this handler will propagate the form changes to the state
+    onChange = (data: FormData<MyFormValues>) => this.setState({ data });
+
+    // for now we leave the submit handler empty
+    onSubmit = ({ gender, firstName, lastName, age }: MyFormValues): void => {
+        // do nothing
+    };
+
+    render(): React$Node {
+        const data = this.state.data;
+        const { values, errors } = data;
+        return (
+            <div className="App">
+                <header className="App-header">
+                    <img src={logo} className="App-logo" alt="logo" />
+                    <h1 className="App-title">Welcome to form4js</h1>
+                </header>
+                <div className="container">
+                    <Form validation={validation} onChange={this.onChange} data={data} onSubmit={this.onSubmit}>
+                        <div className="row">
+                            <FormInput
+                                name="firstName"
+                                value={values.firstName}
+                                errors={errors.firstName}
+                                label="First name"
+                                className="form-group col-sm-6"
+                            />
+                            <FormInput
+                                name="lastName"
+                                value={values.lastName}
+                                errors={errors.lastName}
+                                label="Last name"
+                                className="form-group col-sm-6"
+                            />
+                        </div>
+                        <div className="row">
+                            <FormSelect
+                                name="gender"
+                                value={values.gender}
+                                errors={errors.gender}
+                                options={genderOptions}
+                                label="Gender"
+                                className="form-group col-sm-6"
+                            />
+                            <FormNumberInput
+                                name="age"
+                                value={values.age}
+                                errors={errors.age}
+                                label="Age"
+                                className="form-group col-sm-6"
+                            />
+                        </div>
+                        <button className="btn btn-primary">Submit</button>
+                    </Form>
+                </div>
+            </div>
+        );
+    }
+}
+```
+This version does the specified validations on the fields and prevents our empty
+`onSubmit` function from being called, when any validations would not succeed
+
+So now we add a table (see [here](https://github.com/fdc-viktor-luft/form4react/blob/master/src/js/PersonTable.js) 
+for the implementation and the new type `Person`) to hold all entered person data. What changes...
+```js
+// the state interface
+type AppState = {
+    data: FormData<MyFormValues>,
+    persons: Person[],
+};
+```
+```js
+// the initial state
+state: AppState = { data: { values: { gender: 'M', firstName: 'Nick', age: 21 }, errors: {} }, persons: [] };
+```
+```js
+// we add below the form the table
+<PersonTable persons={this.state.persons} />
+```
+```js
+// we implement functionality for the onSubmit
+onSubmit = ({ gender, firstName, lastName = '', age }: MyFormValues): void => {
+    this.setState({
+        persons: [...this.state.persons, { gender: gender === 'M' ? 'M' : 'F', firstName, lastName, age }],
+    });
+};
+```
+Now each time we submit the entered data which succeeds all validations, a new
+person entry will be displayed in the `PersonTable`.
+
+Finally we will add a clear button for all inputs. What changes...
+```js
+// a new function inside our App
+onClear = () => {
+    this.setState({ data: { values: { gender: 'M', firstName: '', age: 0 }, errors: {} } });
+};
+```
+```js
+// the submit button on the bottom of the form will be replaced by
+<div className="btn-toolbar" role="toolbar">
+    <button className="btn btn-secondary" type="button" onClick={this.onClear}>
+        Clear
+    </button>
+    <button className="btn btn-primary" disabled={Form.hasErrors(data)}>
+        Submit
+    </button>
+</div>
+```
+Now if we hit the clear button all entered values will be cleared.
+
+### FAQ
+
+* What about asynchronous form error handling?
+
+  Since you are the owner and controller of any updates on the form data,
+  you can simply add new errors for any fields after the server responded
+  with any error. If you want to write a util which maps specific server
+  errors to specific fields, you have the ability to do so.
+  
+* Why are there no ready-to-use components exported like `FormSelect` 
+  from the above examples?
+  
+  **form4react** is primarily made to handle updates, validations, storing of
+  data, save the developer by good flow assistance and as a guideline for form handling
+  
+  Later there might be subdirectories which you can optionally use, but most
+  often in larger projects you want to have full control over all form components.
+  

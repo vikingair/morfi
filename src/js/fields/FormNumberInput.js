@@ -11,20 +11,20 @@ import { Error, Label, onActionWrap } from './Basic';
 import { Field } from '../form';
 import type { _ErrorMessage } from '../form/Form-classes';
 
-type InputProps = {
-    value?: string,
+type NumberInputProps = {
+    value?: number,
     label?: string,
     error?: _ErrorMessage,
     required?: boolean,
     className?: string,
-    onChange?: string => void,
-    onBlur?: string => void,
+    onChange?: number => void,
+    onBlur?: number => void,
     autoFocus?: boolean,
     disabled?: boolean,
 };
 
-export const Input = ({
-    value = '',
+export const NumberInput = ({
+    value = 0,
     label,
     error,
     required,
@@ -33,12 +33,12 @@ export const Input = ({
     onBlur,
     autoFocus,
     disabled,
-}: InputProps) => {
+}: NumberInputProps) => {
     return (
         <div className={(className || '') + (error ? ' has-error' : '')}>
             {label && <Label {...{ label, required }} />}
             <input
-                type="text"
+                type="number"
                 onChange={onActionWrap(onChange)}
                 onBlur={onActionWrap(onBlur)}
                 className="form-control"
@@ -49,9 +49,9 @@ export const Input = ({
     );
 };
 
-type FormInputProps = {|
+type FormNumberInputProps = {|
     name: string,
-    value?: string,
+    value?: number,
     error?: _ErrorMessage,
     label?: string,
     className?: string,
@@ -59,7 +59,7 @@ type FormInputProps = {|
     autoFocus?: boolean,
 |};
 
-export const _FormInput = ({
+export const _FormNumberInput = ({
     name,
     value,
     error,
@@ -67,10 +67,10 @@ export const _FormInput = ({
     className = 'form-group',
     disabled,
     autoFocus,
-}: FormInputProps) => (
+}: FormNumberInputProps) => (
     <Field name={name}>
         {({ onChange, onBlur, required }) => (
-            <Input {...{ error, value, required, onBlur, onChange, label, className, disabled, autoFocus }} />
+            <NumberInput {...{ error, value, required, onBlur, onChange, label, className, disabled, autoFocus }} />
         )}
     </Field>
 );
