@@ -21,7 +21,7 @@
     "dist": "bin/dist.sh",
     "bh": "babel --help",
     "start": "react-scripts start",
-    "build": "react-scripts build && cp build/index.html .",
+    "build": "react-scripts build && mv build docs",
     "test": "react-scripts test --env=jsdom",
     "flow": "flow --quiet",
     "eslint": "eslint --cache --cache-location 'misc/.eslintcache' src/",
