@@ -14,7 +14,7 @@ type FormProps<V> = {
     validation: FormValidation<V>,
     data: _FormData<V>,
     children: React$Node,
-    onChange: any,
+    onChange: (_FormData<V>) => void,
     onSubmit: V => void | Promise<void>,
 };
 

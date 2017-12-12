@@ -51,14 +51,14 @@ const render = () => (
     </Form>
 );
 ```
-It expects the following props:
+It expects the following props: (See below for the [Flow types](#Flow types))
 
-Props            | Type            | Description                                                | Example
----------------- | --------------- | ---------------------------------------------------------- | ------------------------------------------                                                 
-`validation`     | `Object`        | Contains all validators                                    | `{ name: { onChange: customValidator } }`                     
-`data`           | `Object`        | Contains all values and errors                             | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
-`onChange`       | `Function`      | Handles the next data after any changes have been made     | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
-`onSubmit`       | `Function`      | Will be called if submitted without any failing validators | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
+Props            | Type                        | Description                                                | Example
+---------------- | --------------------------- | ---------------------------------------------------------- | ------------------------------------------                                                 
+`validation`     | `FormValidation<V>`         | Contains all validators                                    | `{ name: { onChange: customValidator } }`                     
+`data`           | `FormData<V>`               | Contains all values and errors                             | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
+`onChange`       | `(_FormData<V>) => void`    | Handles the next data after any changes have been made     | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
+`onSubmit`       | `V => void \ Promise<void>` | Will be called if submitted without any failing validators | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
 
 Now lets take a look on a single integrated form element:
 
@@ -103,4 +103,19 @@ It will update the form data accordingly to the specified `onChange` handler
 supplied to the Form.
 It will display an error message below the input if any error is encountered.
 
-### More will follow...
+### Flow types
+
+**form4react** comes with a lot of types and exports `FormData<T>`, `ErrorMessage`
+and `Validator`.
+
+In this table you get an overview of relevant types.
+
+ Name                | Flow declaration                                              | Information
+ ------------------- | ------------------------------------------------------------- | ---------------------
+ `ErrorMessage`      | `{ id: string, values?: {[string]: mixed}}`                   | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
+ `FormData<V>`       | `{ values: V, errors: { [$Keys<V>]: void \ _ErrorMessage } }` | This is the main structure for the data represent the form state
+ `Validator`         | `any => ErrorMessage \ void`                                  | The validator returns void if no error occurred
+ `ValidationType`    | `'onChange' \ 'onBlur'`                                       | Currently only those to validation types can be specified
+ `FormValidation<V>` | `{ [$Keys<V>]: { [ValidationType]: _Validator \ void } }`     | For each key of the specified form values V here can be specified all validations for this field
+
+### More to come...
