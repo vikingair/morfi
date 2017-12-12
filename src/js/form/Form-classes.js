@@ -1,4 +1,10 @@
-// @flow
+/**
+ * This file is part of form4react which is released under MIT license.
+ *
+ * The LICENSE file can be found in the root directory of this project.
+ *
+ * @flow
+ */
 
 export type _ErrorMessage = { id: string, values?: { [string]: mixed } };
 export type _Validator = any => _ErrorMessage | void;

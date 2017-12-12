@@ -1,4 +1,10 @@
-// @flow
+/**
+ * This file is part of form4react which is released under MIT license.
+ *
+ * The LICENSE file can be found in the root directory of this project.
+ *
+ * @flow
+ */
 
 import { FormUtil, __forEach } from './Form-classes';
 import { formData, formValidation, invalidFormData } from '../../test/form-data';
