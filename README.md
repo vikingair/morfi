@@ -1,3 +1,5 @@
+[![npm package][npm-image]][npm-url]
+
 # form4react
 Abstract form handling for any purpose (1 kb gzipped)
 
@@ -20,6 +22,7 @@ small bundle size, totally customizable and needs no integrative work,
 ### Why form4react?
 
 * Optimized `flow` assistance
+* No dependencies
 * Small bundle size
 * High performance
 * Nice features (but not as much as the above packages)
@@ -283,3 +286,6 @@ Now if we hit the clear button all entered values will be cleared.
   Later there might be subdirectories which you can optionally use, but most
   often in larger projects you want to have full control over all form components.
   
+  
+[npm-image]: https://img.shields.io/npm/v/form4react.svg?style=flat-square
+[npm-url]: https://www.npmjs.org/package/form4react
