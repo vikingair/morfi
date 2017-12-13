@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1000 1000">
+    <metadata>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+             xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <rdf:Description rdf:about="http://svg.tutorial.aptico.de/grafik_svg/kap2_5.svg">
+    <dc:creator>viktor.luft@freiheit.com</dc:creator>
+    <dc:contributor>viktor.luft@freiheit.com</dc:contributor>
+    <dc:subject>form4react, form, react</dc:subject>
+    <dc:description>online form graphic</dc:description>
+    <dc:relation>https://fdc-viktor-luft.github.io/form4react/</dc:relation>
+    <dc:source>https://github.com/fdc-viktor-luft/form4react/blob/master/src/form-logo.svg</dc:source>
+    <dc:rights>Copyright 2017 Viktor Luft</dc:rights>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type>Image</dc:type>
+        <dc:title>form4react Logo</dc:title>
+        <dc:date>2017-13-12</dc:date>
+        <dc:language>en</dc:language>
+    </rdf:Description>
+    </rdf:RDF>
+    </metadata>
+    <title>form4react</title>
+    <desc>Form handling with form4react</desc>
+    <defs>
+        <!-- Pointer -->
+        <polyline id="pointer"
+                  points="120 500, 120 450, 60 480, 130 300, 200 480, 140 450, 140 500, 120 500"
+                  transform="scale(2.2) rotate(330)"
+        />
+        <!-- The form clipper -->
+        <rect id="clipper" x="225" y="50"
+              width="350" height="80"
+              rx="30" ry="30"
+        />
+        <clipPath id="cut-off-top">
+            <rect x="0" y="0" width="190" height="1000" />
+            <rect x="610" y="0" width="280" height="1000" />
+            <rect x="0" y="250" width="800" height="750" />
+        </clipPath>
+    </defs>
+    <g stroke="darkgreen" stroke-width="40px" fill="none">
+        <!-- The outer form border -->
+        <rect x="100" y="100" width="600" height="850"
+              rx="30" ry="50"
+              clip-path="url(#cut-off-top)"
+        />
+        <!-- The form lines -->
+        <g stroke-linecap="round">
+            <!-- Line 1 -->
+            <polyline points="180 255, 200 270, 225 225"
+                      stroke-width="15px" />
+            <line x1="300" y1="250" x2="610" y2="250" />
+
+            <!-- Line 2 -->
+            <line x1="180" y1="480" x2="225" y2="420" stroke-width="15px" />
+            <line x1="180" y1="420" x2="225" y2="480" stroke-width="15px" />
+            <line x1="300" y1="450" x2="610" y2="450" />
+
+            <!-- Line 3 -->
+            <polyline points="180 655, 200 670, 225 625"
+                      stroke-width="15px" />
+            <line x1="300" y1="650" x2="610" y2="650" />
+        </g>
+        <use xlink:href="#clipper" fill="darkgreen" />
+
+        <!-- The submit button -->
+        <rect x="225" y="800" width="100" height="30"
+              rx="5" ry="5"
+        />
+    </g>
+    <rect x="400" y="800" width="100" height="30"
+          rx="5" ry="5" stroke-width="40px" stroke="darkred"
+    />
+    <use xlink:href="#pointer" fill="darkgreen" stroke="black" stroke-width="5px" />
+</svg>

@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import logo from '../form-logo.png';
+import logo from '../form-logo.svg';
 import './FormContainer.css';
 
 export const FormContainer = ({ children }: { children: React$Node }) => (

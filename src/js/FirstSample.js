@@ -95,7 +95,7 @@ export default class FirstSample extends Component<{}, FirstSampleState> {
                         <button className="btn btn-secondary mr-2" type="button" onClick={this.onClear}>
                             Clear
                         </button>
-                        <button className="btn btn-primary" disabled={Form.hasErrors(data)}>
+                        <button className="btn btn-success" disabled={Form.hasErrors(data)}>
                             Submit
                         </button>
                     </div>
