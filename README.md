@@ -174,50 +174,42 @@ class App extends Component<{}, AppState> {
         const data = this.state.data;
         const { values, errors } = data;
         return (
-            <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <h1 className="App-title">Welcome to form4js</h1>
-                </header>
-                <div className="container">
-                    <Form validation={validation} onChange={this.onChange} data={data} onSubmit={this.onSubmit}>
-                        <div className="row">
-                            <FormInput
-                                name="firstName"
-                                value={values.firstName}
-                                errors={errors.firstName}
-                                label="First name"
-                                className="form-group col-sm-6"
-                            />
-                            <FormInput
-                                name="lastName"
-                                value={values.lastName}
-                                errors={errors.lastName}
-                                label="Last name"
-                                className="form-group col-sm-6"
-                            />
-                        </div>
-                        <div className="row">
-                            <FormSelect
-                                name="gender"
-                                value={values.gender}
-                                errors={errors.gender}
-                                options={genderOptions}
-                                label="Gender"
-                                className="form-group col-sm-6"
-                            />
-                            <FormNumberInput
-                                name="age"
-                                value={values.age}
-                                errors={errors.age}
-                                label="Age"
-                                className="form-group col-sm-6"
-                            />
-                        </div>
-                        <button className="btn btn-primary">Submit</button>
-                    </Form>
+            <Form validation={validation} onChange={this.onChange} data={data} onSubmit={this.onSubmit}>
+                <div className="row">
+                    <FormInput
+                        name="firstName"
+                        value={values.firstName}
+                        errors={errors.firstName}
+                        label="First name"
+                        className="form-group col-sm-6"
+                    />
+                    <FormInput
+                        name="lastName"
+                        value={values.lastName}
+                        errors={errors.lastName}
+                        label="Last name"
+                        className="form-group col-sm-6"
+                    />
                 </div>
-            </div>
+                <div className="row">
+                    <FormSelect
+                        name="gender"
+                        value={values.gender}
+                        errors={errors.gender}
+                        options={genderOptions}
+                        label="Gender"
+                        className="form-group col-sm-6"
+                    />
+                    <FormNumberInput
+                        name="age"
+                        value={values.age}
+                        errors={errors.age}
+                        label="Age"
+                        className="form-group col-sm-6"
+                    />
+                </div>
+                <button className="btn btn-primary">Submit</button>
+            </Form>
         );
     }
 }

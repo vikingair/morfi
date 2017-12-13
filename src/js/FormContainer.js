@@ -14,7 +14,7 @@ export const FormContainer = ({ children }: { children: React$Node }) => (
     <div className="FormContainer row">
         <header className="FormContainer-header col-12">
             <img src={logo} className="FormContainer-logo" alt="logo" />
-            <h1 className="FormContainer-title">Welcome to form4js</h1>
+            <h1 className="FormContainer-title">Welcome to form4react</h1>
         </header>
         {children}
     </div>
