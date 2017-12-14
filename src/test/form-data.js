@@ -9,12 +9,13 @@
 import type { FormValidation, _FormData } from '../js/form/Form-classes';
 import { Validators } from '../js/validators/validators';
 
-type formValues = { name: string, age: number, size: number, nickname?: string };
+type formValues = { name: string, age: number, size: number, nickname?: string, email: string };
 
 export const formValidation: FormValidation<formValues> = {
     name: { onChange: Validators.string({ min: 2, max: 10 }) },
     age: { onChange: Validators.number({ minLength: 1, maxLength: 3 }) },
     nickname: { onBlur: Validators.string({ min: 5, max: 5 }) },
+    email: { onSubmit: Validators.email },
 };
 export const formData: _FormData<formValues> = {
     values: {
@@ -22,6 +23,7 @@ export const formData: _FormData<formValues> = {
         age: 81,
         size: 170,
         nickname: 'KeNNy',
+        email: 'kenny@testweb.de',
     },
     errors: {},
 };
@@ -30,6 +32,7 @@ export const invalidFormData: _FormData<formValues> = {
         name: 'Kenny - The King',
         age: 9999,
         size: 170,
+        email: '',
     },
     errors: { size: { id: 'validation.value.incompatible' } },
 };

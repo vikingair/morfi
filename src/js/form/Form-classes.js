@@ -9,10 +9,11 @@
 export type _ErrorMessage = { id: string, values?: { [string]: mixed } };
 export type _Validator = any => _ErrorMessage | void;
 
-export type ValidationType = 'onChange' | 'onBlur';
+export type ValidationType = 'onChange' | 'onBlur' | 'onSubmit';
 export const ValidationTypes: { [ValidationType]: ValidationType } = {
     onChange: 'onChange',
     onBlur: 'onBlur',
+    onSubmit: 'onSubmit',
 };
 
 type FieldValidation = { [ValidationType]: _Validator | void };

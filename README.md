@@ -120,7 +120,7 @@ In this table you get an overview of relevant types.
  `ErrorMessage`      | `{ id: string, values?: {[string]: mixed}}`                   | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
  `FormData<V>`       | `{ values: V, errors: { [$Keys<V>]: void \ _ErrorMessage } }` | This is the main structure for the data represent the form state
  `Validator`         | `any => ErrorMessage \ void`                                  | The validator returns void if no error occurred
- `ValidationType`    | `'onChange' \ 'onBlur'`                                       | Currently only those to validation types can be specified
+ `ValidationType`    | `'onChange' \ 'onBlur' \ 'onSubmit'`                                       | Currently only those to validation types can be specified
  `FormValidation<V>` | `{ [$Keys<V>]: { [ValidationType]: _Validator \ void } }`     | For each key of the specified form values V here can be specified all validations for this field
 
 ### Example

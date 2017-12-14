@@ -61,5 +61,9 @@ export const Validators = {
     string: stringValidator,
     regex: regexValidator,
     number: numberValidator,
+    email: regexValidator({
+        re: /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-z]+$/,
+        message: { id: 'validation.email.requirements' },
+    }),
     optionalOf,
 };

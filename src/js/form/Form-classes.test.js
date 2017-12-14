@@ -17,6 +17,7 @@ describe('FormUtil', () => {
                 age: 81,
                 size: 170,
                 nickname: 'KeNNy',
+                email: 'kenny@testweb.de',
             },
             errors: {
                 name: { id: 'test.error' },
@@ -32,6 +33,7 @@ describe('FormUtil', () => {
                 age: 81,
                 size: 170,
                 nickname: 'KeNNy',
+                email: 'kenny@testweb.de',
                 some: true,
             },
             errors: {},
@@ -75,6 +77,7 @@ describe('FormUtil', () => {
                 values: { num: 5 },
             },
             size: { id: 'validation.value.incompatible' },
+            email: { id: 'validation.email.requirements' },
         });
     });
     it('recognizes if errors exist', () => {

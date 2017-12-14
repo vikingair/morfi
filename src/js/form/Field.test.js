@@ -57,24 +57,24 @@ describe('Field', () => {
 
         input.simulate('change', { target: { value: 'test-name' } });
         changeSpy.wasCalledWith({
-            values: { name: 'test-name', age: 81, size: 170, nickname: 'KeNNy' },
+            values: { name: 'test-name', age: 81, size: 170, nickname: 'KeNNy', email: 'kenny@testweb.de' },
             errors: {},
         });
 
         input.simulate('blur', { target: { value: 'test-name again' } });
         changeSpy.wasCalledWith({
-            values: { name: 'test-name again', age: 81, size: 170, nickname: 'KeNNy' },
+            values: { name: 'test-name again', age: 81, size: 170, nickname: 'KeNNy', email: 'kenny@testweb.de' },
             errors: {},
         });
 
         input.simulate('change', { target: { value: 'test-name too long' } });
         changeSpy.wasCalledWith({
-            values: { name: 'test-name too long', age: 81, size: 170, nickname: 'KeNNy' },
+            values: { name: 'test-name too long', age: 81, size: 170, nickname: 'KeNNy', email: 'kenny@testweb.de' },
             errors: { name: { id: 'validation.characters.atMost.x', values: { num: 10 } } },
         });
 
         form.simulate('submit');
-        submitSpy.wasCalledWith({ name: 'Kenny', age: 81, size: 170, nickname: 'KeNNy' });
+        submitSpy.wasCalledWith({ name: 'Kenny', age: 81, size: 170, nickname: 'KeNNy', email: 'kenny@testweb.de' });
     });
 
     it('renders the passed children with the given errors', () => {
@@ -100,7 +100,7 @@ describe('Field', () => {
 
         input.simulate('change', { target: { value: 150 } });
         changeSpy.wasCalledWith({
-            values: { name: 'Kenny - The King', age: 9999, size: 150 },
+            values: { name: 'Kenny - The King', age: 9999, size: 150, email: '' },
             errors: {},
         });
 
@@ -141,7 +141,7 @@ describe('Field', () => {
 
         input.simulate('change', { target: { value: invalidFormData.values.age } });
         changeSpy.wasCalledWith({
-            values: { name: 'Kenny - The King', age: 9999, size: 170 },
+            values: { name: 'Kenny - The King', age: 9999, size: 170, email: '' },
             errors: {
                 size: { id: 'validation.value.incompatible' },
                 age: { id: 'validation.characters.atMost.x', values: { num: 3 } },
@@ -158,7 +158,14 @@ describe('Field', () => {
 
         input.simulate('change', { target: { value: 'some' } });
         changeSpy.wasCalledWith({
-            values: { name: 'Kenny', age: 81, size: 170, nickname: 'KeNNy', uninitialized: 'some' },
+            values: {
+                name: 'Kenny',
+                age: 81,
+                size: 170,
+                nickname: 'KeNNy',
+                email: 'kenny@testweb.de',
+                uninitialized: 'some',
+            },
             errors: {},
         });
     });

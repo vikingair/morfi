@@ -11,6 +11,8 @@ import { Error, Label, onActionWrap } from './Basic';
 import { Field } from '../form';
 import type { _ErrorMessage } from '../form/Form-classes';
 
+type AllowedTypes = 'text' | 'password';
+
 type InputProps = {
     value?: string,
     label?: string,
@@ -21,6 +23,8 @@ type InputProps = {
     onBlur?: string => void,
     autoFocus?: boolean,
     disabled?: boolean,
+    type?: AllowedTypes,
+    placeholder?: string,
 };
 
 export const Input = ({
@@ -33,16 +37,17 @@ export const Input = ({
     onBlur,
     autoFocus,
     disabled,
+    type = 'text',
+    placeholder,
 }: InputProps) => {
     return (
         <div className={className}>
             {label && <Label {...{ label, required }} />}
             <input
-                type="text"
                 onChange={onActionWrap(onChange)}
                 onBlur={onActionWrap(onBlur)}
                 className={'form-control' + (error ? ' is-invalid' : '')}
-                {...{ value, autoFocus, disabled }}
+                {...{ type, placeholder, value, autoFocus, disabled }}
             />
             {error && <Error error={error} />}
         </div>
@@ -57,6 +62,8 @@ type FormInputProps = {|
     className?: string,
     disabled?: boolean,
     autoFocus?: boolean,
+    type?: AllowedTypes,
+    placeholder?: string,
 |};
 
 export const _FormInput = ({
@@ -67,10 +74,26 @@ export const _FormInput = ({
     className = 'form-group',
     disabled,
     autoFocus,
+    type,
+    placeholder,
 }: FormInputProps) => (
     <Field name={name}>
         {({ onChange, onBlur, required }) => (
-            <Input {...{ error, value, required, onBlur, onChange, label, className, disabled, autoFocus }} />
+            <Input
+                {...{
+                    error,
+                    value,
+                    required,
+                    onBlur,
+                    onChange,
+                    label,
+                    className,
+                    disabled,
+                    autoFocus,
+                    type,
+                    placeholder,
+                }}
+            />
         )}
     </Field>
 );

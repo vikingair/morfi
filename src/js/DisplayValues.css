@@ -1,0 +1,25 @@
+pre {
+    background-color: beige;
+    border: 2px solid darkgreen;
+    padding: 1em;
+}
+
+pre .prop {
+    color: darkviolet;
+}
+
+pre .string {
+    color: darkgreen;
+}
+
+pre .bool {
+    color: darkorange;
+}
+
+pre .null {
+    color: darkorange;
+}
+
+pre .number {
+    color: blue;
+}
