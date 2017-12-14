@@ -16,7 +16,7 @@ import App from './js/App';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(
-    <BrowserRouter>
+    <BrowserRouter basename="/form4react">
         <Route component={App} />
     </BrowserRouter>,
     document.getElementById('root')
