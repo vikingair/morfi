@@ -7,15 +7,16 @@
  */
 
 import React, { Component } from 'react';
+import './App.css';
 import { Link, Switch, Route } from 'react-router-dom';
 import { FormContainer } from './FormContainer';
 import FirstSample from './FirstSample';
-import ValidationOnChangeSample from './validation-onchange-sample';
+import { ValidationSample } from './ValidationSample';
 
 type Sample = { pathname: string, label: string };
 const Samples: Sample[] = [
-    { pathname: '/', label: 'First Sample' },
-    { pathname: '/validation/onchange', label: 'Validation - onChange' },
+    { pathname: '/', label: 'First sample' },
+    { pathname: '/validation/types', label: 'Validation types' },
 ];
 
 export default class App extends Component<{ location: { pathname: string } }> {
@@ -38,11 +39,11 @@ export default class App extends Component<{ location: { pathname: string } }> {
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-sm-3">{this.renderSideBar()}</div>
-                    <div className="col-sm-9">
+                    <div className="col-sm-3 col-lg-2">{this.renderSideBar()}</div>
+                    <div className="col-sm-9 col-lg-10">
                         <FormContainer>
                             <Switch>
-                                <Route path="/validation/onchange" component={ValidationOnChangeSample} />
+                                <Route path="/validation/types" component={ValidationSample} />
                                 <Route component={FirstSample} />
                             </Switch>
                         </FormContainer>

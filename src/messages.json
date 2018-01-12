@@ -6,5 +6,9 @@
   "validation.value.mismatch": "The entered value is invalid.",
   "validation.value.onlyNumbers": "Only numbers are allowed.",
   "validation.pw.requirements": "Please enter at least eight letters or digits.",
-  "validation.email.requirements": "Please enter a valid email."
+  "validation.email.requirements": "Please enter a valid email.",
+
+  "ValidationSample.typeOption.onChange": "onChange",
+  "ValidationSample.typeOption.onBlur": "onBlur",
+  "ValidationSample.typeOption.onSubmit": "onSubmit"
 }

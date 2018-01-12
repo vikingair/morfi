@@ -7,11 +7,12 @@
  */
 
 import React, { Component } from 'react';
-import type { _FormData, FormValidation, ValidationType } from './Form-classes';
+import type { _FormData, _FormValidation, ValidationType } from './Form-classes';
 import { FormUtil, ReactPropTypesAny } from './Form-classes';
 
 type FormProps<V> = {
-    validation: FormValidation<V>,
+    className?: string,
+    validation: _FormValidation<V>,
     data: _FormData<V>,
     children: React$Node,
     onChange: (_FormData<V>) => void,
@@ -59,7 +60,11 @@ class _Form<V: *> extends Component<FormProps<V>> {
         }
     };
     render(): React$Node {
-        return <form onSubmit={this._onSubmit}>{this.props.children}</form>;
+        return (
+            <form className={this.props.className} onSubmit={this._onSubmit}>
+                {this.props.children}
+            </form>
+        );
     }
 }
 

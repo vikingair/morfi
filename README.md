@@ -2,7 +2,7 @@
 [![Travis][build-image]][build-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 
-# form4react
+# ![form4react logo](src/form-logo.svg) form4react
 Abstract form handling for any purpose (1 kb gzipped)
 
 ### Alternatives...
@@ -60,10 +60,11 @@ It expects the following props: (See below for the missing [Flow types](#flow-ty
 
 Props            | Type                        | Description                                                | Example
 ---------------- | --------------------------- | ---------------------------------------------------------- | ------------------------------------------                                                 
+`className`      | `string`                    | Will be applied to the form tag                            | `'my-form'`                     
 `validation`     | `FormValidation<V>`         | Contains all validators                                    | `{ name: { onChange: customValidator } }`                     
 `data`           | `FormData<V>`               | Contains all values and errors                             | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
-`onChange`       | `(_FormData<V>) => void`    | Handles the next data after any changes have been made     | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
-`onSubmit`       | `V => void \ Promise<void>` | Will be called if submitted without any failing validators | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
+`onChange`       | `(FormData<V>) => void`    | Handles the next data after any changes have been made     |                     
+`onSubmit`       | `V => void \ Promise<void>` | Will be called if submitted without any failing validators |                    
 
 Now lets take a look on a single integrated form element:
 
@@ -99,7 +100,7 @@ updated value and `data.errors.phone` will maybe hold an occurred validation err
 the users focus.
 
 * `required`: A boolean which indicates if the value `undefined` for "phone"
-would surpass all validations on that field. If not the value is treated as
+would pass all validations on that field. If not the value is treated as
 required.
 
 The above example shows a `Form` with a single `Field`. 
@@ -118,10 +119,10 @@ In this table you get an overview of relevant types.
  Name                | Flow declaration                                              | Information
  ------------------- | ------------------------------------------------------------- | ---------------------
  `ErrorMessage`      | `{ id: string, values?: {[string]: mixed}}`                   | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
- `FormData<V>`       | `{ values: V, errors: { [$Keys<V>]: void \ _ErrorMessage } }` | This is the main structure for the data represent the form state
+ `FormData<V>`       | `{ values: V, errors: { [$Keys<V>]: void \ ErrorMessage } }` | This is the main structure for the data represent the form state
  `Validator`         | `any => ErrorMessage \ void`                                  | The validator returns void if no error occurred
  `ValidationType`    | `'onChange' \ 'onBlur' \ 'onSubmit'`                                       | Currently only those to validation types can be specified
- `FormValidation<V>` | `{ [$Keys<V>]: { [ValidationType]: _Validator \ void } }`     | For each key of the specified form values V here can be specified all validations for this field
+ `FormValidation<V>` | `{ [$Keys<V>]: { [ValidationType]: Validator \ void } }`     | For each key of the specified form values V here can be specified all validations for this field
 
 ### Example
 

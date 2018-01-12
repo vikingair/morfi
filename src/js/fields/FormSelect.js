@@ -27,7 +27,17 @@ type SelectProps = {
 
 const Option = ({ option }: { option: SelectOption }) => <option value={option.value}>{option.label}</option>;
 
-const Select = ({ value, label, error, required, className, onChange, onBlur, options, disabled }: SelectProps) => {
+export const Select = ({
+    value,
+    label,
+    error,
+    required,
+    className,
+    onChange,
+    onBlur,
+    options,
+    disabled,
+}: SelectProps) => {
     return (
         <div className={className}>
             {label && <Label {...{ label, required }} />}

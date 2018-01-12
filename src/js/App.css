@@ -1,0 +1,12 @@
+.nav a {
+    color: darkgreen;
+}
+
+.nav a:hover {
+    color: #0b2e13;
+}
+
+.nav-pills .nav-link.active {
+    color: white;
+    background-color: darkgreen;
+}

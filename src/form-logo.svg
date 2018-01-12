@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink"
-     viewBox="0 0 1000 1000">
+     width="50" height="45"
+     viewBox="0 0 1000 900">
     <metadata>
     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
              xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -26,11 +27,11 @@
         <!-- Pointer -->
         <polyline id="pointer"
                   points="120 500, 120 450, 60 480, 130 300, 200 480, 140 450, 140 500, 120 500"
-                  transform="scale(2.2) rotate(330)"
+                  transform="scale(2.1) rotate(330)"
         />
         <!-- The form clipper -->
-        <rect id="clipper" x="225" y="50"
-              width="350" height="80"
+        <rect id="clipper" x="230" y="60"
+              width="340" height="70"
               rx="30" ry="30"
         />
         <clipPath id="cut-off-top">
@@ -41,36 +42,36 @@
     </defs>
     <g stroke="darkgreen" stroke-width="40px" fill="none">
         <!-- The outer form border -->
-        <rect x="100" y="100" width="600" height="850"
+        <rect x="100" y="100" width="600" height="750"
               rx="30" ry="50"
               clip-path="url(#cut-off-top)"
         />
         <!-- The form lines -->
         <g stroke-linecap="round">
             <!-- Line 1 -->
-            <polyline points="180 255, 200 270, 225 225"
+            <polyline points="180 245, 200 260, 225 215"
                       stroke-width="15px" />
-            <line x1="300" y1="250" x2="610" y2="250" />
+            <line x1="300" y1="240" x2="610" y2="240" />
 
             <!-- Line 2 -->
-            <line x1="180" y1="480" x2="225" y2="420" stroke-width="15px" />
-            <line x1="180" y1="420" x2="225" y2="480" stroke-width="15px" />
-            <line x1="300" y1="450" x2="610" y2="450" />
+            <line x1="180" y1="425" x2="225" y2="375" stroke-width="15px" stroke="darkred" />
+            <line x1="180" y1="375" x2="225" y2="425" stroke-width="15px" stroke="darkred" />
+            <line x1="300" y1="400" x2="610" y2="400" />
 
             <!-- Line 3 -->
-            <polyline points="180 655, 200 670, 225 625"
+            <polyline points="180 565, 200 580, 225 535"
                       stroke-width="15px" />
-            <line x1="300" y1="650" x2="610" y2="650" />
+            <line x1="300" y1="560" x2="610" y2="560" />
         </g>
         <use xlink:href="#clipper" fill="darkgreen" />
 
         <!-- The submit button -->
-        <rect x="225" y="800" width="100" height="30"
+        <rect x="225" y="700" width="100" height="30"
               rx="5" ry="5"
         />
+        <rect x="400" y="700" width="100" height="30"
+              rx="5" ry="5" stroke-width="40px" stroke="darkred"
+        />
     </g>
-    <rect x="400" y="800" width="100" height="30"
-          rx="5" ry="5" stroke-width="40px" stroke="darkred"
-    />
     <use xlink:href="#pointer" fill="darkgreen" stroke="black" stroke-width="5px" />
 </svg>

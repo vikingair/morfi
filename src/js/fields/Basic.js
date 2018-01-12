@@ -10,7 +10,7 @@ import React from 'react';
 import type { _ErrorMessage } from '../form/Form-classes';
 import messages from '../../messages';
 
-const __ = (m: _ErrorMessage): string => {
+export const __ = (m: _ErrorMessage): string => {
     let result = messages[m.id];
     const values = m.values;
     if (result && values) {

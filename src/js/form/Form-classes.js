@@ -17,7 +17,7 @@ export const ValidationTypes: { [ValidationType]: ValidationType } = {
 };
 
 type FieldValidation = { [ValidationType]: _Validator | void };
-export type FormValidation<V> = { [$Keys<V>]: FieldValidation };
+export type _FormValidation<V> = { [$Keys<V>]: FieldValidation };
 export type _FormData<V: *> = { values: V, errors: { [$Keys<V>]: void | _ErrorMessage } };
 
 export const __forEach = (obj: any, handler: (any, any) => any | void): any | void => {
@@ -56,7 +56,7 @@ export const FormUtil = {
     },
     validateField,
     completeFieldValidation,
-    validateAll: <V: *>(data: _FormData<V>, validation: FormValidation<V>): _FormData<V> => {
+    validateAll: <V: *>(data: _FormData<V>, validation: _FormValidation<V>): _FormData<V> => {
         const copy = { values: { ...data.values }, errors: { ...data.errors } };
 
         __forEach(validation, (validators: FieldValidation, fieldId: string): void => {
