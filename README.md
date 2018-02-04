@@ -62,8 +62,8 @@ Props            | Type                        | Description                    
 ---------------- | --------------------------- | ---------------------------------------------------------- | ------------------------------------------                                                 
 `className`      | `string`                    | Will be applied to the form tag                            | `'my-form'`                     
 `validation`     | `FormValidation<V>`         | Contains all validators                                    | `{ name: { onChange: customValidator } }`                     
-`data`           | `FormData<V>`               | Contains all values and errors                             | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } } }`                     
-`onChange`       | `(FormData<V>) => void`    | Handles the next data after any changes have been made     |                     
+`data`           | `FormData<V>`               | Contains all values, errors and submitting state           | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`                     
+`onChange`       | `(FormData<V>) => void`     | Handles the next data after any changes have been made     |                     
 `onSubmit`       | `V => void \ Promise<void>` | Will be called if submitted without any failing validators |                    
 
 Now lets take a look on a single integrated form element:
@@ -109,6 +109,39 @@ It will update the form data accordingly to the specified `onChange` handler
 supplied to the Form.
 It will display an error message below the input if any error is encountered.
 
+### Asynchronous form field handling
+
+To implement async form field validation, you simply have to return a promise, which
+will resolve the validation result. You can write validators which are both:
+**async** *AND* **sync** validator at the same time. One example:
+
+```js
+const specialValidator = (val: any) => {
+    if (!val) { // if value is falsy we return sync error
+        return {id: 'value.required'};
+    }
+    if (typeof val !== 'number') { // only check non numbers
+        return myFetch('/my/api').then(result => {
+            if (result.isInvalid) { // api answered that the value was invalid
+                return {id: 'value.invalid'}; // return async error
+            }
+        })
+    }
+}
+```
+HINT: You should always validate the value `undefined` synchronously, because
+`form4react` determines the requirements by these criteria. So if you use the preferable
+`async-await`-Syntax, you should split your validator into to parts.
+
+### Control your submit
+When the user submits the form, the following will happen:
+
+1) The `submitting` property will be propagated as `true` to your `onChange`
+2) All registered validators will be executed and their validation results will be awaited
+3) When `2` returned any errors your `onChange` will be called with the found errors and `submitting` as `false` (**Early exit**)
+4) When `2` returned no errors your `onSubmit` will be called
+5) When `4` took place, the `submitting` property will be propagated as `false` (if your `onSubmit` returned a Promise, this will happen after this Promise resolved)
+
 ### Flow types
 
 **form4react** comes with a lot of types and exports `FormData<T>`, `ErrorMessage`
@@ -119,10 +152,10 @@ In this table you get an overview of relevant types.
  Name                | Flow declaration                                              | Information
  ------------------- | ------------------------------------------------------------- | ---------------------
  `ErrorMessage`      | `{ id: string, values?: {[string]: mixed}}`                   | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
- `FormData<V>`       | `{ values: V, errors: { [$Keys<V>]: void \ ErrorMessage } }` | This is the main structure for the data represent the form state
- `Validator`         | `any => ErrorMessage \ void`                                  | The validator returns void if no error occurred
- `ValidationType`    | `'onChange' \ 'onBlur' \ 'onSubmit'`                                       | Currently only those to validation types can be specified
- `FormValidation<V>` | `{ [$Keys<V>]: { [ValidationType]: Validator \ void } }`     | For each key of the specified form values V here can be specified all validations for this field
+ `FormData<V>`       | `{ values: V, errors: { [$Keys<V>]: void \ ErrorMessage } }`  | This is the main structure for the data represent the form state
+ `Validator`         | `any => ErrorMessage \ void \ Promise<ErrorMessage \ void>`   | The validator returns void if no error occurred or a Promise if the validation is asynchronous 
+ `ValidationType`    | `'onChange' \ 'onBlur' \ 'onSubmit'`                          | Currently only those to validation types can be specified
+ `FormValidation<V>` | `{ [$Keys<V>]: { [ValidationType]: Validator \ void } }`      | For each key of the specified form values V here can be specified all validations for this field
 
 ### Example
 
