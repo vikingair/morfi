@@ -55,7 +55,6 @@ const validationFor = (type: ValidationType): FormValidation<FormValues> => {
 
 type ValidationSampleState = {
     data: FormData<FormValues>,
-    pending: boolean,
     validation: FormValidation<FormValues>,
     currentValidationType: ValidationType,
 };
@@ -64,7 +63,6 @@ const initialState = {
     data: { values: {}, errors: {} },
     validation: validationFor('onChange'),
     currentValidationType: 'onChange',
-    pending: false,
 };
 
 export class ValidationSample extends Component<{}, ValidationSampleState> {
@@ -72,12 +70,9 @@ export class ValidationSample extends Component<{}, ValidationSampleState> {
 
     onChange = (data: FormData<FormValues>) => this.setState({ data });
 
-    onSubmit = (): void => {
-        this.setState({ data: initialState.data, pending: true });
+    onSubmit = (): Promise<void> => {
         // simulate server request
-        window.setTimeout(() => {
-            this.setState({ pending: false });
-        }, 2000);
+        return window.sleep(2000);
     };
 
     chooseValidationType = (type: any /* ValidationType <- is a problem with the used select component */) => {
@@ -86,7 +81,7 @@ export class ValidationSample extends Component<{}, ValidationSampleState> {
 
     render(): React$Node {
         const data = this.state.data;
-        const { values, errors } = data;
+        const { values, errors, submitting } = data;
         return (
             <div className="col-12">
                 <Select
@@ -116,10 +111,8 @@ export class ValidationSample extends Component<{}, ValidationSampleState> {
                                 placeholder="Set your password"
                             />
                             <div className="btn-toolbar">
-                                <button
-                                    className="btn btn-success"
-                                    disabled={this.state.pending || Form.hasErrors(data)}>
-                                    {this.state.pending && <i className="fa fa-circle-notch fa-spin" />} Submit
+                                <button className="btn btn-success" disabled={submitting || Form.hasErrors(data)}>
+                                    {submitting && <i className="fa fa-circle-notch fa-spin" />} Submit
                                 </button>
                             </div>
                         </div>

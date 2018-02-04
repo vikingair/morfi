@@ -12,11 +12,13 @@ import { Link, Switch, Route } from 'react-router-dom';
 import { FormContainer } from './FormContainer';
 import FirstSample from './FirstSample';
 import { ValidationSample } from './ValidationSample';
+import AsyncValidationSample from './AsyncValidationSample';
 
 type Sample = { pathname: string, label: string };
 const Samples: Sample[] = [
     { pathname: '/', label: 'First sample' },
     { pathname: '/validation/types', label: 'Validation types' },
+    { pathname: '/validation/async', label: 'Async validation' },
 ];
 
 export default class App extends Component<{ location: { pathname: string } }> {
@@ -44,6 +46,7 @@ export default class App extends Component<{ location: { pathname: string } }> {
                         <FormContainer>
                             <Switch>
                                 <Route path="/validation/types" component={ValidationSample} />
+                                <Route path="/validation/async" component={AsyncValidationSample} />
                                 <Route component={FirstSample} />
                             </Switch>
                         </FormContainer>

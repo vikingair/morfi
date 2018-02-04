@@ -10,3 +10,13 @@
     color: white;
     background-color: darkgreen;
 }
+
+.input-spinner {
+    float: right;
+    margin-top: -1.7em;
+    margin-right: 0.5em;
+}
+
+p.form-group-apply {
+    margin-top: -1em;
+}

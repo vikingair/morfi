@@ -12,7 +12,8 @@ import { mount } from 'enzyme';
 import { _Field as Field } from './Field';
 import { _Form as Form } from './Form';
 import { formData, formValidation, invalidFormData } from '../../test/form-data';
-import type { _FormData } from './Form-classes';
+import type { _FormData, _FormValidation } from './Form-classes';
+import { FormUtil } from './Form-classes';
 
 describe('Field', () => {
     type mountFormProps = {
@@ -20,11 +21,18 @@ describe('Field', () => {
         onSubmit?: Object => void,
         onChange?: (_FormData<any>) => void,
         name: $Keys<any>,
+        validation?: _FormValidation<any>,
     };
-    const mountForm = ({ data = formData, onSubmit = () => {}, onChange = () => {}, name }: mountFormProps) => {
+    const mountForm = ({
+        data = formData,
+        onSubmit = () => {},
+        onChange = () => {},
+        name,
+        validation = formValidation,
+    }: mountFormProps) => {
         const error = data.errors[name];
         return mount(
-            <Form validation={formValidation} data={data} onSubmit={onSubmit} onChange={onChange}>
+            <Form {...{ validation, onChange, onSubmit, data }}>
                 <Field name={name}>
                     {({ onChange, onBlur, required }) => (
                         <div className={required ? 'required' : undefined}>
@@ -70,11 +78,149 @@ describe('Field', () => {
         input.simulate('change', { target: { value: 'test-name too long' } });
         changeSpy.wasCalledWith({
             values: { name: 'test-name too long', age: 81, size: 170, nickname: 'KeNNy', email: 'kenny@testweb.de' },
-            errors: { name: { id: 'validation.characters.atMost.x', values: { num: 10 } } },
+            errors: { name: { id: 'validation.characters.atMost.x', values: { num: 10, s: 's' } } },
         });
 
         form.simulate('submit');
         submitSpy.wasCalledWith({ name: 'Kenny', age: 81, size: 170, nickname: 'KeNNy', email: 'kenny@testweb.de' });
+    });
+
+    it('propagates new values sync and errors async', async () => {
+        const changeSpy = new Spy('changeSpy');
+        const data = { values: { name: 'start' }, errors: {} };
+        const validation = {
+            name: {
+                onChange: v => {
+                    if (v) {
+                        return v === 'fail' ? Promise.resolve({ id: 'failure' }) : Promise.resolve();
+                    }
+                },
+            },
+        };
+        const form = mountForm({ onChange: changeSpy, name: 'name', validation, data });
+
+        const field = form.find(Field);
+        expect(field.find('.required').length).toBe(0);
+        expect(field.find('.error').length).toBe(0);
+        const input = field.find('input');
+
+        expect(input.props().value).toBe('start');
+
+        // first the same not failing value
+        input.simulate('change', { target: { value: 'start' } });
+        changeSpy.wasNotCalled();
+
+        await Promise.resolve(); // wait one tick
+
+        changeSpy.wasNotCalled();
+
+        // second the failing value
+        input.simulate('change', { target: { value: 'fail' } });
+        changeSpy.wasCalled(1);
+        changeSpy.wasCalledWith({ values: { name: 'fail' }, errors: {} });
+
+        await Promise.resolve(); // wait one tick
+
+        changeSpy.wasCalled(2);
+        changeSpy.wasCalledWith({ values: { name: 'fail' }, errors: { name: { id: 'failure' } } });
+
+        // last the not failing different value
+        changeSpy.reset();
+        input.simulate('change', { target: { value: 'anything' } });
+        changeSpy.wasCalled(1);
+        changeSpy.wasCalledWith({ values: { name: 'anything' }, errors: {} });
+
+        changeSpy.reset(); // we want to ensure that the onChange handler will be called with the same value
+        await Promise.resolve(); // wait one tick
+
+        // since we did not propagate the change correctly, it seems like there was a value change
+        changeSpy.wasCalled(1);
+        changeSpy.wasCalledWith({ values: { name: 'anything' }, errors: {} });
+    });
+
+    it('does not call the submit handler if asynchronous validations failed', async () => {
+        const submitSpy = new Spy('submitSpy');
+        const changeSpy = new Spy('changeSpy');
+        const data = { values: { name: 'start' }, errors: {} };
+        const validation = {
+            name: {
+                onBlur: v => {
+                    if (v) {
+                        return Promise.resolve({ id: 'failure' });
+                    }
+                },
+            },
+        };
+
+        const form = mountForm({
+            data,
+            validation,
+            onSubmit: submitSpy,
+            onChange: changeSpy,
+            name: 'name',
+        });
+        const field = form.find(Field);
+        expect(field.find('.required').length).toBe(0);
+        expect(field.find('.error').length).toBe(0);
+        const input = field.find('input');
+
+        expect(input.props().value).toBe('start');
+
+        form.simulate('submit');
+        submitSpy.wasNotCalled();
+        // first we are informed about submitting state
+        changeSpy.wasCalled(1);
+        changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: true });
+
+        changeSpy.reset();
+        // wait as many ticks as are required for getting and forwarding all errors
+        await FormUtil.validateAll(data, validation);
+
+        changeSpy.wasCalled(1);
+        // finally we get the error and the submitting phase ends
+        changeSpy.wasCalledWith({ values: { name: 'start' }, errors: { name: { id: 'failure' } }, submitting: false });
+        // submit was not called
+        submitSpy.wasNotCalled();
+    });
+
+    it('considers the run time of the submit handler as submitting phase', async () => {
+        const fakePromise = { then: new Spy('submitPromiseSpy').calls(func => func()) };
+        const submitSpy = new Spy('submitSpy').returns(fakePromise);
+        const changeSpy = new Spy('changeSpy');
+        const data = { values: { name: 'start' }, errors: {} };
+        const validation = { name: { onBlur: () => Promise.resolve() } };
+
+        const form = mountForm({
+            data,
+            validation,
+            onSubmit: submitSpy,
+            onChange: changeSpy,
+            name: 'name',
+        });
+        const field = form.find(Field);
+        // this has to be considered required, because a promise was returned for undefined value
+        expect(field.find('.required').length).toBe(1);
+        expect(field.find('.error').length).toBe(0);
+        const input = field.find('input');
+
+        expect(input.props().value).toBe('start');
+
+        form.simulate('submit');
+        submitSpy.wasNotCalled();
+        // first we are informed about submitting state
+        changeSpy.wasCalled(1);
+        changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: true });
+
+        changeSpy.reset();
+        // wait as many ticks as are required for making all validations
+        await FormUtil.validateAll(data, validation);
+
+        fakePromise.then.wasCalled(1);
+        changeSpy.wasCalled(1);
+        // finally we get the error and the submitting phase ends
+        changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: false });
+        // submit was not called
+        submitSpy.wasCalledWith({ name: 'start' });
     });
 
     it('renders the passed children with the given errors', () => {
@@ -144,7 +290,7 @@ describe('Field', () => {
             values: { name: 'Kenny - The King', age: 9999, size: 170, email: '' },
             errors: {
                 size: { id: 'validation.value.incompatible' },
-                age: { id: 'validation.characters.atMost.x', values: { num: 3 } },
+                age: { id: 'validation.characters.atMost.x', values: { num: 3, s: 's' } },
             },
         });
     });

@@ -1,7 +1,7 @@
 {
-  "validation.characters.exactly.x": "Please enter exactly {num} characters.",
-  "validation.characters.atMost.x": "Please enter at most {num} characters.",
-  "validation.characters.atLeast.x": "Please enter at least {num} characters.",
+  "validation.characters.exactly.x": "Please enter exactly {num} character{s}.",
+  "validation.characters.atMost.x": "Please enter at most {num} character{s}.",
+  "validation.characters.atLeast.x": "Please enter at least {num} character{s}.",
   "validation.value.incompatible": "Please enter something valid.",
   "validation.value.mismatch": "The entered value is invalid.",
   "validation.value.onlyNumbers": "Only numbers are allowed.",
@@ -10,5 +10,8 @@
 
   "ValidationSample.typeOption.onChange": "onChange",
   "ValidationSample.typeOption.onBlur": "onBlur",
-  "ValidationSample.typeOption.onSubmit": "onSubmit"
+  "ValidationSample.typeOption.onSubmit": "onSubmit",
+
+  "AsyncValidationSample.userName.already.registered": "The username \"{userName}\" is already in use. Please choose another one.",
+  "AsyncValidationSample.realName.validation.requirements": "Please provide your real name or clear the field."
 }

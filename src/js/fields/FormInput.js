@@ -25,6 +25,7 @@ type InputProps = {
     disabled?: boolean,
     type?: AllowedTypes,
     placeholder?: string,
+    pending?: boolean,
 };
 
 export const Input = ({
@@ -39,6 +40,7 @@ export const Input = ({
     disabled,
     type = 'text',
     placeholder,
+    pending,
 }: InputProps) => {
     return (
         <div className={className}>
@@ -46,9 +48,11 @@ export const Input = ({
             <input
                 onChange={onActionWrap(onChange)}
                 onBlur={onActionWrap(onBlur)}
+                disabled={disabled || pending}
                 className={'form-control' + (error ? ' is-invalid' : '')}
-                {...{ type, placeholder, value, autoFocus, disabled }}
+                {...{ type, placeholder, value, autoFocus }}
             />
+            {pending && <i className="fa fa-circle-notch fa-spin input-spinner" />}
             {error && <Error error={error} />}
         </div>
     );
@@ -64,6 +68,7 @@ type FormInputProps = {|
     autoFocus?: boolean,
     type?: AllowedTypes,
     placeholder?: string,
+    pending?: boolean,
 |};
 
 export const _FormInput = ({
@@ -76,6 +81,7 @@ export const _FormInput = ({
     autoFocus,
     type,
     placeholder,
+    pending,
 }: FormInputProps) => (
     <Field name={name}>
         {({ onChange, onBlur, required }) => (
@@ -92,6 +98,7 @@ export const _FormInput = ({
                     autoFocus,
                     type,
                     placeholder,
+                    pending,
                 }}
             />
         )}

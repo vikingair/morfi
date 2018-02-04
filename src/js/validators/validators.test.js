@@ -18,7 +18,7 @@ describe('Validator.string', () => {
         expect(validator('')).toBe(undefined);
         expect(validator('some non empty string')).toEqual({
             id: 'validation.characters.atMost.x',
-            values: { num: 10 },
+            values: { num: 10, s: 's' },
         });
     });
 
@@ -34,7 +34,7 @@ describe('Validator.string', () => {
 
     it('validates string min length correctly', () => {
         const validator = Validators.string({ min: 3 });
-        const expectedError = { id: 'validation.characters.atLeast.x', values: { num: 3 } };
+        const expectedError = { id: 'validation.characters.atLeast.x', values: { num: 3, s: 's' } };
         expect(validator('')).toEqual(expectedError);
         expect(validator('1')).toEqual(expectedError);
         expect(validator('12')).toEqual(expectedError);
@@ -44,7 +44,7 @@ describe('Validator.string', () => {
 
     it('validates string max length correctly', () => {
         const validator = Validators.string({ max: 4 });
-        const expectedError = { id: 'validation.characters.atMost.x', values: { num: 4 } };
+        const expectedError = { id: 'validation.characters.atMost.x', values: { num: 4, s: 's' } };
         expect(validator(undefined)).toBe(undefined);
         expect(validator('')).toBe(undefined);
         expect(validator('1')).toBe(undefined);
@@ -70,7 +70,7 @@ describe('Validator.number', () => {
 
     it('validates number min length correctly', () => {
         const validator = Validators.number({ minLength: 3 });
-        const expectedError = { id: 'validation.characters.atLeast.x', values: { num: 3 } };
+        const expectedError = { id: 'validation.characters.atLeast.x', values: { num: 3, s: 's' } };
         expect(validator('')).toEqual(expectedError);
         expect(validator(1)).toEqual(expectedError);
         expect(validator(12)).toEqual(expectedError);
@@ -80,7 +80,7 @@ describe('Validator.number', () => {
 
     it('validates string max length correctly', () => {
         const validator = Validators.number({ maxLength: 4 });
-        const expectedError = { id: 'validation.characters.atMost.x', values: { num: 4 } };
+        const expectedError = { id: 'validation.characters.atMost.x', values: { num: 4, s: 's' } };
         expect(validator(undefined)).toBe(undefined);
         expect(validator('')).toBe(undefined);
         expect(validator(1)).toBe(undefined);
@@ -93,13 +93,13 @@ describe('Validator.number', () => {
 
     it('special behaviour for min length = 1', () => {
         const validatorMin1 = Validators.number({ minLength: 1 });
-        expect(validatorMin1('')).toEqual({ id: 'validation.characters.atLeast.x', values: { num: 1 } });
+        expect(validatorMin1('')).toEqual({ id: 'validation.characters.atLeast.x', values: { num: 1, s: '' } });
         expect(validatorMin1(0)).toEqual(undefined);
     });
 
     it('special behaviour for max length = 0', () => {
         const validatorMax1 = Validators.number({ maxLength: 0 });
-        expect(validatorMax1(0)).toEqual({ id: 'validation.characters.exactly.x', values: { num: 0 } });
+        expect(validatorMax1(0)).toEqual({ id: 'validation.characters.exactly.x', values: { num: 0, s: 's' } });
         expect(validatorMax1('')).toEqual(undefined);
     });
 });
@@ -122,5 +122,19 @@ describe('Validator.regex', () => {
     it('returns the given message on validation error', () => {
         const validator = Validators.regex({ re: regex, message: { id: 'test.message' } });
         expect(validator('')).toEqual({ id: 'test.message' });
+    });
+});
+
+describe('Validator.email', () => {
+    it('validates email correctly', () => {
+        const validator = Validators.email;
+        expect(validator(undefined)).toEqual({ id: 'validation.email.requirements' });
+        expect(validator(null)).toEqual({ id: 'validation.value.incompatible' });
+        expect(validator(true)).toEqual({ id: 'validation.value.incompatible' });
+        expect(validator(12)).toEqual({ id: 'validation.value.incompatible' });
+        expect(validator('some?non@sense')).toEqual({ id: 'validation.email.requirements' });
+        expect(validator('1.matching-mail@address.com')).toBe(undefined);
+        expect(validator('non-matching_address.com')).toEqual({ id: 'validation.email.requirements' });
+        expect(validator('non-mail@address.')).toEqual({ id: 'validation.email.requirements' });
     });
 });

@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import type { _FormData, _FormValidation, ValidationType } from './Form-classes';
+import type { _ErrorMessage, _FormData, _FormValidation, ValidationType } from './Form-classes';
 import { FormUtil, ReactPropTypesAny } from './Form-classes';
 
 type FormProps<V> = {
@@ -39,6 +39,18 @@ class _Form<V: *> extends Component<FormProps<V>> {
         const validator = validators ? validators[validationType] : undefined;
         const nextError = FormUtil.validateField(nextValue, validator);
 
+        if (FormUtil.isPromise(nextError)) {
+            if (data.values[name] !== nextValue) {
+                this.props.onChange(FormUtil.update(this.props.data, name, nextValue, undefined));
+            }
+            (nextError: any).then(error => this._onFieldChangeAfterValidation(name, nextValue, error));
+        } else {
+            this._onFieldChangeAfterValidation(name, nextValue, (nextError: any));
+        }
+    };
+
+    _onFieldChangeAfterValidation = (name: $Keys<V>, nextValue: any, nextError?: _ErrorMessage) => {
+        const data = this.props.data;
         // if the value did not change AND
         // we had already an error or our validator did not return any error
         // -> we return undefined to avoid a store update
@@ -49,16 +61,33 @@ class _Form<V: *> extends Component<FormProps<V>> {
     fieldIsRequired = (name: $Keys<V>): boolean => {
         return FormUtil.isRequired(this.props.validation[name]);
     };
-
     _onSubmit = (event: SyntheticEvent<*>): void => {
         event.preventDefault();
-        const validated = FormUtil.validateAll(this.props.data, this.props.validation);
-        if (!FormUtil.hasErrors(validated)) {
-            this.props.onSubmit(this.props.data.values);
+        const data = this.props.data;
+        this.props.onChange(FormUtil.setSubmitting(data, true));
+        const validated = FormUtil.validateAll(data, this.props.validation);
+        if (FormUtil.isPromise(validated)) {
+            (validated: any).then(validatedData => {
+                this._onSubmitAfterValidation(validatedData);
+            });
         } else {
-            this.props.onChange(validated);
+            this._onSubmitAfterValidation((validated: any));
         }
     };
+    _onSubmitAfterValidation = (data: any /* _FormData<V> */): void => {
+        if (!FormUtil.hasErrors(data)) {
+            const maybePromise = this.props.onSubmit(data.values);
+            if (maybePromise) {
+                maybePromise.then(this._finishSubmit);
+            } else {
+                this._finishSubmit();
+            }
+        } else {
+            data.submitting = false;
+            this.props.onChange(data);
+        }
+    };
+    _finishSubmit = () => this.props.onChange(FormUtil.setSubmitting(this.props.data, false));
     render(): React$Node {
         return (
             <form className={this.props.className} onSubmit={this._onSubmit}>

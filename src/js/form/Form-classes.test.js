@@ -6,8 +6,9 @@
  * @flow
  */
 
-import { FormUtil, __forEach } from './Form-classes';
+import { FormUtil, forEach } from './Form-classes';
 import { formData, formValidation, invalidFormData } from '../../test/form-data';
+import { Validators } from '../validators/validators';
 
 describe('FormUtil', () => {
     it('updates a single value', () => {
@@ -44,42 +45,76 @@ describe('FormUtil', () => {
         expect(FormUtil.completeFieldValidation(formData.values.age, formValidation.age)).toBe(undefined);
         expect(FormUtil.completeFieldValidation(invalidFormData.values.age, formValidation.age)).toEqual({
             id: 'validation.characters.atMost.x',
-            values: { num: 3 },
+            values: { num: 3, s: 's' },
         });
         expect(FormUtil.completeFieldValidation(invalidFormData.values.nickname, formValidation.nickname)).toEqual({
             id: 'validation.characters.exactly.x',
-            values: { num: 5 },
+            values: { num: 5, s: 's' },
         });
     });
     it('validates a single field with a single validator', () => {
         expect(FormUtil.validateField(formData.values.age, formValidation.age.onChange)).toBe(undefined);
         expect(FormUtil.validateField(invalidFormData.values.age, formValidation.age.onChange)).toEqual({
             id: 'validation.characters.atMost.x',
-            values: { num: 3 },
+            values: { num: 3, s: 's' },
         });
         expect(FormUtil.validateField(invalidFormData.values.nickname, undefined)).toBe(undefined);
     });
     it('validates all fields', () => {
-        expect(FormUtil.validateAll(formData, formValidation).errors).toEqual({});
-        const validated = FormUtil.validateAll(invalidFormData, formValidation);
+        expect((FormUtil.validateAll(formData, formValidation): any).errors).toEqual({});
+        const validated: any = FormUtil.validateAll(invalidFormData, formValidation);
         expect(validated.values).toEqual(invalidFormData.values);
         expect(validated.errors).toEqual({
             age: {
                 id: 'validation.characters.atMost.x',
-                values: { num: 3 },
+                values: { num: 3, s: 's' },
             },
             name: {
                 id: 'validation.characters.atMost.x',
-                values: { num: 10 },
+                values: { num: 10, s: 's' },
             },
             nickname: {
                 id: 'validation.characters.exactly.x',
-                values: { num: 5 },
+                values: { num: 5, s: 's' },
             },
             size: { id: 'validation.value.incompatible' },
             email: { id: 'validation.email.requirements' },
         });
     });
+
+    it('validates async all fields', async () => {
+        let num = 0;
+        const asyncValidatorWithError = () => Promise.resolve({ id: 'error-' + num++ });
+        const asyncValidator = () => Promise.resolve(undefined);
+        expect(
+            (await FormUtil.validateAll(formData, {
+                name: {
+                    onChange: asyncValidatorWithError, // validation with error-0 will be triggered <- returned
+                    onBlur: asyncValidatorWithError, // validation with error-1 will be triggered
+                    onSubmit: asyncValidatorWithError, // validation with error-2 will be triggered
+                },
+                age: {
+                    onChange: asyncValidatorWithError, // validation with error-3 will be triggered
+                    onBlur: Validators.number({ maxLength: 1 }), // sync errors are favoured
+                    onSubmit: asyncValidatorWithError,
+                },
+                size: {
+                    onBlur: Validators.number({}), // considering the async error, if this validation succeeds
+                    onSubmit: asyncValidatorWithError, // validation with error-4 will be triggered <- returned
+                },
+                nickname: {
+                    onChange: asyncValidator,
+                    onBlur: asyncValidator,
+                    onSubmit: asyncValidator,
+                },
+            }): any).errors
+        ).toEqual({
+            age: { id: 'validation.characters.atMost.x', values: { num: 1, s: '' } },
+            name: { id: 'error-0' },
+            size: { id: 'error-4' },
+        });
+    });
+
     it('recognizes if errors exist', () => {
         expect(FormUtil.hasErrors(formData)).toBe(false);
         expect(FormUtil.hasErrors(invalidFormData)).toBe(true);
@@ -94,7 +129,7 @@ describe('FormUtil', () => {
     });
     it('foreach ignores not own properties on objects', () => {
         const results = [];
-        __forEach({ attr1: 'someString', attr2: 123, hasOwnProperty: () => false }, (key, value) =>
+        forEach({ attr1: 'someString', attr2: 123, hasOwnProperty: () => false }, (key, value) =>
             results.push([key, value])
         );
         expect(results.length).toBe(0);

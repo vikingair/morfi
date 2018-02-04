@@ -1,5 +1,6 @@
 {
   "name": "form4react",
+  "version": "0.3.0",
   "description": "Abstract form handling for any purpose (1 kb gzipped)",
   "keywords": [
     "form",
@@ -7,7 +8,6 @@
     "compact",
     "flow"
   ],
-  "version": "0.2.1",
   "license": "MIT",
   "author": "Viktor Luft <viktor.luft@freiheit.com> (https://github.com/fdc-viktor-luft)",
   "homepage": "https://fdc-viktor-luft.github.io/form4react/",

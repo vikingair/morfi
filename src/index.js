@@ -3,6 +3,7 @@
  *
  * The LICENSE file can be found in the root directory of this project.
  *
+ * @flow
  */
 
 import React from 'react';
@@ -15,10 +16,16 @@ import './index.css';
 import App from './js/App';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(
-    <BrowserRouter basename="/form4react">
-        <Route component={App} />
-    </BrowserRouter>,
-    document.getElementById('root')
-);
+window.sleep = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+
+const root = document.getElementById('root');
+
+if (root) {
+    ReactDOM.render(
+        <BrowserRouter basename="/form4react">
+            <Route component={App} />
+        </BrowserRouter>,
+        root
+    );
+}
 registerServiceWorker();

@@ -9,9 +9,18 @@
 import type { ErrorMessage, Validator } from '../form';
 
 const stringValidator = ({ min = 0, max = -1 }: { min?: number, max?: number }): Validator => {
-    const exactMessage = min === max ? { id: 'validation.characters.exactly.x', values: { num: min } } : undefined;
-    const atMostMessage = exactMessage || { id: 'validation.characters.atMost.x', values: { num: max } };
-    const atLeastMessage = exactMessage || { id: 'validation.characters.atLeast.x', values: { num: min } };
+    const exactMessage =
+        min === max
+            ? { id: 'validation.characters.exactly.x', values: { num: min, s: min === 1 ? '' : 's' } }
+            : undefined;
+    const atMostMessage = exactMessage || {
+        id: 'validation.characters.atMost.x',
+        values: { num: max, s: max === 1 ? '' : 's' },
+    };
+    const atLeastMessage = exactMessage || {
+        id: 'validation.characters.atLeast.x',
+        values: { num: min, s: min === 1 ? '' : 's' },
+    };
     return v => {
         const val = v === undefined ? '' : v;
         if (typeof val !== 'string') {
@@ -62,7 +71,7 @@ export const Validators = {
     regex: regexValidator,
     number: numberValidator,
     email: regexValidator({
-        re: /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-z]+$/,
+        re: /^[a-zA-Z0-9.-]+@[a-zA-Z0-9]+\.[a-z]+$/,
         message: { id: 'validation.email.requirements' },
     }),
     optionalOf,
