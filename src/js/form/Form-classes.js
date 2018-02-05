@@ -6,6 +6,7 @@
  * @flow
  */
 
+export const NOP: any = () => {};
 export type _ErrorMessage = { id: string, values?: { [string]: mixed } };
 type MaybeError = _ErrorMessage | void;
 export type _Validator = any => MaybeError | Promise<MaybeError>;

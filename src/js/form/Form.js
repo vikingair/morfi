@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import type { _ErrorMessage, _FormData, _FormValidation, ValidationType } from './Form-classes';
-import { FormUtil, ReactPropTypesAny } from './Form-classes';
+import { FormUtil, NOP, ReactPropTypesAny } from './Form-classes';
 
 type FormProps<V> = {
     className?: string,
@@ -91,7 +91,7 @@ class _Form<V: *> extends Component<FormProps<V>> {
     _onChange = (data: any /* _FormData<V> */) => this.props.onChange(data);
 
     componentWillUnmount = () => {
-        this._onChange = () => {};
+        this._onChange = NOP;
     };
 
     render(): React$Node {
