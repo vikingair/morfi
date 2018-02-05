@@ -41,7 +41,7 @@ class _Form<V: *> extends Component<FormProps<V>> {
 
         if (FormUtil.isPromise(nextError)) {
             if (data.values[name] !== nextValue) {
-                this.props.onChange(FormUtil.update(this.props.data, name, nextValue, undefined));
+                this._onChange(FormUtil.update(this.props.data, name, nextValue, undefined));
             }
             (nextError: any).then(error => this._onFieldChangeAfterValidation(name, nextValue, error));
         } else {
@@ -55,7 +55,7 @@ class _Form<V: *> extends Component<FormProps<V>> {
         // we had already an error or our validator did not return any error
         // -> we return undefined to avoid a store update
         if (data.values[name] !== nextValue || (nextError && !data.errors[name])) {
-            this.props.onChange(FormUtil.update(data, name, nextValue, nextError));
+            this._onChange(FormUtil.update(data, name, nextValue, nextError));
         }
     };
     fieldIsRequired = (name: $Keys<V>): boolean => {
@@ -64,7 +64,7 @@ class _Form<V: *> extends Component<FormProps<V>> {
     _onSubmit = (event: SyntheticEvent<*>): void => {
         event.preventDefault();
         const data = this.props.data;
-        this.props.onChange(FormUtil.setSubmitting(data, true));
+        this._onChange(FormUtil.setSubmitting(data, true));
         const validated = FormUtil.validateAll(data, this.props.validation);
         if (FormUtil.isPromise(validated)) {
             (validated: any).then(validatedData => {
@@ -84,10 +84,16 @@ class _Form<V: *> extends Component<FormProps<V>> {
             }
         } else {
             data.submitting = false;
-            this.props.onChange(data);
+            this._onChange(data);
         }
     };
-    _finishSubmit = () => this.props.onChange(FormUtil.setSubmitting(this.props.data, false));
+    _finishSubmit = () => this._onChange(FormUtil.setSubmitting(this.props.data, false));
+    _onChange = (data: any /* _FormData<V> */) => this.props.onChange(data);
+
+    componentWillUnmount = () => {
+        this._onChange = () => {};
+    };
+
     render(): React$Node {
         return (
             <form className={this.props.className} onSubmit={this._onSubmit}>

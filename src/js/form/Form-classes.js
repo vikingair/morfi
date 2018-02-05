@@ -79,7 +79,8 @@ const completeFieldValidation = <F>(field: F, validators: FieldValidation): Mayb
 };
 
 const copyData = <V>(data: _FormData<V>): _FormData<V> => {
-    return { values: { ...data.values }, errors: { ...data.errors }, submitting: data.submitting };
+    // older flow versions (e.g. 0.54.0) can not handle destructuring of generics correctly
+    return { values: { ...(data.values: any) }, errors: { ...data.errors }, submitting: data.submitting };
 };
 
 export const ReactPropTypesAny = () => null;

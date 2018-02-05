@@ -315,4 +315,37 @@ describe('Field', () => {
             errors: {},
         });
     });
+
+    it('propagates no changes if the form was unmounted', async () => {
+        const changeSpy = new Spy('changeSpy');
+        const data = { values: { name: 'start' }, errors: {} };
+        const validation = { name: { onChange: () => Promise.resolve({ id: 'failure' }) } };
+        const form = mountForm({ onChange: changeSpy, name: 'name', validation, data });
+
+        const field = form.find(Field);
+        expect(field.find('.required').length).toBe(1);
+        expect(field.find('.error').length).toBe(0);
+        const input = field.find('input');
+
+        // first without unmounting
+        input.simulate('change', { target: { value: 'fail' } });
+        changeSpy.wasCalled(1);
+
+        await Promise.resolve(); // wait one tick
+
+        // was called again
+        changeSpy.wasCalled(2);
+
+        // then with unmounting
+        changeSpy.reset();
+        input.simulate('change', { target: { value: 'fail' } });
+        changeSpy.wasCalled(1);
+        changeSpy.wasCalledWith({ values: { name: 'fail' }, errors: {} });
+        form.unmount(); // <-- unmounting
+
+        await Promise.resolve(); // wait one tick
+
+        // was not called
+        changeSpy.wasCalled(1);
+    });
 });

@@ -1,9 +1,11 @@
+[![GitHub license][license-image]][license-url]
 [![npm package][npm-image]][npm-url]
 [![Travis][build-image]][build-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
+[![styled with prettier][prettier-image]][prettier-url]
 
 # ![form4react logo](src/form-logo.svg) form4react
-Abstract form handling for any purpose (1 kb gzipped)
+Abstract form handling for any purpose (< 2 kb gzipped)
 
 ### Alternatives...
 
@@ -316,11 +318,14 @@ Now if we hit the clear button all entered values will be cleared.
   
   Later there might be subdirectories which you can optionally use, but most
   often in larger projects you want to have full control over all form components.
-  
-  
+
+[license-image]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-url]: https://github.com/fdc-viktor-luft/form4react/blob/master/LICENSE
 [npm-image]: https://img.shields.io/npm/v/form4react.svg?style=flat-square
 [npm-url]: https://www.npmjs.org/package/form4react
 [build-image]: https://img.shields.io/travis/fdc-viktor-luft/form4react/master.svg?style=flat-square
 [build-url]: https://travis-ci.org/fdc-viktor-luft/form4react
 [coveralls-image]: https://coveralls.io/repos/github/fdc-viktor-luft/form4react/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/fdc-viktor-luft/form4react?branch=master
+[prettier-image]: https://img.shields.io/badge/styled_with-prettier-ff69b4.svg
+[prettier-url]: https://github.com/prettier/prettier
