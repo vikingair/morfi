@@ -67,8 +67,8 @@ Props              | Type                        | Description                  
 `data`             | `FormData<V>`               | Contains all values, errors and submitting state                  | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`                     
 `onChange`         | `(FormData<V>) => void`     | Handles the next data after any changes have been made            |                     
 `onSubmit`         | `V => void \ Promise<void>` | Will be called if submitted without any failing validators        |                    
-`onSubmitFailed`   | `void => void`              | Will be called if submitting was aborted due to validation errors |                    
-`onSubmitFinished` | `void => void`              | Will be called if after submitting finished                       |                    
+`onSubmitFailed`   | `void \ (void => void)`     | Will be called if submitting was aborted due to validation errors |                    
+`onSubmitFinished` | `void \ (void => void)`     | Will be called if after submitting finished                       |                    
 
 Now lets take a look on a single integrated form element:
 
