@@ -19,6 +19,8 @@ describe('Field', () => {
     type mountFormProps = {
         data?: _FormData<any>,
         onSubmit?: Object => void,
+        onSubmitFailed?: void => void,
+        onSubmitFinished?: void => void,
         onChange?: (_FormData<any>) => void,
         name: $Keys<any>,
         validation?: _FormValidation<any>,
@@ -26,13 +28,15 @@ describe('Field', () => {
     const mountForm = ({
         data = formData,
         onSubmit = () => {},
+        onSubmitFailed,
+        onSubmitFinished,
         onChange = () => {},
         name,
         validation = formValidation,
     }: mountFormProps) => {
         const error = data.errors[name];
         return mount(
-            <Form {...{ validation, onChange, onSubmit, data }}>
+            <Form {...{ validation, onChange, onSubmit, onSubmitFailed, onSubmitFinished, data }}>
                 <Field name={name}>
                     {({ onChange, onBlur, required }) => (
                         <div className={required ? 'required' : undefined}>
@@ -51,8 +55,16 @@ describe('Field', () => {
 
     it('renders the passed children with the given value', () => {
         const submitSpy = new Spy('submitSpy');
+        const submitFailedSpy = new Spy('submitFailedSpy');
+        const submitFinishedSpy = new Spy('submitFinishedSpy');
         const changeSpy = new Spy('changeSpy');
-        const form = mountForm({ onSubmit: submitSpy, onChange: changeSpy, name: 'name' });
+        const form = mountForm({
+            onSubmit: submitSpy,
+            onChange: changeSpy,
+            name: 'name',
+            onSubmitFailed: submitFailedSpy,
+            onSubmitFinished: submitFinishedSpy,
+        });
 
         const field = form.find(Field);
         expect(field.find('.required').length).toBe(1);
@@ -83,6 +95,8 @@ describe('Field', () => {
 
         form.simulate('submit');
         submitSpy.wasCalledWith({ name: 'Kenny', age: 81, size: 170, nickname: 'KeNNy', email: 'kenny@testweb.de' });
+        submitFailedSpy.wasNotCalled();
+        submitFinishedSpy.wasCalled(1);
     });
 
     it('propagates new values sync and errors async', async () => {
@@ -140,6 +154,8 @@ describe('Field', () => {
 
     it('does not call the submit handler if asynchronous validations failed', async () => {
         const submitSpy = new Spy('submitSpy');
+        const submitFailedSpy = new Spy('submitFailedSpy');
+        const submitFinishedSpy = new Spy('submitFinishedSpy');
         const changeSpy = new Spy('changeSpy');
         const data = { values: { name: 'start' }, errors: {} };
         const validation = {
@@ -158,6 +174,8 @@ describe('Field', () => {
             onSubmit: submitSpy,
             onChange: changeSpy,
             name: 'name',
+            onSubmitFailed: submitFailedSpy,
+            onSubmitFinished: submitFinishedSpy,
         });
         const field = form.find(Field);
         expect(field.find('.required').length).toBe(0);
@@ -168,6 +186,8 @@ describe('Field', () => {
 
         form.simulate('submit');
         submitSpy.wasNotCalled();
+        submitFailedSpy.wasNotCalled();
+        submitFinishedSpy.wasNotCalled();
         // first we are informed about submitting state
         changeSpy.wasCalled(1);
         changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: true });
@@ -181,11 +201,15 @@ describe('Field', () => {
         changeSpy.wasCalledWith({ values: { name: 'start' }, errors: { name: { id: 'failure' } }, submitting: false });
         // submit was not called
         submitSpy.wasNotCalled();
+        submitFailedSpy.wasCalled(1);
+        submitFinishedSpy.wasNotCalled();
     });
 
     it('considers the run time of the submit handler as submitting phase', async () => {
         const fakePromise = { then: new Spy('submitPromiseSpy').calls(func => func()) };
         const submitSpy = new Spy('submitSpy').returns(fakePromise);
+        const submitFailedSpy = new Spy('submitFailedSpy');
+        const submitFinishedSpy = new Spy('submitFinishedSpy');
         const changeSpy = new Spy('changeSpy');
         const data = { values: { name: 'start' }, errors: {} };
         const validation = { name: { onBlur: () => Promise.resolve() } };
@@ -196,6 +220,8 @@ describe('Field', () => {
             onSubmit: submitSpy,
             onChange: changeSpy,
             name: 'name',
+            onSubmitFailed: submitFailedSpy,
+            onSubmitFinished: submitFinishedSpy,
         });
         const field = form.find(Field);
         // this has to be considered required, because a promise was returned for undefined value
@@ -207,6 +233,8 @@ describe('Field', () => {
 
         form.simulate('submit');
         submitSpy.wasNotCalled();
+        submitFailedSpy.wasNotCalled();
+        submitFinishedSpy.wasNotCalled();
         // first we are informed about submitting state
         changeSpy.wasCalled(1);
         changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: true });
@@ -221,6 +249,8 @@ describe('Field', () => {
         changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: false });
         // submit was not called
         submitSpy.wasCalledWith({ name: 'start' });
+        submitFailedSpy.wasNotCalled();
+        submitFinishedSpy.wasCalled(1);
     });
 
     it('renders the passed children with the given errors', () => {

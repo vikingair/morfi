@@ -17,6 +17,8 @@ type FormProps<V> = {
     children: React$Node,
     onChange: (_FormData<V>) => void,
     onSubmit: V => void | Promise<void>,
+    onSubmitFailed?: () => void,
+    onSubmitFinished?: () => void,
 };
 
 class _Form<V: *> extends Component<FormProps<V>> {
@@ -85,13 +87,21 @@ class _Form<V: *> extends Component<FormProps<V>> {
         } else {
             data.submitting = false;
             this._onChange(data);
+            this._onSubmitFailed();
         }
     };
-    _finishSubmit = () => this._onChange(FormUtil.setSubmitting(this.props.data, false));
-    _onChange = (data: any /* _FormData<V> */) => this.props.onChange(data);
+    _finishSubmit = (): void => {
+        this._onChange(FormUtil.setSubmitting(this.props.data, false));
+        this._onSubmitFinished();
+    };
+    _onChange = (data: any /* _FormData<V> */): void => this.props.onChange(data);
+    _onSubmitFailed = (): void => this.props.onSubmitFailed && this.props.onSubmitFailed();
+    _onSubmitFinished = (): void => this.props.onSubmitFinished && this.props.onSubmitFinished();
 
     componentWillUnmount = () => {
         this._onChange = NOP;
+        this._onSubmitFailed = NOP;
+        this._onSubmitFinished = NOP;
     };
 
     render(): React$Node {

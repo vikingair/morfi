@@ -60,13 +60,15 @@ const render = () => (
 ```
 It expects the following props: (See below for the missing [Flow types](#flow-types))
 
-Props            | Type                        | Description                                                | Example
----------------- | --------------------------- | ---------------------------------------------------------- | ------------------------------------------                                                 
-`className`      | `string`                    | Will be applied to the form tag                            | `'my-form'`                     
-`validation`     | `FormValidation<V>`         | Contains all validators                                    | `{ name: { onChange: customValidator } }`                     
-`data`           | `FormData<V>`               | Contains all values, errors and submitting state           | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`                     
-`onChange`       | `(FormData<V>) => void`     | Handles the next data after any changes have been made     |                     
-`onSubmit`       | `V => void \ Promise<void>` | Will be called if submitted without any failing validators |                    
+Props              | Type                        | Description                                                       | Example
+------------------ | --------------------------- | ----------------------------------------------------------------- | ------------------------------------------                                                 
+`className`        | `string`                    | Will be applied to the form tag                                   | `'my-form'`                     
+`validation`       | `FormValidation<V>`         | Contains all validators                                           | `{ name: { onChange: customValidator } }`                     
+`data`             | `FormData<V>`               | Contains all values, errors and submitting state                  | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`                     
+`onChange`         | `(FormData<V>) => void`     | Handles the next data after any changes have been made            |                     
+`onSubmit`         | `V => void \ Promise<void>` | Will be called if submitted without any failing validators        |                    
+`onSubmitFailed`   | `void => void`              | Will be called if submitting was aborted due to validation errors |                    
+`onSubmitFinished` | `void => void`              | Will be called if after submitting finished                       |                    
 
 Now lets take a look on a single integrated form element:
 
@@ -215,14 +217,14 @@ class App extends Component<{}, AppState> {
                     <FormInput
                         name="firstName"
                         value={values.firstName}
-                        errors={errors.firstName}
+                        error={errors.firstName}
                         label="First name"
                         className="form-group col-sm-6"
                     />
                     <FormInput
                         name="lastName"
                         value={values.lastName}
-                        errors={errors.lastName}
+                        error={errors.lastName}
                         label="Last name"
                         className="form-group col-sm-6"
                     />
@@ -231,7 +233,7 @@ class App extends Component<{}, AppState> {
                     <FormSelect
                         name="gender"
                         value={values.gender}
-                        errors={errors.gender}
+                        error={errors.gender}
                         options={genderOptions}
                         label="Gender"
                         className="form-group col-sm-6"
@@ -239,7 +241,7 @@ class App extends Component<{}, AppState> {
                     <FormNumberInput
                         name="age"
                         value={values.age}
-                        errors={errors.age}
+                        error={errors.age}
                         label="Age"
                         className="form-group col-sm-6"
                     />

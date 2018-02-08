@@ -67,24 +67,33 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
     onChange = (data: FormData<FormValues>) => this.setState({ data });
 
     onSubmit = (): void => {
-        this.setState({ data: { values: {}, errors: {} } });
         // simulate server request
         return window.sleep(2000);
     };
 
+    onSubmitFinished = (): void => {
+        this.setState({ data: { values: {}, errors: {} } });
+    };
+
     render(): React$Node {
-        const data = this.state.data;
+        const { data, pendingUserName } = this.state;
         const { values, errors, submitting } = data;
+        const submittingOrValidating = pendingUserName || submitting;
         return (
             <div className="col-12">
-                <Form validation={this.state.validations} onChange={this.onChange} data={data} onSubmit={this.onSubmit}>
+                <Form
+                    validation={this.state.validations}
+                    onChange={this.onChange}
+                    data={data}
+                    onSubmit={this.onSubmit}
+                    onSubmitFinished={this.onSubmitFinished}>
                     <div className="row">
                         <div className="col-md-12">
                             <FormInput
                                 name="userName"
                                 value={values.userName}
                                 error={errors.userName}
-                                pending={this.state.pendingUserName}
+                                pending={pendingUserName}
                                 label="Username"
                                 placeholder="Please enter your desired username"
                             />
@@ -99,8 +108,10 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
                                 placeholder="Please enter your real name"
                             />
                             <div className="btn-toolbar">
-                                <button className="btn btn-success" disabled={submitting || Form.hasErrors(data)}>
-                                    {submitting && <i className="fa fa-circle-notch fa-spin" />} Submit
+                                <button
+                                    className="btn btn-success"
+                                    disabled={submittingOrValidating || Form.hasErrors(data)}>
+                                    {submittingOrValidating && <i className="fa fa-circle-notch fa-spin" />} Submit
                                 </button>
                             </div>
                         </div>
