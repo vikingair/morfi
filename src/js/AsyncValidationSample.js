@@ -111,7 +111,7 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
                                 <button
                                     className="btn btn-success"
                                     disabled={submittingOrValidating || Form.hasErrors(data)}>
-                                    {submittingOrValidating && <i className="fa fa-circle-notch fa-spin" />} Submit
+                                    {submitting && <i className="fa fa-circle-notch fa-spin" />} Submit
                                 </button>
                             </div>
                         </div>
