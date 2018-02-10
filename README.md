@@ -7,31 +7,26 @@
 # ![form4react logo](src/form-logo.svg) form4react
 Abstract form handling for any purpose (< 2 kb gzipped)
 
-### Alternatives...
-
-The following statements represent only my personal opinion, although I did
-not work a lot with the following pretty good packages.
-
-* [**redux-form**](https://github.com/erikras/redux-form): 
-A lot of features, nice documented and easy to use
-form handling tool, *but* it comes with the cost of a little integrative work,
-the cost of big package size, forces you to hold the form data in the redux store
-and to connect every form and has poor `flow` assistance.
-
-* [**react-final-form**](https://github.com/final-form/react-final-form): 
-A lot of features, optimized for performance,
-small bundle size, totally customizable and needs no integrative work, 
-*but* is not as well documented and has no `flow` assistance.
-
 ### Why form4react?
+
+I have invested a lot of time to read about and use forms from different
+developers. Since I did not find the *one* solution in my year long
+experience with `react`, I decided to spend some time and think about
+an ideal solution.
+
+I tried to target the following aspects. It should be a small bundle.
+Leave the flexibility to the developer. Make it type safe, because I
+develop only with assistance of `flow`. Support the usage of any
+internationalization framework. Absolutely no dependencies, which have
+to be installed additionally. High performing and very assisting.
 
 * Optimized `flow` assistance
 * No dependencies
 * Small bundle size
 * High performance
-* Nice features (but not as much as the above packages)
+* Nice features
 * Totally customizable
-* Well documented (WIP)
+* Well documented
 
 ### Installation
 ##### With yarn
@@ -304,13 +299,6 @@ onClear = () => {
 Now if we hit the clear button all entered values will be cleared.
 
 ### FAQ
-
-* What about asynchronous form error handling?
-
-  Since you are the owner and controller of any updates on the form data,
-  you can simply add new errors for any fields after the server responded
-  with any error. If you want to write a util which maps specific server
-  errors to specific fields, you have the ability to do so.
   
 * Why are there no ready-to-use components exported like `FormSelect` 
   from the above examples?
@@ -320,6 +308,39 @@ Now if we hit the clear button all entered values will be cleared.
   
   Later there might be subdirectories which you can optionally use, but most
   often in larger projects you want to have full control over all form components.
+
+
+### Alternatives...
+
+The following statements represent only my personal opinion, although I did
+not work a lot with the following pretty good packages.
+
+* [**react-form**](https://github.com/react-tools/react-form): 
+A lot of features, *but* a large package with less flexibility when it comes
+to very individual forms. No `flow` support.
+
+* [**redux-form**](https://github.com/erikras/redux-form): 
+A lot of features, nice documented and easy to use
+form handling tool, *but* it comes with the cost of a little integrative work,
+the cost of big package size, forces you to hold the form data in the redux store
+and to connect every form and has poor `flow` assistance. Almost the same for
+[**react-redux-form**](https://github.com/davidkpiano/react-redux-form).
+
+
+* [**formik**](https://github.com/jaredpalmer/formik): 
+Indicates what it does better than `redux-form`, *but* is not so much better
+because it uses its own pseudo store and pseudo connect-function called
+`withFormik` and still is not a very small package.
+
+* [**react-final-form**](https://github.com/final-form/react-final-form): 
+A lot of features, optimized for performance,
+small bundle size, totally customizable and needs no integrative work, 
+*but* is not as well documented, has `peerDependecies` which you also need
+to install and has no `flow` assistance.
+
+* [**react-jsonschema-form**](https://github.com/mozilla-services/react-jsonschema-form): 
+A lot of features and very nice docs, *but* a large package with less flexibility when it comes
+to individual form templating. No `flow` support.
 
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-url]: https://github.com/fdc-viktor-luft/form4react/blob/master/LICENSE
