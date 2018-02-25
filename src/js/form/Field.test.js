@@ -13,7 +13,6 @@ import { _Field as Field } from './Field';
 import { _Form as Form } from './Form';
 import { formData, formValidation, invalidFormData } from '../../test/form-data';
 import type { _FormData, _FormValidation } from './Form-classes';
-import { FormUtil } from './Form-classes';
 
 describe('Field', () => {
     type mountFormProps = {
@@ -124,7 +123,7 @@ describe('Field', () => {
         input.simulate('change', { target: { value: 'start' } });
         changeSpy.wasNotCalled();
 
-        await Promise.resolve(); // wait one tick
+        await window.nextTick(); // wait one tick
 
         changeSpy.wasNotCalled();
 
@@ -133,7 +132,7 @@ describe('Field', () => {
         changeSpy.wasCalled(1);
         changeSpy.wasCalledWith({ values: { name: 'fail' }, errors: {} });
 
-        await Promise.resolve(); // wait one tick
+        await window.nextTick(); // wait one tick
 
         changeSpy.wasCalled(2);
         changeSpy.wasCalledWith({ values: { name: 'fail' }, errors: { name: { id: 'failure' } } });
@@ -145,7 +144,7 @@ describe('Field', () => {
         changeSpy.wasCalledWith({ values: { name: 'anything' }, errors: {} });
 
         changeSpy.reset(); // we want to ensure that the onChange handler will be called with the same value
-        await Promise.resolve(); // wait one tick
+        await window.nextTick(); // wait one tick
 
         // since we did not propagate the change correctly, it seems like there was a value change
         changeSpy.wasCalled(1);
@@ -194,7 +193,7 @@ describe('Field', () => {
 
         changeSpy.reset();
         // wait as many ticks as are required for getting and forwarding all errors
-        await FormUtil.validateAll(data, validation);
+        await window.nextTick();
 
         changeSpy.wasCalled(1);
         // finally we get the error and the submitting phase ends
@@ -241,7 +240,7 @@ describe('Field', () => {
 
         changeSpy.reset();
         // wait as many ticks as are required for making all validations
-        await FormUtil.validateAll(data, validation);
+        await window.nextTick();
 
         fakePromise.then.wasCalled(1);
         changeSpy.wasCalled(1);
@@ -361,7 +360,7 @@ describe('Field', () => {
         input.simulate('change', { target: { value: 'fail' } });
         changeSpy.wasCalled(1);
 
-        await Promise.resolve(); // wait one tick
+        await window.nextTick(); // wait one tick
 
         // was called again
         changeSpy.wasCalled(2);
@@ -373,7 +372,7 @@ describe('Field', () => {
         changeSpy.wasCalledWith({ values: { name: 'fail' }, errors: {} });
         form.unmount(); // <-- unmounting
 
-        await Promise.resolve(); // wait one tick
+        await window.nextTick(); // wait one tick
 
         // was not called
         changeSpy.wasCalled(1);

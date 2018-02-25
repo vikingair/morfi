@@ -13,7 +13,7 @@ import Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
 
 const oldDescribe = describe;
-window.describe = (string, func) => {
+global.describe = (string, func) => {
     oldDescribe(string, () => {
         afterEach(() => {
             Spy.restoreAll();
@@ -21,3 +21,6 @@ window.describe = (string, func) => {
         return func();
     });
 };
+
+global.nextTick = (): Promise<void> => new Promise(resolve => process.nextTick(resolve));
+global.sleep = () => Promise.resolve();

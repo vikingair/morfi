@@ -312,6 +312,18 @@ Now if we hit the clear button all entered values will be cleared.
 
 ### Alternatives...
 
+The following table includes results from [bundlephobia](https://bundlephobia.com).
+
+Package                 | Version | Size (minified + gzipped)
+------------------------|---------|--------------------------
+`form4react`            | 0.4.0   | 1.8 kB
+`react-form`            | 3.0.1   | Missing Dependecy Error
+`redux-form`            | 7.2.3   | 27.1 kB
+`react-redux-form`      | 1.16.5  | 22 kB
+`formik`                | 0.11.11 | 10.7 kB
+`react-final-form`      | 3.1.0   | 2.9 kB + 3.8 kB (hidden peer dependecy: `final-form`)
+`react-jsonschema-form` | 1.0.1   | Install Error
+
 The following statements represent only my personal opinion, although I did
 not work a lot with the following pretty good packages.
 

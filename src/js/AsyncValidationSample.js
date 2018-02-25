@@ -66,7 +66,7 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
 
     onChange = (data: FormData<FormValues>) => this.setState({ data });
 
-    onSubmit = (): void => {
+    onSubmit = (): Promise<void> => {
         // simulate server request
         return window.sleep(2000);
     };

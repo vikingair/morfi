@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AsyncValidationSample renders the initial form 1`] = `
+<div
+  className="col-12"
+>
+  <_Form
+    data={
+      Object {
+        "errors": Object {},
+        "values": Object {},
+      }
+    }
+    onChange={[Function]}
+    onSubmit={[Function]}
+    onSubmitFinished={[Function]}
+    validation={
+      Object {
+        "realName": Object {
+          "onChange": [Function],
+        },
+        "userName": Object {
+          "onBlur": [Function],
+          "onChange": [Function],
+        },
+      }
+    }
+  >
+    <div
+      className="row"
+    >
+      <div
+        className="col-md-12"
+      >
+        <Component
+          label="Username"
+          name="userName"
+          pending={false}
+          placeholder="Please enter your desired username"
+        />
+        <p
+          className="small font-italic form-group-apply"
+        >
+          ATTENTION: The validation succeeds randomly...
+        </p>
+        <Component
+          label="Real name"
+          name="realName"
+          placeholder="Please enter your real name"
+        />
+        <div
+          className="btn-toolbar"
+        >
+          <button
+            className="btn btn-success"
+            disabled={false}
+          >
+             Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </_Form>
+</div>
+`;
