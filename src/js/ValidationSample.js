@@ -105,6 +105,7 @@ export class ValidationSample extends Component<{}, ValidationSampleState> {
                             />
                             <FormInput
                                 name="pw"
+                                type="password"
                                 value={values.pw}
                                 error={errors.pw}
                                 label="Password"

@@ -26,14 +26,14 @@ describe('AsyncValidationSample', () => {
                 { name: 'userName', component: Input, required: true },
                 { name: 'realName', component: Input, required: false }
             )
-            .focus('realName')
+            .lookAt('realName')
             .change('Tester')
             .valueIs('Tester')
             .errorIs(undefined)
             .change('Tester @ga!n')
             .valueIs('Tester @ga!n')
             .errorIs({ id: 'AsyncValidationSample.realName.validation.requirements' })
-            .focus('userName')
+            .lookAt('userName')
             .change('TestFoo')
             .errorIs(undefined);
 
@@ -41,7 +41,6 @@ describe('AsyncValidationSample', () => {
         await wrapper.blur().nextTick();
 
         wrapper
-            .focus('userName')
             .valueIs('TestFoo')
             .errorIs({ id: 'AsyncValidationSample.userName.already.registered', values: { userName: 'TestFoo' } })
             .change('otherFooName')
@@ -50,9 +49,6 @@ describe('AsyncValidationSample', () => {
         mathRandomSpy.returns(0.1);
         await wrapper.blur().nextTick();
 
-        wrapper
-            .focus('userName')
-            .valueIs('otherFooName')
-            .errorIs(undefined);
+        wrapper.valueIs('otherFooName').errorIs(undefined);
     });
 });

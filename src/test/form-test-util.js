@@ -17,7 +17,7 @@ type FieldSpec = {
     required?: boolean,
 };
 
-const _makeTestData = (...fieldSpecs: FieldSpec[]): Object => {
+const _makeTestData = (fieldSpecs: FieldSpec[]): Object => {
     const result = { values: {}, errors: {} };
     for (let key = 0; key < fieldSpecs.length; key++) {
         const name = fieldSpecs[key].name;
@@ -47,6 +47,20 @@ const _findTypeFromField = (fieldWrapper: ReactWrapper): any => {
     return fieldWrapper.props().children({ onChange: NOP, onBlur: NOP, required: false }).type;
 };
 
+const _validateFieldSpecs = (fieldSpecs: FieldSpec[]): void => {
+    const names = [];
+    for (let key = 0; key < fieldSpecs.length; key++) {
+        const name = fieldSpecs[key].name;
+        if (names.indexOf(name) === -1) {
+            names.push(name);
+        } else {
+            throw new Error(
+                `Each field should have a different name. You specified the name "${name}" more than once.`
+            );
+        }
+    }
+};
+
 // first version of the upcoming test util
 export class FormWrapper {
     +_mounted: ReactWrapper;
@@ -67,6 +81,9 @@ export class FormWrapper {
         }
     }
 
+    // Sometimes you want to modify the state or perform other actions
+    mounted = (): ReactWrapper => this._mounted;
+
     blur = (): FormWrapper => {
         if (!this.focused) {
             return this;
@@ -86,7 +103,6 @@ export class FormWrapper {
             props.onBlur(currentValue);
             this._mounted.update();
         }
-        this.focused = undefined;
         return this;
     };
 
@@ -95,7 +111,7 @@ export class FormWrapper {
         this._mounted.update();
     };
 
-    focus = (name: string): FormWrapper => {
+    lookAt = (name: string): FormWrapper => {
         this.blur();
         const field = this.find(name);
         if (!field) {
@@ -121,13 +137,17 @@ export class FormWrapper {
         },
         ...fieldSpecs: FieldSpec[]
     ): FormWrapper => {
-        const data = _makeTestData(...fieldSpecs);
+        _validateFieldSpecs(fieldSpecs);
+        const data = _makeTestData(fieldSpecs);
         const oldData =
             location.base === 'state' ? this._mounted.state()[location.name] : this._mounted.props()[location.name];
         location.base === 'state'
             ? this._mounted.setState({ [location.name]: data })
             : this._mounted.setProps({ [location.name]: data });
         const fields = this._mounted.find(Field);
+        if (fieldSpecs.length !== fields.length) {
+            throw new Error('Not all found fields where specified.');
+        }
         for (let key = 0; key < fieldSpecs.length; key++) {
             const fieldSpec = fieldSpecs[key];
             const name = fieldSpec.name;
