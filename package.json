@@ -1,5 +1,5 @@
 {
-  "name": "form4react",
+  "name": "morfi",
   "version": "0.4.0",
   "description": "Abstract form handling for any purpose (1 kb gzipped)",
   "keywords": [
@@ -10,13 +10,13 @@
   ],
   "license": "MIT",
   "author": "Viktor Luft <viktor.luft@freiheit.com> (https://github.com/fdc-viktor-luft)",
-  "homepage": "https://fdc-viktor-luft.github.io/form4react/",
+  "homepage": "https://fdc-viktor-luft.github.io/morfi/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fdc-viktor-luft/form4react"
+    "url": "https://github.com/fdc-viktor-luft/morfi"
   },
   "bugs": {
-    "url": "https://github.com/fdc-viktor-luft/form4react/issues"
+    "url": "https://github.com/fdc-viktor-luft/morfi/issues"
   },
   "scripts": {
     "dist": "bin/dist.sh",

@@ -8,21 +8,21 @@
     <rdf:Description rdf:about="http://svg.tutorial.aptico.de/grafik_svg/kap2_5.svg">
     <dc:creator>viktor.luft@freiheit.com</dc:creator>
     <dc:contributor>viktor.luft@freiheit.com</dc:contributor>
-    <dc:subject>form4react, form, react</dc:subject>
+    <dc:subject>morfi, form, react</dc:subject>
     <dc:description>online form graphic</dc:description>
-    <dc:relation>https://fdc-viktor-luft.github.io/form4react/</dc:relation>
-    <dc:source>https://github.com/fdc-viktor-luft/form4react/blob/master/src/form-logo.svg</dc:source>
+    <dc:relation>https://fdc-viktor-luft.github.io/morfi/</dc:relation>
+    <dc:source>https://github.com/fdc-viktor-luft/morfi/blob/master/src/form-logo.svg</dc:source>
     <dc:rights>Copyright 2017 Viktor Luft</dc:rights>
     <dc:format>image/svg+xml</dc:format>
     <dc:type>Image</dc:type>
-        <dc:title>form4react Logo</dc:title>
+        <dc:title>morfi Logo</dc:title>
         <dc:date>2017-13-12</dc:date>
         <dc:language>en</dc:language>
     </rdf:Description>
     </rdf:RDF>
     </metadata>
-    <title>form4react</title>
-    <desc>Form handling with form4react</desc>
+    <title>morfi</title>
+    <desc>Form handling with morfi</desc>
     <defs>
         <!-- Pointer -->
         <polyline id="pointer"

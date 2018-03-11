@@ -4,10 +4,10 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![styled with prettier][prettier-image]][prettier-url]
 
-# ![form4react logo](src/form-logo.svg) form4react
+# ![morfi logo](src/form-logo.svg) morfi
 Abstract form handling for any purpose (< 2 kb gzipped)
 
-### Why form4react?
+### Why morfi?
 
 I have invested a lot of time to read about and use forms from different
 developers. Since I did not find the *one* solution in my year long
@@ -31,18 +31,18 @@ to be installed additionally. High performing and very assisting.
 ### Installation
 ##### With yarn
 ```
-yarn add form4react
+yarn add morfi
 ```
 ##### With npm
 ```
-npm install --save form4react
+npm install --save morfi
 ```
 
 ### Introduction
 
 First take a look at the outer form element.
 ```js
-import { Form } from 'form4react';
+import { Form } from 'morfi';
 
 const render = () => (
     <Form validation={validation}
@@ -68,7 +68,7 @@ Props              | Type                        | Description                  
 Now lets take a look on a single integrated form element:
 
 ```js
-import { Form, Field } from 'form4react';
+import { Form, Field } from 'morfi';
 
 const render = () => (
     <Form validation={validation}
@@ -129,7 +129,7 @@ const specialValidator = (val: any) => {
 }
 ```
 HINT: You should always validate the value `undefined` synchronously, because
-`form4react` determines the requirements by these criteria. So if you use the preferable
+`morfi` determines the requirements by these criteria. So if you use the preferable
 `async-await`-Syntax, you should split your validator into to parts.
 
 ### Control your submit
@@ -143,7 +143,7 @@ When the user submits the form, the following will happen:
 
 ### Flow types
 
-**form4react** comes with a lot of types and exports `FormData<T>`, `ErrorMessage`
+**morfi** comes with a lot of types and exports `FormData<T>`, `ErrorMessage`
 and `Validator`.
 
 In this table you get an overview of relevant types.
@@ -159,7 +159,7 @@ In this table you get an overview of relevant types.
 ### Example
 
 In this chapter we will examine how a sample form could be implemented.
-The [sample](https://fdc-viktor-luft.github.io/form4react/) is hosted be GitHub Pages.
+The [sample](https://fdc-viktor-luft.github.io/morfi/) is hosted be GitHub Pages.
 
 We first define the types of the form values...
 ```js
@@ -172,7 +172,7 @@ type MyFormValues = {
 // gender can be selected with the following available options
 const genderOptions = [{ value: 'M', label: 'male' }, { value: 'F', label: 'female' }];
 ```
-Then we define the validations... (see [here](https://github.com/fdc-viktor-luft/form4react/blob/master/src/js/validators/validators.js) for the used validators below)
+Then we define the validations... (see [here](https://github.com/fdc-viktor-luft/morfi/blob/master/src/js/validators/validators.js) for the used validators below)
 ```js
 const validation = {
     firstName: { onChange: Validators.string({ min: 1, max: 10 }) },
@@ -184,11 +184,11 @@ Let's say we decide to control the form state inside our app state...
 ```js
 type AppState = { data: FormData<MyFormValues> };
 ```
-Now we define the first version of the app... (see [here](https://github.com/fdc-viktor-luft/form4react/tree/master/src/js/fields) for all used custom components below)
+Now we define the first version of the app... (see [here](https://github.com/fdc-viktor-luft/morfi/tree/master/src/js/fields) for all used custom components below)
 ```js
 import React, { Component } from 'react';
-import { Form } from 'form4react';
-import type { FormData } from 'form4react';
+import { Form } from 'morfi';
+import type { FormData } from 'morfi';
 
 class App extends Component<{}, AppState> {
     // first we initialize the defaults (if we would not, flow would complain for all mandatory fields missing)
@@ -250,7 +250,7 @@ class App extends Component<{}, AppState> {
 This version does the specified validations on the fields and prevents our empty
 `onSubmit` function from being called, when any validations would not succeed
 
-So now we add a table (see [here](https://github.com/fdc-viktor-luft/form4react/blob/master/src/js/PersonTable.js) 
+So now we add a table (see [here](https://github.com/fdc-viktor-luft/morfi/blob/master/src/js/PersonTable.js) 
 for the implementation and the new type `Person`) to hold all entered person data. What changes...
 ```js
 // the state interface
@@ -303,7 +303,7 @@ Now if we hit the clear button all entered values will be cleared.
 * Why are there no ready-to-use components exported like `FormSelect` 
   from the above examples?
   
-  **form4react** is primarily made to handle updates, validations, storing of
+  **morfi** is primarily made to handle updates, validations, storing of
   data, save the developer by good flow assistance and as a guideline for form handling
   
   Later there might be subdirectories which you can optionally use, but most
@@ -316,7 +316,7 @@ The following table includes results from [bundlephobia](https://bundlephobia.co
 
 Package                 | Version | Size (minified + gzipped)
 ------------------------|---------|--------------------------
-`form4react`            | 0.4.0   | 1.8 kB
+`morfi`            | 0.4.0   | 1.8 kB
 `react-form`            | 3.0.1   | Missing Dependecy Error
 `redux-form`            | 7.2.3   | 27.1 kB
 `react-redux-form`      | 1.16.5  | 22 kB
@@ -355,12 +355,12 @@ A lot of features and very nice docs, *but* a large package with less flexibilit
 to individual form templating. No `flow` support.
 
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
-[license-url]: https://github.com/fdc-viktor-luft/form4react/blob/master/LICENSE
-[npm-image]: https://img.shields.io/npm/v/form4react.svg?style=flat-square
-[npm-url]: https://www.npmjs.org/package/form4react
-[build-image]: https://img.shields.io/travis/fdc-viktor-luft/form4react/master.svg?style=flat-square
-[build-url]: https://travis-ci.org/fdc-viktor-luft/form4react
-[coveralls-image]: https://coveralls.io/repos/github/fdc-viktor-luft/form4react/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/fdc-viktor-luft/form4react?branch=master
+[license-url]: https://github.com/fdc-viktor-luft/morfi/blob/master/LICENSE
+[npm-image]: https://img.shields.io/npm/v/morfi.svg?style=flat-square
+[npm-url]: https://www.npmjs.org/package/morfi
+[build-image]: https://img.shields.io/travis/fdc-viktor-luft/morfi/master.svg?style=flat-square
+[build-url]: https://travis-ci.org/fdc-viktor-luft/morfi
+[coveralls-image]: https://coveralls.io/repos/github/fdc-viktor-luft/morfi/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/fdc-viktor-luft/morfi?branch=master
 [prettier-image]: https://img.shields.io/badge/styled_with-prettier-ff69b4.svg
 [prettier-url]: https://github.com/prettier/prettier
