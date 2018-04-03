@@ -13,6 +13,7 @@ exports[`AsyncValidationSample renders the initial form 1`] = `
     }
     onChange={[Function]}
     onSubmit={[Function]}
+    onSubmitFailed={[Function]}
     onSubmitFinished={[Function]}
     validation={
       Object {
@@ -41,7 +42,22 @@ exports[`AsyncValidationSample renders the initial form 1`] = `
         <p
           className="small font-italic form-group-apply"
         >
-          ATTENTION: The validation succeeds randomly...
+          ATTENTION: The validation succeeds for all names, but the following:
+          <br />
+          <strong>
+            Tom
+          </strong>
+          : Validation fails each time.
+          <br />
+          <strong>
+            Jack
+          </strong>
+          : Validation fails each second time.
+          <br />
+          <strong>
+            Mike
+          </strong>
+          : Validation succeeds but submitting fails.
         </p>
         <Component
           label="Real name"

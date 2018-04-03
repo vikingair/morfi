@@ -34,15 +34,25 @@ type AsyncValidationSampleState = {
     pendingUserName: boolean,
 };
 
+const alreadyRegistered_userName = 'tom';
+const everySecondTimeFailing_userName = 'jack';
+const failingAfterSubmit_userName = 'mike';
+let validationCounter = 0;
+
 export default class AsyncValidationSample extends Component<{}, AsyncValidationSampleState> {
     validateUserName: Validator = (userName?: string) => {
         const syncError = Validators.string({ min: 1 })(userName);
         if (syncError) {
             return syncError;
         }
+        const lowerCaseUserName = (userName: any).toLowerCase();
         this.setState({ pendingUserName: true });
+        validationCounter++;
         return window.sleep(1000).then(() => {
-            if (Math.random() > 0.5) {
+            if (lowerCaseUserName === alreadyRegistered_userName) {
+                this.setState({ pendingUserName: false });
+                return { id: 'AsyncValidationSample.userName.already.registered', values: { userName } };
+            } else if (lowerCaseUserName === everySecondTimeFailing_userName && validationCounter % 2 === 0) {
                 this.setState({ pendingUserName: false });
                 return { id: 'AsyncValidationSample.userName.already.registered', values: { userName } };
             } else {
@@ -66,9 +76,24 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
 
     onChange = (data: FormData<FormValues>) => this.setState({ data });
 
-    onSubmit = (): Promise<void> => {
+    onSubmit = ({ userName = '' }: FormValues): Promise<void> => {
         // simulate server request
-        return window.sleep(2000);
+        const fakeServerRequest = window.sleep(1000);
+        return userName.toLowerCase() !== failingAfterSubmit_userName
+            ? fakeServerRequest
+            : fakeServerRequest.then(() => {
+                  throw new Error('AsyncValidationSample.userName.submit.failed');
+              });
+    };
+
+    onSubmitFailed = (e?: Error): void => {
+        e &&
+            this.setState({
+                data: {
+                    values: { ...this.state.data.values },
+                    errors: { ...this.state.data.errors, userName: { id: e.message } },
+                },
+            });
     };
 
     onSubmitFinished = (): void => {
@@ -86,6 +111,7 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
                     onChange={this.onChange}
                     data={data}
                     onSubmit={this.onSubmit}
+                    onSubmitFailed={this.onSubmitFailed}
                     onSubmitFinished={this.onSubmitFinished}>
                     <div className="row">
                         <div className="col-md-12">
@@ -98,7 +124,10 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
                                 placeholder="Please enter your desired username"
                             />
                             <p className="small font-italic form-group-apply">
-                                ATTENTION: The validation succeeds randomly...
+                                ATTENTION: The validation succeeds for all names, but the following:<br />
+                                <strong>Tom</strong>: Validation fails each time.<br />
+                                <strong>Jack</strong>: Validation fails each second time.<br />
+                                <strong>Mike</strong>: Validation succeeds but submitting fails.
                             </p>
                             <FormInput
                                 name="realName"

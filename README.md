@@ -62,8 +62,8 @@ Props              | Type                        | Description                  
 `data`             | `FormData<V>`               | Contains all values, errors and submitting state                  | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`                     
 `onChange`         | `(FormData<V>) => void`     | Handles the next data after any changes have been made            |                     
 `onSubmit`         | `V => void \ Promise<void>` | Will be called if submitted without any failing validators        |                    
-`onSubmitFailed`   | `void \ (void => void)`     | Will be called if submitting was aborted due to validation errors |                    
-`onSubmitFinished` | `void \ (void => void)`     | Will be called if after submitting finished                       |                    
+`onSubmitFailed`   | `void \ (any => void)`      | Will be called if submitting was aborted due to validation errors or the submit returned a rejected promise |
+`onSubmitFinished` | `void \ (void => void)`     | Will be called if after submitting finished                       |
 
 Now lets take a look on a single integrated form element:
 
@@ -316,7 +316,7 @@ The following table includes results from [bundlephobia](https://bundlephobia.co
 
 Package                 | Version | Size (minified + gzipped)
 ------------------------|---------|--------------------------
-`morfi`            | 0.4.0   | 1.8 kB
+`morfi`                 | 0.4.0   | 1.8 kB
 `react-form`            | 3.0.1   | Missing Dependecy Error
 `redux-form`            | 7.2.3   | 27.1 kB
 `react-redux-form`      | 1.16.5  | 22 kB

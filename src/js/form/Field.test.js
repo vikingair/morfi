@@ -205,8 +205,7 @@ describe('Field', () => {
     });
 
     it('considers the run time of the submit handler as submitting phase', async () => {
-        const fakePromise = { then: new Spy('submitPromiseSpy').calls(func => func()) };
-        const submitSpy = new Spy('submitSpy').returns(fakePromise);
+        const submitSpy = new Spy('submitSpy').returns(Promise.resolve());
         const submitFailedSpy = new Spy('submitFailedSpy');
         const submitFinishedSpy = new Spy('submitFinishedSpy');
         const changeSpy = new Spy('changeSpy');
@@ -242,7 +241,6 @@ describe('Field', () => {
         // wait as many ticks as are required for making all validations
         await window.nextTick();
 
-        fakePromise.then.wasCalled(1);
         changeSpy.wasCalled(1);
         // finally we get the error and the submitting phase ends
         changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: false });
@@ -250,6 +248,49 @@ describe('Field', () => {
         submitSpy.wasCalledWith({ name: 'start' });
         submitFailedSpy.wasNotCalled();
         submitFinishedSpy.wasCalled(1);
+    });
+
+    it('calls onSubmitFailed with the catched error inside returned submit promise', async () => {
+        const someError = new Error('SomeError');
+        const submitSpy = new Spy('submitSpy').calls(() => Promise.reject(someError));
+        const submitFailedSpy = new Spy('submitFailedSpy');
+        const submitFinishedSpy = new Spy('submitFinishedSpy');
+        const changeSpy = new Spy('changeSpy');
+        const data = { values: { name: 'start' }, errors: {} };
+
+        const form = mountForm({
+            data,
+            validation: {},
+            onSubmit: submitSpy,
+            onChange: changeSpy,
+            name: 'name',
+            onSubmitFailed: submitFailedSpy,
+            onSubmitFinished: submitFinishedSpy,
+        });
+        const field = form.find(Field);
+        // this has to be considered required, because a promise was returned for undefined value
+        expect(field.find('.required').length).toBe(0);
+        expect(field.find('.error').length).toBe(0);
+        const input = field.find('input');
+
+        expect(input.props().value).toBe('start');
+
+        form.simulate('submit');
+        // first we are informed about submitting state
+        changeSpy.wasCalled(1);
+        changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: true });
+        submitSpy.wasCalledWith({ name: 'start' });
+
+        changeSpy.reset();
+        // wait as many ticks as are required for making all validations
+        await window.nextTick();
+
+        changeSpy.wasCalled(1);
+        // finally we get the error and the submitting phase ends
+        changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: false });
+        // submit was not called
+        submitFailedSpy.wasCalledWith(someError);
+        submitFinishedSpy.wasNotCalled();
     });
 
     it('renders the passed children with the given errors', () => {

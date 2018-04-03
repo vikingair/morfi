@@ -8,7 +8,6 @@
 
 import React from 'react';
 import AsyncValidationSample from './AsyncValidationSample';
-import { Spy } from 'spy4js';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import { Input } from './fields/FormInput';
@@ -34,19 +33,17 @@ describe('AsyncValidationSample', () => {
             .valueIs('Tester @ga!n')
             .errorIs({ id: 'AsyncValidationSample.realName.validation.requirements' })
             .lookAt('userName')
-            .change('TestFoo')
+            .change('Tom')
             .errorIs(undefined);
 
-        const mathRandomSpy = Spy.on(Math, 'random').returns(0.9);
         await wrapper.blur().nextTick();
 
         wrapper
-            .valueIs('TestFoo')
-            .errorIs({ id: 'AsyncValidationSample.userName.already.registered', values: { userName: 'TestFoo' } })
+            .valueIs('Tom')
+            .errorIs({ id: 'AsyncValidationSample.userName.already.registered', values: { userName: 'Tom' } })
             .change('otherFooName')
             .errorIs(undefined);
 
-        mathRandomSpy.returns(0.1);
         await wrapper.blur().nextTick();
 
         wrapper.valueIs('otherFooName').errorIs(undefined);

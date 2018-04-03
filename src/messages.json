@@ -13,5 +13,6 @@
   "ValidationSample.typeOption.onSubmit": "onSubmit",
 
   "AsyncValidationSample.userName.already.registered": "The username \"{userName}\" is already in use. Please choose another one.",
+  "AsyncValidationSample.userName.submit.failed": "Please choose another user name. This one is not allowed.",
   "AsyncValidationSample.realName.validation.requirements": "Please provide your real name or clear the field."
 }
