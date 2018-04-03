@@ -4,7 +4,7 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![styled with prettier][prettier-image]][prettier-url]
 
-# ![morfi logo](src/form-logo.svg) morfi
+# ![morfi logo](src/form-logo.svg?sanitize=true) morfi
 Abstract form handling for any purpose (< 2 kb gzipped)
 
 ### Why morfi?
