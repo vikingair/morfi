@@ -1,6 +1,6 @@
 {
   "name": "morfi",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Abstract form handling for any purpose (1 kb gzipped)",
   "keywords": [
     "form",
@@ -41,7 +41,7 @@
     "enzyme-to-json": "^3.3.1",
     "eslint-config-prettier": "^2.8.0",
     "eslint-plugin-prettier": "^2.3.1",
-    "flow-bin": "^0.69.0",
+    "flow-bin": "^0.71.0",
     "prettier": "1.8.2",
     "react": "^16.1.0",
     "react-dom": "^16.1.0",

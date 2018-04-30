@@ -18,8 +18,8 @@ describe('Field', () => {
     type mountFormProps = {
         data?: _FormData<any>,
         onSubmit?: Object => void,
-        onSubmitFailed?: void => void,
-        onSubmitFinished?: void => void,
+        onSubmitFailed?: (any, _FormData<any>) => void,
+        onSubmitFinished?: (_FormData<any>) => void,
         onChange?: (_FormData<any>) => void,
         name: $Keys<any>,
         validation?: _FormValidation<any>,
@@ -201,6 +201,11 @@ describe('Field', () => {
         // submit was not called
         submitSpy.wasNotCalled();
         submitFailedSpy.wasCalled(1);
+        submitFailedSpy.wasCalledWith(undefined, {
+            values: { name: 'start' },
+            errors: { name: { id: 'failure' } },
+            submitting: false,
+        });
         submitFinishedSpy.wasNotCalled();
     });
 
@@ -289,7 +294,7 @@ describe('Field', () => {
         // finally we get the error and the submitting phase ends
         changeSpy.wasCalledWith({ values: { name: 'start' }, errors: {}, submitting: false });
         // submit was not called
-        submitFailedSpy.wasCalledWith(someError);
+        submitFailedSpy.wasCalledWith(someError, { values: { name: 'start' }, errors: {}, submitting: false });
         submitFinishedSpy.wasNotCalled();
     });
 

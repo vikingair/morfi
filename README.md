@@ -55,15 +55,15 @@ const render = () => (
 ```
 It expects the following props: (See below for the missing [Flow types](#flow-types))
 
-Props              | Type                        | Description                                                       | Example
------------------- | --------------------------- | ----------------------------------------------------------------- | ------------------------------------------                                                 
-`className`        | `string`                    | Will be applied to the form tag                                   | `'my-form'`                     
-`validation`       | `FormValidation<V>`         | Contains all validators                                           | `{ name: { onChange: customValidator } }`                     
-`data`             | `FormData<V>`               | Contains all values, errors and submitting state                  | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`                     
-`onChange`         | `(FormData<V>) => void`     | Handles the next data after any changes have been made            |                     
-`onSubmit`         | `V => void \ Promise<void>` | Will be called if submitted without any failing validators        |                    
-`onSubmitFailed`   | `void \ (any => void)`      | Will be called if submitting was aborted due to validation errors or the submit returned a rejected promise |
-`onSubmitFinished` | `void \ (void => void)`     | Will be called if after submitting finished                       |
+Props              | Type                                  | Description                                                       | Example
+------------------ | ------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------
+`className`        | `string`                              | Will be applied to the form tag                                   | `'my-form'`
+`validation`       | `FormValidation<V>`                   | Contains all validators                                           | `{ name: { onChange: customValidator } }`
+`data`             | `FormData<V>`                         | Contains all values, errors and submitting state                  | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`
+`onChange`         | `(FormData<V>) => void`               | Handles the next data after any changes have been made            |
+`onSubmit`         | `V => void \ Promise<void>`           | Will be called if submitted without any failing validators        |
+`onSubmitFailed`   | `void \ ((any, FormData<V>) => void)` | Will be called if submitting was aborted due to validation errors or the submit returned a rejected promise |
+`onSubmitFinished` | `void \ ((FormData<V>) => void)`      | Will be called if after submitting finished                       |
 
 Now lets take a look on a single integrated form element:
 
@@ -88,7 +88,7 @@ const render = () => (
 );
 ```
 
-By using the `Field` which excepts only *one* property `name` of type string,
+By using the `Field` which accepts only *one* property `name` of type string,
 the rendered children get access to the three attributes:
 
 * `onChange`: Receives the next value, runs the onChange-Validator on it
@@ -140,6 +140,8 @@ When the user submits the form, the following will happen:
 3) When `2` returned any errors your `onChange` will be called with the found errors and `submitting` as `false` (**Early exit**)
 4) When `2` returned no errors your `onSubmit` will be called
 5) When `4` took place, the `submitting` property will be propagated as `false` (if your `onSubmit` returned a Promise, this will happen after this Promise resolved)
+
+![morfi-Lifecycle](morfi-Lifecycle.png)
 
 ### Flow types
 

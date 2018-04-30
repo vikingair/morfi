@@ -17,8 +17,8 @@ type FormProps<V> = {
     children: React$Node,
     onChange: (_FormData<V>) => void,
     onSubmit: V => void | Promise<void>,
-    onSubmitFailed?: any => void,
-    onSubmitFinished?: () => void,
+    onSubmitFailed?: (any, _FormData<V>) => void,
+    onSubmitFinished?: (_FormData<V>) => void,
 };
 
 class _Form<V: *> extends Component<FormProps<V>> {
@@ -81,9 +81,10 @@ class _Form<V: *> extends Component<FormProps<V>> {
             const maybePromise = this.props.onSubmit(data.values);
             if (FormUtil.isPromise(maybePromise)) {
                 (maybePromise: any).then(this._finishSubmit).catch(e => {
-                    this._onChange(FormUtil.setSubmitting(this.props.data, false));
+                    const nextData = FormUtil.setSubmitting(this.props.data, false);
+                    this._onChange(nextData);
                     // pass the encountered uncatched error to onSubmitFailed
-                    this._onSubmitFailed(e);
+                    this._onSubmitFailed(e, nextData);
                 });
             } else {
                 this._finishSubmit();
@@ -91,16 +92,19 @@ class _Form<V: *> extends Component<FormProps<V>> {
         } else {
             data.submitting = false;
             this._onChange(data);
-            this._onSubmitFailed();
+            this._onSubmitFailed(undefined, data);
         }
     };
     _finishSubmit = (): void => {
-        this._onChange(FormUtil.setSubmitting(this.props.data, false));
-        this._onSubmitFinished();
+        const nextData = FormUtil.setSubmitting(this.props.data, false);
+        this._onChange(nextData);
+        this._onSubmitFinished(nextData);
     };
     _onChange = (data: any /* _FormData<V> */): void => this.props.onChange(data);
-    _onSubmitFailed = (e: any /* thrown object */): void => this.props.onSubmitFailed && this.props.onSubmitFailed(e);
-    _onSubmitFinished = (): void => this.props.onSubmitFinished && this.props.onSubmitFinished();
+    _onSubmitFailed = (e: any /* thrown object */, data: any /* _FormData<V> */): void =>
+        this.props.onSubmitFailed && this.props.onSubmitFailed(e, data);
+    _onSubmitFinished = (data: any /* _FormData<V> */): void =>
+        this.props.onSubmitFinished && this.props.onSubmitFinished(data);
 
     componentWillUnmount = () => {
         this._onChange = NOP;

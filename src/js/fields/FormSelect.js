@@ -45,7 +45,7 @@ export const Select = ({
                 className={'form-control custom-select' + (error ? ' is-invalid' : '')}
                 disabled={disabled}
                 onChange={onActionWrap(onChange)}
-                onBlur={onActionWrap(onBlur)}
+                onBlur={onActionWrap(onBlur, false)}
                 value={value}>
                 {options.map((option: SelectOption, index: number) => <Option option={option} key={index} />)}
             </select>

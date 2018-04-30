@@ -77,6 +77,7 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
     onChange = (data: FormData<FormValues>) => this.setState({ data });
 
     onSubmit = ({ userName = '' }: FormValues): Promise<void> => {
+        console.log('onSubmit was called');
         // simulate server request
         const fakeServerRequest = window.sleep(1000);
         return userName.toLowerCase() !== failingAfterSubmit_userName
@@ -103,7 +104,6 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
     render(): React$Node {
         const { data, pendingUserName } = this.state;
         const { values, errors, submitting } = data;
-        const submittingOrValidating = pendingUserName || submitting;
         return (
             <div className="col-12">
                 <Form
@@ -137,9 +137,7 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
                                 placeholder="Please enter your real name"
                             />
                             <div className="btn-toolbar">
-                                <button
-                                    className="btn btn-success"
-                                    disabled={submittingOrValidating || Form.hasErrors(data)}>
+                                <button className="btn btn-success" disabled={submitting || Form.hasErrors(data)}>
                                     {submitting && <i className="fa fa-circle-notch fa-spin" />} Submit
                                 </button>
                             </div>
