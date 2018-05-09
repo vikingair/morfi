@@ -1,11 +1,11 @@
 {
-  "short_name": "morfi App",
-  "name": "morfi App Sample",
+  "short_name": "morfi",
+  "name": "morfi Samples",
   "icons": [
     {
-      "src": "./form-logo.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "./form-logo.svg",
+      "sizes": "512x512 192x192 128x128 64x64 32x32 24x24 16x16",
+      "type": "image/svg"
     }
   ],
   "start_url": "./",
