@@ -3,13 +3,13 @@
   "name": "morfi App Sample",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "/morfi/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#F5F5DC",
+  "background_color": "#006400"
 }
