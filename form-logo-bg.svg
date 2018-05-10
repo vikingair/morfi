@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="50" height="50"
+     viewBox="0 0 1000 1000">
+    <metadata>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+             xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <rdf:Description rdf:about="http://svg.tutorial.aptico.de/grafik_svg/kap2_5.svg">
+    <dc:creator>viktor.luft@freiheit.com</dc:creator>
+    <dc:contributor>viktor.luft@freiheit.com</dc:contributor>
+    <dc:subject>morfi, form, react</dc:subject>
+    <dc:description>online form graphic</dc:description>
+    <dc:relation>https://fdc-viktor-luft.github.io/morfi/</dc:relation>
+    <dc:source>https://github.com/fdc-viktor-luft/morfi/blob/master/src/form-logo.svg</dc:source>
+    <dc:rights>Copyright 2018 Viktor Luft</dc:rights>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type>Image</dc:type>
+        <dc:title>morfi Logo</dc:title>
+        <dc:date>2018-05-10</dc:date>
+        <dc:language>en</dc:language>
+    </rdf:Description>
+    </rdf:RDF>
+    </metadata>
+    <title>morfi</title>
+    <desc>Form handling with morfi</desc>
+    <defs>
+        <!-- Pointer -->
+        <polyline id="pointer"
+                  points="120 500, 120 450, 60 480, 130 300, 200 480, 140 450, 140 500, 120 500"
+                  transform="scale(2.1) rotate(330)"
+        />
+        <!-- The form clipper -->
+        <rect id="clipper" x="230" y="60"
+              width="340" height="70"
+              rx="30" ry="30"
+        />
+        <clipPath id="cut-off-top">
+            <rect x="0" y="0" width="190" height="1000" />
+            <rect x="610" y="0" width="280" height="1000" />
+            <rect x="0" y="250" width="800" height="750" />
+        </clipPath>
+        <g id="form-with-pointer" stroke="darkgreen" stroke-width="40px" fill="none">
+            <!-- The outer form border -->
+            <rect x="100" y="100" width="600" height="750"
+                  rx="30" ry="50"
+                  clip-path="url(#cut-off-top)"
+            />
+            <!-- The form lines -->
+            <g stroke-linecap="round">
+                <!-- Line 1 -->
+                <polyline points="180 245, 200 260, 225 215"
+                          stroke-width="15px" />
+                <line x1="300" y1="240" x2="610" y2="240" />
+
+                <!-- Line 2 -->
+                <line x1="180" y1="425" x2="225" y2="375" stroke-width="15px" stroke="darkred" />
+                <line x1="180" y1="375" x2="225" y2="425" stroke-width="15px" stroke="darkred" />
+                <line x1="300" y1="400" x2="610" y2="400" />
+
+                <!-- Line 3 -->
+                <polyline points="180 565, 200 580, 225 535"
+                          stroke-width="15px" />
+                <line x1="300" y1="560" x2="610" y2="560" />
+            </g>
+            <use xlink:href="#clipper" fill="darkgreen" />
+
+            <!-- The submit button -->
+            <rect x="225" y="700" width="100" height="30"
+                  rx="5" ry="5"
+            />
+            <rect x="400" y="700" width="100" height="30"
+                  rx="5" ry="5" stroke-width="40px" stroke="darkred"
+            />
+            <use xlink:href="#pointer" fill="darkgreen" stroke="black" stroke-width="5px" />
+        </g>
+    </defs>
+    <rect x="170" y="110" width="610" height="750" fill="beige"/>
+    <use xlink:href="#form-with-pointer" x="80" y="20"/>
+</svg>
