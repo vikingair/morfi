@@ -13,6 +13,7 @@ import { FormContainer } from './FormContainer';
 import FirstSample from './FirstSample';
 import { ValidationSample } from './ValidationSample';
 import AsyncValidationSample from './AsyncValidationSample';
+import { Arrow } from './components/Arrow';
 
 type Sample = { pathname: string, label: string };
 const Samples: Sample[] = [
@@ -21,10 +22,22 @@ const Samples: Sample[] = [
     { pathname: '/validation/async', label: 'Async validation' },
 ];
 
-export default class App extends Component<{ location: { pathname: string } }> {
+type AppProps = { location: { pathname: string } };
+
+export default class App extends Component<AppProps, { sideBarOpen?: boolean }> {
+    state = { sideBarOpen: undefined };
+
+    toggleSideBar = () => this.setState(state => ({ sideBarOpen: !state.sideBarOpen }));
+
     renderSideBar() {
         return (
-            <div className="nav flex-sm-column nav-pills row">
+            <div className="nav nav-pills row">
+                <div className="nav-header">
+                    <strong>Navigation</strong>
+                    <div onClick={this.toggleSideBar}>
+                        <Arrow direction="LEFT" />
+                    </div>
+                </div>
                 {Samples.map(({ pathname, label }: Sample) => {
                     const activeClass = this.props.location.pathname === pathname ? ' active' : '';
                     return (
@@ -37,13 +50,23 @@ export default class App extends Component<{ location: { pathname: string } }> {
         );
     }
 
+    componentWillReceiveProps = (nextProps: AppProps): void => {
+        if (nextProps.location.pathname !== this.props.location.pathname) {
+            this.setState({ sideBarOpen: false });
+        }
+    };
+
     render(): React$Node {
+        let sideBarFadeClass = '';
+        if (this.state.sideBarOpen !== undefined) {
+            sideBarFadeClass = this.state.sideBarOpen ? ' fade-in' : ' fade-out';
+        }
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-sm-3 col-lg-2">{this.renderSideBar()}</div>
-                    <div className="col-sm-9 col-lg-10">
-                        <FormContainer>
+                    <div className={`col-8 col-sm-4 app-navigation${sideBarFadeClass}`}>{this.renderSideBar()}</div>
+                    <div className="col-12">
+                        <FormContainer toggleSideBar={this.toggleSideBar}>
                             <Switch>
                                 <Route path="/validation/types" component={ValidationSample} />
                                 <Route path="/validation/async" component={AsyncValidationSample} />

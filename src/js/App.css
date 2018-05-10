@@ -11,12 +11,83 @@
     background-color: darkgreen;
 }
 
-.input-spinner {
-    float: right;
-    margin-top: -1.7em;
-    margin-right: 0.5em;
-}
-
 p.form-group-apply {
     margin-top: -1em;
+}
+
+.app-navigation {
+    position: fixed;
+    z-index: 2;
+    background: beige;
+    height: 100%;
+    box-shadow: 0 0.1em 0.3em dimgrey;
+}
+
+.app-navigation .nav-link {
+    width: 100%;
+}
+
+.app-navigation .nav-header {
+    color: darkgreen;
+    margin: 1em;
+    width: 100%;
+}
+
+.app-navigation .nav-header span {
+    font-size: 1.2em;
+}
+
+.app-navigation .nav-header svg {
+    float: right;
+    font-size: 1.4em;
+    cursor: pointer;
+}
+
+.app-navigation {
+    left: -33.3vw;
+}
+
+@media (max-width: 575px) {
+    .app-navigation {
+        left: -66.6vw;
+    }
+}
+
+.app-navigation.fade-in {
+    left: 0;
+    animation-name: fadeInFromLeft;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 0.2s;
+}
+
+@keyframes fadeInFromLeft {
+    0% { left: -33.3vw; }
+    100% { left: 0; }
+}
+
+@media (max-width: 575px) {
+    @keyframes fadeInFromLeft {
+        0% { left: -66.6vw; }
+        100% { left: 0; }
+    }
+}
+
+.app-navigation.fade-out {
+    animation-name: fadeOutToLeft;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 0.2s;
+}
+
+@keyframes fadeOutToLeft {
+    0% { left: 0; }
+    100% { left: -33.3vw; }
+}
+
+@media (max-width: 575px) {
+    @keyframes fadeOutToLeft {
+        0% { left: 0; }
+        100% { left: -66.6vw; }
+    }
 }

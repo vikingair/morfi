@@ -11,7 +11,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import './styles/css/bootstrap.min.css';
 import './styles/css/bootstrap-grid.min.css';
-import './styles/css/fontawesome-all.min.css';
 import './index.css';
 import App from './js/App';
 import registerServiceWorker from './registerServiceWorker';

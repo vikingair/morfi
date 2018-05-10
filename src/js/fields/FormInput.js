@@ -10,6 +10,7 @@ import React from 'react';
 import { Error, Label, onActionWrap } from './Basic';
 import { Field } from '../form';
 import type { _ErrorMessage } from '../form/Form-classes';
+import { Spinner } from '../components/Spinner';
 
 type AllowedTypes = 'text' | 'password';
 
@@ -52,7 +53,7 @@ export const Input = ({
                 className={'form-control' + (error ? ' is-invalid' : '')}
                 {...{ type, placeholder, value, autoFocus }}
             />
-            {pending && <i className="fa fa-circle-notch fa-spin input-spinner" />}
+            {pending && <Spinner />}
             {error && <Error error={error} />}
         </div>
     );

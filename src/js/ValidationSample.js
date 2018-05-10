@@ -15,6 +15,7 @@ import DisplayValues from './DisplayValues';
 import type { ValidationType } from './form/Form-classes';
 import { Select } from './fields/FormSelect';
 import type { SelectOption } from './fields/FormSelect';
+import { Spinner } from './components/Spinner';
 
 const ValidationTypeOptions: Array<SelectOption> = [
     { label: 'onChange', value: 'onChange' },
@@ -113,7 +114,7 @@ export class ValidationSample extends Component<{}, ValidationSampleState> {
                             />
                             <div className="btn-toolbar">
                                 <button className="btn btn-success" disabled={submitting || Form.hasErrors(data)}>
-                                    {submitting && <i className="fa fa-circle-notch fa-spin" />} Submit
+                                    {submitting && <Spinner />} Submit
                                 </button>
                             </div>
                         </div>

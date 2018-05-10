@@ -11,6 +11,7 @@ import { Validators } from './validators/validators';
 import { Form } from './form';
 import { FormInput } from './fields';
 import type { FormData, FormValidation, Validator } from './form';
+import { Spinner } from './components/Spinner';
 
 type FormValues = {
     userName?: string,
@@ -138,7 +139,7 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
                             />
                             <div className="btn-toolbar">
                                 <button className="btn btn-success" disabled={submitting || Form.hasErrors(data)}>
-                                    {submitting && <i className="fa fa-circle-notch fa-spin" />} Submit
+                                    {submitting && <Spinner />} Submit
                                 </button>
                             </div>
                         </div>
