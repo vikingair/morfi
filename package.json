@@ -1,6 +1,6 @@
 {
   "name": "morfi",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Abstract form handling for any purpose (1 kb gzipped)",
   "keywords": [
     "form",

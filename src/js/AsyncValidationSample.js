@@ -78,7 +78,6 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
     onChange = (data: FormData<FormValues>) => this.setState({ data });
 
     onSubmit = ({ userName = '' }: FormValues): Promise<void> => {
-        console.log('onSubmit was called');
         // simulate server request
         const fakeServerRequest = window.sleep(1000);
         return userName.toLowerCase() !== failingAfterSubmit_userName

@@ -17,6 +17,7 @@ p.form-group-apply {
 
 .app-navigation {
     position: fixed;
+    overflow-y: scroll;
     z-index: 2;
     background: beige;
     height: 100%;
@@ -44,12 +45,12 @@ p.form-group-apply {
 }
 
 .app-navigation {
-    left: -33.3vw;
+    left: -34vw;
 }
 
 @media (max-width: 575px) {
     .app-navigation {
-        left: -66.6vw;
+        left: -67vw;
     }
 }
 
@@ -62,13 +63,13 @@ p.form-group-apply {
 }
 
 @keyframes fadeInFromLeft {
-    0% { left: -33.3vw; }
+    0% { left: -34vw; }
     100% { left: 0; }
 }
 
 @media (max-width: 575px) {
     @keyframes fadeInFromLeft {
-        0% { left: -66.6vw; }
+        0% { left: -67vw; }
         100% { left: 0; }
     }
 }
@@ -82,12 +83,12 @@ p.form-group-apply {
 
 @keyframes fadeOutToLeft {
     0% { left: 0; }
-    100% { left: -33.3vw; }
+    100% { left: -34vw; }
 }
 
 @media (max-width: 575px) {
     @keyframes fadeOutToLeft {
         0% { left: 0; }
-        100% { left: -66.6vw; }
+        100% { left: -67vw; }
     }
 }
