@@ -21,6 +21,13 @@ type FormProps<V> = {
     onSubmitFinished?: (_FormData<V>) => void,
 };
 
+const isSubmitButton = (target: any /* Event target node */) =>
+    target &&
+    target.tagName &&
+    target.tagName.toUpperCase() === 'BUTTON' &&
+    target.type &&
+    target.type.toUpperCase() === 'SUBMIT';
+
 class _Form<V: *> extends Component<FormProps<V>> {
     // Register the provided accessible context properties
     // for all children components.
@@ -112,9 +119,16 @@ class _Form<V: *> extends Component<FormProps<V>> {
         this._onSubmitFinished = NOP;
     };
 
+    _checkForSubmit = (event: any /* SyntheticEvent<*> */) => {
+        if (event.button === 0 /* left mouse click or touch click */ && isSubmitButton(event.target)) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    };
+
     render(): React$Node {
         return (
-            <form className={this.props.className} onSubmit={this._onSubmit}>
+            <form className={this.props.className} onSubmit={this._onSubmit} onMouseDown={this._checkForSubmit}>
                 {this.props.children}
             </form>
         );
