@@ -76,7 +76,9 @@ exports[`AsyncValidationSample renders the initial form 1`] = `
             className="btn btn-success"
             disabled={false}
           >
-             Submit
+            <span>
+               Submit
+            </span>
           </button>
         </div>
       </div>

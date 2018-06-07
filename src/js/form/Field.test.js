@@ -290,6 +290,52 @@ describe('Field', () => {
         dummyEvent.stopPropagation.wasNotCalled();
     });
 
+    it('prevents default and propagation if click was made inside a submit button', async () => {
+        const data = { values: { name: 'start' }, errors: {} };
+        const dummyEvent = {
+            preventDefault: new Spy('preventDefault'),
+            stopPropagation: new Spy('preventDefault'),
+            button: 0,
+            target: {
+                tagName: 'div',
+                parentElement: { tagName: 'a', parentElement: { tagName: 'button', type: 'submit' } },
+            },
+        };
+
+        const form = mountForm({
+            data,
+            name: 'name',
+        });
+        const button = form.find('button');
+
+        button.simulate('mousedown', dummyEvent);
+        dummyEvent.preventDefault.wasCalled(1);
+        dummyEvent.stopPropagation.wasCalled(1);
+    });
+
+    it('prevents NOT default and propagation if click was made inside a submit button outside the form', async () => {
+        const data = { values: { name: 'start' }, errors: {} };
+        const dummyEvent = {
+            preventDefault: new Spy('preventDefault'),
+            stopPropagation: new Spy('preventDefault'),
+            button: 0,
+            target: {
+                tagName: 'div',
+                parentElement: { tagName: 'form', parentElement: { tagName: 'button', type: 'submit' } },
+            },
+        };
+
+        const form = mountForm({
+            data,
+            name: 'name',
+        });
+        const button = form.find('button');
+
+        button.simulate('mousedown', dummyEvent);
+        dummyEvent.preventDefault.wasNotCalled();
+        dummyEvent.stopPropagation.wasNotCalled();
+    });
+
     it('calls onSubmitFailed with the catched error inside returned submit promise', async () => {
         const someError = new Error('SomeError');
         const submitSpy = new Spy('submitSpy').calls(() => Promise.reject(someError));

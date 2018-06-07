@@ -114,7 +114,7 @@ export class ValidationSample extends Component<{}, ValidationSampleState> {
                             />
                             <div className="btn-toolbar">
                                 <button className="btn btn-success" disabled={submitting || Form.hasErrors(data)}>
-                                    {submitting && <Spinner />} Submit
+                                    <span>{submitting && <Spinner />} Submit</span>
                                 </button>
                             </div>
                         </div>

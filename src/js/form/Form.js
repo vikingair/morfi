@@ -28,6 +28,24 @@ const isSubmitButton = (target: any /* Event target node */) =>
     target.type &&
     target.type.toUpperCase() === 'SUBMIT';
 
+const isInsideSubmitButton = (target: any /* Event target node */) => {
+    let current = target;
+    for (let i = 0; current && current.tagName && current.tagName.toUpperCase() !== 'FORM' && i < 100; i++) {
+        if (isSubmitButton(current)) return true;
+        current = current.parentElement;
+    }
+    return false;
+};
+
+const checkForSubmit = (event: any /* SyntheticEvent<*> */) => {
+    if (event.button === 0 /* left mouse click or touch click */) {
+        if (isInsideSubmitButton(event.target)) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    }
+};
+
 class _Form<V: *> extends Component<FormProps<V>> {
     // Register the provided accessible context properties
     // for all children components.
@@ -119,16 +137,9 @@ class _Form<V: *> extends Component<FormProps<V>> {
         this._onSubmitFinished = NOP;
     };
 
-    _checkForSubmit = (event: any /* SyntheticEvent<*> */) => {
-        if (event.button === 0 /* left mouse click or touch click */ && isSubmitButton(event.target)) {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    };
-
     render(): React$Node {
         return (
-            <form className={this.props.className} onSubmit={this._onSubmit} onMouseDown={this._checkForSubmit}>
+            <form className={this.props.className} onSubmit={this._onSubmit} onMouseDown={checkForSubmit}>
                 {this.props.children}
             </form>
         );

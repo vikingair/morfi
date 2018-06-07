@@ -20,7 +20,8 @@ export const ValidationTypes: { [ValidationType]: ValidationType } = {
 
 type FieldValidation = { [ValidationType]: _Validator | void };
 export type _FormValidation<V> = { [$Keys<V>]: FieldValidation };
-export type _FormData<V: *> = { values: V, errors: { [$Keys<V>]: void | _ErrorMessage }, submitting?: boolean };
+export type _FormErrors<V> = { [$Keys<V>]: void | _ErrorMessage };
+export type _FormData<V: *> = { values: V, errors: _FormErrors<V>, submitting?: boolean };
 
 // no explicit promise detection, because we want to be able to use all other
 // promise frameworks (even if flow disallows this)
