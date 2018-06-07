@@ -1,7 +1,7 @@
 {
   "name": "morfi",
   "version": "0.5.6",
-  "description": "Abstract form handling for any purpose (1 kb gzipped)",
+  "description": "Abstract form handling for any purpose (2 kb gzipped)",
   "keywords": [
     "form",
     "react",

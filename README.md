@@ -5,7 +5,7 @@
 [![styled with prettier][prettier-image]][prettier-url]
 
 # ![morfi logo](src/form-logo.svg?sanitize=true) morfi
-Abstract form handling for any purpose (< 2 kb gzipped)
+Abstract form handling for any purpose (2 kb gzipped)
 
 ### Why morfi?
 
@@ -318,7 +318,7 @@ The following table includes results from [bundlephobia](https://bundlephobia.co
 
 Package                 | Version | Size (minified + gzipped)
 ------------------------|---------|--------------------------
-`morfi`                 | 0.5.2   | 1.9 kB
+`morfi`                 | 0.5.6   | 2 kB
 `react-form`            | 3.0.1   | Missing Dependecy Error
 `redux-form`            | 7.2.3   | 27.1 kB
 `react-redux-form`      | 1.16.5  | 22 kB
