@@ -7,11 +7,11 @@
  */
 
 import React, { Component } from 'react';
-import { Validators } from './validators/validators';
-import { Form } from './form';
-import { FormInput } from './fields';
-import type { FormData, FormValidation, Validator } from './form';
-import { Spinner } from './components/Spinner';
+import { Validators } from '../../validators/validators';
+import { Form } from '../../form/index';
+import { FormInput } from '../../fields/index';
+import type { FormData, FormValidation, Validator } from '../../form/index';
+import { Spinner } from '../../icons/Spinner';
 
 type FormValues = {
     userName?: string,

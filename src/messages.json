@@ -14,5 +14,11 @@
 
   "AsyncValidationSample.userName.already.registered": "The username \"{userName}\" is already in use. Please choose another one.",
   "AsyncValidationSample.userName.submit.failed": "Please choose another user name. This one is not allowed.",
-  "AsyncValidationSample.realName.validation.requirements": "Please provide your real name or clear the field."
+  "AsyncValidationSample.realName.validation.requirements": "Please provide your real name or clear the field.",
+
+  "PasswordRepeatForm.validation.password.required": "Please enter a password",
+  "PasswordRepeatForm.validation.password.validChars": "Only digits or letters are allowed",
+  "PasswordRepeatForm.validation.password.length": "Please enter at least 8 characters",
+  "PasswordRepeatForm.validation.password.mixed": "Please enter at least one digit and one non-digit",
+  "PasswordRepeatForm.validation.repeat.wrong": "Passwords do not match"
 }

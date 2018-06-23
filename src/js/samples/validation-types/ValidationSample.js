@@ -7,15 +7,15 @@
  */
 
 import React, { Component } from 'react';
-import { Validators } from './validators/validators';
-import { Form } from './form';
-import { FormInput } from './fields';
-import type { FormData, FormValidation } from './form';
-import DisplayValues from './DisplayValues';
-import type { ValidationType } from './form/Form-classes';
-import { Select } from './fields/FormSelect';
-import type { SelectOption } from './fields/FormSelect';
-import { Spinner } from './components/Spinner';
+import { Validators } from '../../validators/validators';
+import { Form } from '../../form/index';
+import { FormInput } from '../../fields/index';
+import type { FormData, FormValidation } from '../../form/index';
+import DisplayValues from '../../tools/DisplayValues';
+import type { ValidationType } from '../../form/Form-classes';
+import { Select } from '../../fields/FormSelect';
+import type { SelectOption } from '../../fields/FormSelect';
+import { Spinner } from '../../icons/Spinner';
 
 const ValidationTypeOptions: Array<SelectOption> = [
     { label: 'onChange', value: 'onChange' },

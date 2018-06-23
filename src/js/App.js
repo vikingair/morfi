@@ -10,16 +10,18 @@ import React, { Component } from 'react';
 import './App.css';
 import { Link, Switch, Route } from 'react-router-dom';
 import { FormContainer } from './FormContainer';
-import FirstSample from './FirstSample';
-import { ValidationSample } from './ValidationSample';
-import AsyncValidationSample from './AsyncValidationSample';
-import { Arrow } from './components/Arrow';
+import FirstSample from './samples/first/FirstSample';
+import { ValidationSample } from './samples/validation-types/ValidationSample';
+import AsyncValidationSample from './samples/async/AsyncValidationSample';
+import { Arrow } from './icons/Arrow';
+import PasswordRepeatForm from './samples/password-repeat/PasswordRepeatForm';
 
 type Sample = { pathname: string, label: string };
 const Samples: Sample[] = [
     { pathname: '/', label: 'First sample' },
     { pathname: '/validation/types', label: 'Validation types' },
     { pathname: '/validation/async', label: 'Async validation' },
+    { pathname: '/validation/passwordRepeat', label: 'Password repetition' },
 ];
 
 type AppProps = { location: { pathname: string } };
@@ -70,6 +72,7 @@ export default class App extends Component<AppProps, { sideBarOpen?: boolean }> 
                             <Switch>
                                 <Route path="/validation/types" component={ValidationSample} />
                                 <Route path="/validation/async" component={AsyncValidationSample} />
+                                <Route path="/validation/passwordRepeat" component={PasswordRepeatForm} />
                                 <Route component={FirstSample} />
                             </Switch>
                         </FormContainer>

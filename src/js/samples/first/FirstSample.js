@@ -7,10 +7,10 @@
  */
 
 import React, { Component } from 'react';
-import { Validators } from './validators/validators';
-import { Form } from './form';
-import { FormInput, FormNumberInput, FormSelect } from './fields';
-import type { FormData } from './form';
+import { Validators } from '../../validators/validators';
+import { Form } from '../../form/index';
+import { FormInput, FormNumberInput, FormSelect } from '../../fields/index';
+import type { FormData } from '../../form/index';
 import type { Person } from './PersonTable';
 import PersonTable from './PersonTable';
 

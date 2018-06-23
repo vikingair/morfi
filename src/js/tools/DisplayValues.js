@@ -7,9 +7,9 @@
  */
 
 import React, { Component } from 'react';
-import type { FormData } from './form';
+import type { FormData } from '../form/index';
 import './DisplayValues.css';
-import { forEach } from './form/Form-classes';
+import { forEach } from '../form/Form-classes';
 
 const sanitize = (str: string): string => {
     return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');

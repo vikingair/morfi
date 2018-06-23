@@ -6,11 +6,12 @@
  * @flow
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import { Error, Label, onActionWrap } from './Basic';
 import { Field } from '../form';
 import type { _ErrorMessage } from '../form/Form-classes';
-import { Spinner } from '../components/Spinner';
+import { Spinner } from '../icons/Spinner';
+import { Eye } from '../icons/Eye';
 
 type AllowedTypes = 'text' | 'password';
 
@@ -29,35 +30,47 @@ type InputProps = {
     pending?: boolean,
 };
 
-export const Input = ({
-    value = '',
-    label,
-    error,
-    required,
-    className,
-    onChange,
-    onBlur,
-    autoFocus,
-    disabled,
-    type = 'text',
-    placeholder,
-    pending,
-}: InputProps) => {
-    return (
-        <div className={className}>
-            {label && <Label {...{ label, required }} />}
-            <input
-                onChange={onActionWrap(onChange)}
-                onBlur={onActionWrap(onBlur)}
-                disabled={disabled || pending}
-                className={'form-control' + (error ? ' is-invalid' : '')}
-                {...{ type, placeholder, value, autoFocus }}
-            />
-            {pending && <Spinner />}
-            {error && <Error error={error} />}
-        </div>
-    );
-};
+export class Input extends Component<InputProps, { showPassword: boolean }> {
+    state = { showPassword: false };
+    showPasswordToggle = () => this.setState(state => ({ showPassword: !state.showPassword }));
+    type = () => (this.props.type !== 'password' ? this.props.type : this.state.showPassword ? 'text' : 'password');
+    render() {
+        const {
+            value = '',
+            label,
+            error,
+            required,
+            className,
+            onChange,
+            onBlur,
+            autoFocus,
+            disabled,
+            type = 'text',
+            placeholder,
+            pending,
+        } = this.props;
+        return (
+            <div className={className}>
+                {label && <Label {...{ label, required }} />}
+                <input
+                    onChange={onActionWrap(onChange)}
+                    onBlur={onActionWrap(onBlur)}
+                    disabled={disabled || pending}
+                    className={'form-control' + (error ? ' is-invalid' : '')}
+                    type={this.type()}
+                    {...{ placeholder, value, autoFocus }}
+                />
+                {type === 'password' && (
+                    <span onClick={this.showPasswordToggle}>
+                        <Eye stroked={this.state.showPassword} />
+                    </span>
+                )}
+                {pending && <Spinner />}
+                {error && <Error error={error} />}
+            </div>
+        );
+    }
+}
 
 type FormInputProps = {|
     name: string,

@@ -14,15 +14,24 @@ body {
 
 svg.spinner {
     animation: spin-it infinite 6s linear;
-    height: 1em;
     float: left;
+    height: 1em;
     margin: 0.2em 0.2em 0 0;
 }
 
-.form-group svg.spinner {
+svg.eye {
+    cursor: pointer;
+}
+
+svg.eye:hover {
+    opacity: 0.5;
+}
+
+.form-group svg {
     float: right;
     margin-top: -1.7em;
     margin-right: 0.5em;
+    height: 1em;
 }
 
 @keyframes spin-it {

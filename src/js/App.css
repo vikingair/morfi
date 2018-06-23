@@ -17,7 +17,7 @@ p.form-group-apply {
 
 .app-navigation {
     position: fixed;
-    overflow-y: scroll;
+    overflow-y: auto;
     z-index: 2;
     background: beige;
     height: 100%;

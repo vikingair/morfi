@@ -10,9 +10,9 @@ import React from 'react';
 import { ValidationSample } from './ValidationSample';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
-import { Input } from './fields/FormInput';
-import { FormWrapper } from '../test/form-test-util';
-import { Select } from './fields/FormSelect';
+import { Input } from '../../fields/FormInput';
+import { FormWrapper } from '../../../test/form-test-util';
+import { Select } from '../../fields/FormSelect';
 
 describe('AsyncValidationSample', () => {
     it('renders the initial form', () => {
