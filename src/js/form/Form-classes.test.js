@@ -6,7 +6,7 @@
  * @flow
  */
 
-import { FormUtil, forEach } from './Form-classes';
+import { FormUtil, forEach, MorfiError } from './Form-classes';
 import { formData, formValidation, invalidFormData } from '../../test/form-data';
 import { Validators } from '../validators/validators';
 
@@ -133,5 +133,17 @@ describe('FormUtil', () => {
             results.push([key, value])
         );
         expect(results.length).toBe(0);
+    });
+    it('handles morfi errors correctly', () => {
+        const error1 = new MorfiError('foo');
+        const error2 = new MorfiError('foo');
+        const error3 = new MorfiError('bar');
+        expect(error1 instanceof Error).toBe(true);
+        expect(error1.name).toBe('MorfiError');
+        expect(error1).toEqual(error2);
+        expect(error1).not.toEqual(error3);
+        expect(FormUtil.isValidationError(null)).toBe(false);
+        expect(FormUtil.isValidationError(new Error('foo'))).toBe(false);
+        expect(FormUtil.isValidationError(error1)).toBe(true);
     });
 });

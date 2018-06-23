@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import type { _ErrorMessage, _FormData, _FormValidation, ValidationType } from './Form-classes';
-import { FormUtil, NOP, ReactPropTypesAny } from './Form-classes';
+import { FormUtil, MorfiError, NOP, ReactPropTypesAny } from './Form-classes';
 
 type FormProps<V> = {
     className?: string,
@@ -17,7 +17,7 @@ type FormProps<V> = {
     children: React$Node,
     onChange: (_FormData<V>) => void,
     onSubmit: V => void | Promise<void>,
-    onSubmitFailed?: (any, _FormData<V>) => void,
+    onSubmitFailed?: (Error, _FormData<V>) => void,
     onSubmitFinished?: (_FormData<V>) => void,
 };
 
@@ -56,6 +56,7 @@ class _Form<V: *> extends Component<FormProps<V>> {
     };
 
     static hasErrors = FormUtil.hasErrors;
+    static isValidationError = FormUtil.isValidationError;
 
     getChildContext() {
         return { onFieldChange: this.onFieldChange, fieldIsRequired: this.fieldIsRequired };
@@ -105,7 +106,7 @@ class _Form<V: *> extends Component<FormProps<V>> {
         if (!FormUtil.hasErrors(data)) {
             const maybePromise = this.props.onSubmit(data.values);
             if (FormUtil.isPromise(maybePromise)) {
-                (maybePromise: any).then(this._finishSubmit).catch(e => {
+                (maybePromise: any).then(this._finishSubmit).catch((e: Error) => {
                     const nextData = FormUtil.setSubmitting(this.props.data, false);
                     this._onChange(nextData);
                     // pass the encountered uncatched error to onSubmitFailed
@@ -117,7 +118,7 @@ class _Form<V: *> extends Component<FormProps<V>> {
         } else {
             data.submitting = false;
             this._onChange(data);
-            this._onSubmitFailed(undefined, data);
+            this._onSubmitFailed(new MorfiError('validation failed'), data);
         }
     };
     _finishSubmit = (): void => {
@@ -126,7 +127,7 @@ class _Form<V: *> extends Component<FormProps<V>> {
         this._onSubmitFinished(nextData);
     };
     _onChange = (data: any /* _FormData<V> */): void => this.props.onChange(data);
-    _onSubmitFailed = (e: any /* thrown object */, data: any /* _FormData<V> */): void =>
+    _onSubmitFailed = (e: Error /* thrown object */, data: any /* _FormData<V> */): void =>
         this.props.onSubmitFailed && this.props.onSubmitFailed(e, data);
     _onSubmitFinished = (data: any /* _FormData<V> */): void =>
         this.props.onSubmitFinished && this.props.onSubmitFinished(data);

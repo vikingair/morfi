@@ -13,6 +13,7 @@ import { _Field as Field } from './Field';
 import { _Form as Form } from './Form';
 import { formData, formValidation, invalidFormData } from '../../test/form-data';
 import type { _FormData, _FormValidation } from './Form-classes';
+import { MorfiError } from './Form-classes';
 
 describe('Field', () => {
     type mountFormProps = {
@@ -202,7 +203,7 @@ describe('Field', () => {
         // submit was not called
         submitSpy.wasNotCalled();
         submitFailedSpy.wasCalled(1);
-        submitFailedSpy.wasCalledWith(undefined, {
+        submitFailedSpy.wasCalledWith(new MorfiError('validation failed'), {
             values: { name: 'start' },
             errors: { name: { id: 'failure' } },
             submitting: false,

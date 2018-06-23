@@ -47,5 +47,7 @@ describe('AsyncValidationSample', () => {
         await wrapper.blur().nextTick();
 
         wrapper.valueIs('otherFooName').errorIs(undefined);
+
+        wrapper.submit();
     });
 });

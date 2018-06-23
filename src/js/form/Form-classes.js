@@ -85,6 +85,14 @@ const copyData = <V>(data: _FormData<V>): _FormData<V> => {
     return { values: { ...(data.values: any) }, errors: { ...data.errors }, submitting: data.submitting };
 };
 
+export class MorfiError extends Error {
+    constructor(m: string, ...params: Array<any>) {
+        super(m, ...params);
+        Error.captureStackTrace && Error.captureStackTrace(this, MorfiError);
+        this.name = 'MorfiError';
+    }
+}
+
 export const ReactPropTypesAny = () => null;
 
 export const FormUtil = {
@@ -143,5 +151,8 @@ export const FormUtil = {
         // the user should make sure to always handle undefined synchronous,
         // to avoid side effects on rendering
         return Boolean(completeFieldValidation(undefined, validators));
+    },
+    isValidationError(err: any): boolean {
+        return err instanceof Error && err.name === 'MorfiError';
     },
 };

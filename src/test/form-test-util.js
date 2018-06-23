@@ -225,4 +225,11 @@ export class FormWrapper {
         expect(props.error).toEqual(error);
         return this;
     };
+
+    submit = (): FormWrapper => {
+        this.blur();
+        const form = this._mounted.find(Form).at(0);
+        form.simulate('submit');
+        return this;
+    };
 }

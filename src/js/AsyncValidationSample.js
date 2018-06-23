@@ -87,8 +87,8 @@ export default class AsyncValidationSample extends Component<{}, AsyncValidation
               });
     };
 
-    onSubmitFailed = (e?: Error): void => {
-        e &&
+    onSubmitFailed = (e: Error): void => {
+        Form.isValidationError(e) ||
             this.setState({
                 data: {
                     values: { ...this.state.data.values },
