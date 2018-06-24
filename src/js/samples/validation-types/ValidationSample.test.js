@@ -9,69 +9,78 @@
 import React from 'react';
 import { ValidationSample } from './ValidationSample';
 import { shallow } from 'enzyme';
-import toJson from 'enzyme-to-json';
-import { Input } from '../../fields/FormInput';
-import { FormWrapper } from '../../../test/form-test-util';
+import { mountForm } from '../../../test/form-test-util';
 import { Select } from '../../fields/FormSelect';
 
 describe('AsyncValidationSample', () => {
     it('renders the initial form', () => {
-        expect(toJson(shallow(<ValidationSample />))).toMatchSnapshot();
+        expect(shallow(<ValidationSample />)).toMatchSnapshot();
     });
 
     it('validates the form integration with onChange - Validations', () => {
-        new FormWrapper(<ValidationSample />)
-            .validate(
-                { base: 'state', name: 'data' },
-                { name: 'email', component: Input, required: true },
-                { name: 'pw', component: Input, required: true }
-            )
-            .lookAt('email')
-            .change('nomail.com')
-            .valueIs('nomail.com')
-            .errorIs({ id: 'validation.email.requirements' })
-            .change('some@mail.com')
-            .valueIs('some@mail.com')
-            .errorIs(undefined)
-            .lookAt('pw')
-            .change('1234567')
-            .errorIs({ id: 'validation.pw.requirements' })
-            .change('12345678')
-            .errorIs(undefined);
+        mountForm(<ValidationSample />)
+            .change('email', 'nomail.com')
+            .assume({ values: { email: 'nomail.com' }, errors: { email: { id: 'validation.email.requirements' } } })
+            .change('email', 'some@mail.com')
+            .assume({ values: { email: 'some@mail.com' }, errors: { email: undefined } })
+            .change('pw', '1234567')
+            .assumeErrors({ pw: { id: 'validation.pw.requirements' } })
+            .change('pw', '12345678')
+            .assumeErrors({ pw: undefined });
     });
 
     it('validates the form integration with onBlur - Validations', () => {
-        const wrapper = new FormWrapper(<ValidationSample />);
+        const wrapper = mountForm(<ValidationSample />);
         wrapper
             .mounted()
             .find(Select)
             .props()
             .onChange('onBlur');
         wrapper
-            .validate(
-                { base: 'state', name: 'data' },
-                { name: 'email', component: Input, required: true },
-                { name: 'pw', component: Input, required: true }
-            )
-            .lookAt('email')
-            .change('nomail.com')
-            .valueIs('nomail.com')
-            .errorIs(undefined)
+            .change('email', 'nomail.com')
+            .assume({ values: { email: 'nomail.com' }, errors: { email: undefined } })
             .blur()
-            .errorIs({ id: 'validation.email.requirements' })
-            .change('some@mail.com')
-            .valueIs('some@mail.com')
-            .errorIs(undefined)
+            .assume({ values: { email: 'nomail.com' }, errors: { email: { id: 'validation.email.requirements' } } })
+            .change('email', 'some@mail.com')
+            .assume({ values: { email: 'some@mail.com' }, errors: { email: undefined } })
             .blur()
-            .errorIs(undefined)
-            .lookAt('pw')
-            .change('1234567')
-            .errorIs(undefined)
+            .assume({ values: { email: 'some@mail.com' }, errors: { email: undefined } })
+            .change('pw', '1234567')
+            .assume({ errors: { pw: undefined } })
             .blur()
-            .errorIs({ id: 'validation.pw.requirements' })
-            .change('12345678')
-            .errorIs(undefined)
+            .assume({ errors: { pw: { id: 'validation.pw.requirements' } } })
+            .change('pw', '12345678')
+            .assume({ errors: { pw: undefined } })
             .blur()
-            .errorIs(undefined);
+            .assume({ errors: { pw: undefined } });
+    });
+
+    it('validates the form integration with onSubmit - Validations', async () => {
+        const wrapper = mountForm(<ValidationSample />);
+        wrapper
+            .mounted()
+            .find(Select)
+            .props()
+            .onChange('onSubmit');
+        wrapper
+            .change('email', 'nomail.com')
+            .change('pw', '1234567')
+            .blur()
+            .assumeErrors({ email: undefined, pw: undefined });
+
+        await wrapper.submit().nextTick();
+
+        wrapper
+            .assumeErrors({
+                email: { id: 'validation.email.requirements' },
+                pw: { id: 'validation.pw.requirements' },
+            })
+            .change('email', 'some@mail.com')
+            .change('pw', '12345678')
+            .assumeErrors({ email: undefined, pw: undefined });
+
+        await wrapper.submit().nextTick();
+
+        wrapper.assumeErrors({ email: undefined, pw: undefined });
     });
 });

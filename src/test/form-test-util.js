@@ -11,22 +11,6 @@ import { mount } from 'enzyme';
 import type { ReactWrapper } from 'enzyme';
 import type { ErrorMessage } from '../js/form';
 
-type FieldSpec = {
-    name: string,
-    component: any,
-    required?: boolean,
-};
-
-const _makeTestData = (fieldSpecs: FieldSpec[]): Object => {
-    const result = { values: {}, errors: {} };
-    for (let key = 0; key < fieldSpecs.length; key++) {
-        const name = fieldSpecs[key].name;
-        result.values[name] = 'test.value.' + name;
-        result.errors[name] = { id: 'test.error.' + name };
-    }
-    return result;
-};
-
 const _findWithin = (fields: ReactWrapper, name: string): ReactWrapper | void => {
     const found = [];
     for (let index = 0; index < fields.length; index++) {
@@ -41,33 +25,12 @@ const _findWithin = (fields: ReactWrapper, name: string): ReactWrapper | void =>
     return found[0];
 };
 
-const NOP = () => {};
-
-const _findTypeFromField = (fieldWrapper: ReactWrapper): any => {
-    return fieldWrapper.props().children({ onChange: NOP, onBlur: NOP, required: false }).type;
-};
-
-const _validateFieldSpecs = (fieldSpecs: FieldSpec[]): void => {
-    const names = [];
-    for (let key = 0; key < fieldSpecs.length; key++) {
-        const name = fieldSpecs[key].name;
-        if (names.indexOf(name) === -1) {
-            names.push(name);
-        } else {
-            throw new Error(
-                `Each field should have a different name. You specified the name "${name}" more than once.`
-            );
-        }
-    }
-};
-
-// first version of the upcoming test util
-export class FormWrapper {
+class FormWrapper {
     +_mounted: ReactWrapper;
-    focused: { name: string, component: any } | void;
+    focused: string | void;
 
-    constructor(nodes: React$Node) {
-        this._mounted = mount(nodes);
+    constructor(node: React$Node) {
+        this._mounted = mount(node);
         const forms = this._mounted.find(Form);
         if (forms.length !== 1) {
             throw new Error('Did not find exactly one form.');
@@ -88,16 +51,8 @@ export class FormWrapper {
         if (!this.focused) {
             return this;
         }
-        const { name, component } = this.focused;
-        const field = this.find(name);
-        if (!field) {
-            return this;
-        }
-        const comp = field.find(component);
-        if (comp.length !== 1) {
-            throw new Error('Did not find exactly one component for field with name: ' + name);
-        }
-        const props = comp.props();
+        const field = this.find(this.focused);
+        const props = field.props();
         const currentValue = props.value;
         if (props.onBlur) {
             props.onBlur(currentValue);
@@ -111,118 +66,60 @@ export class FormWrapper {
         this._mounted.update();
     };
 
-    lookAt = (name: string): FormWrapper => {
-        this.blur();
-        const field = this.find(name);
-        if (!field) {
-            throw new Error(`Field with name ${name} does not exist.`);
+    focus = (name: string): FormWrapper => {
+        if (this.focused !== name) {
+            this.blur();
+            this.find(name);
+            this.focused = name;
         }
-        const component = _findTypeFromField(field);
-        const comp = field.find(component);
-        if (comp.length !== 1) {
-            throw new Error('Did not find exactly one component for field with name: ' + name);
-        }
-        this.focused = { name, component };
         return this;
     };
 
-    find = (name: string): ReactWrapper | void => {
-        return _findWithin(this._mounted.find(Field), name);
-    };
-
-    validate = (
-        location?: { base: 'state' | 'props', name: string } = {
-            base: 'state',
-            name: 'data',
-        },
-        ...fieldSpecs: FieldSpec[]
-    ): FormWrapper => {
-        _validateFieldSpecs(fieldSpecs);
-        const data = _makeTestData(fieldSpecs);
-        const oldData =
-            location.base === 'state' ? this._mounted.state()[location.name] : this._mounted.props()[location.name];
-        location.base === 'state'
-            ? this._mounted.setState({ [location.name]: data })
-            : this._mounted.setProps({ [location.name]: data });
-        const fields = this._mounted.find(Field);
-        if (fieldSpecs.length !== fields.length) {
-            throw new Error('Not all found fields where specified.');
-        }
-        for (let key = 0; key < fieldSpecs.length; key++) {
-            const fieldSpec = fieldSpecs[key];
-            const name = fieldSpec.name;
-            const field = _findWithin(fields, name);
-            if (!field) {
-                throw new Error(`Field with name "${name}" could not be found.`);
-            }
-            const component = field.find(fieldSpec.component);
-            if (component.length !== 1) {
-                throw new Error('Did not find exactly one component for field with name: ' + name);
-            }
-            const props = component.props();
-            expect(props.value).toBe(data.values[name]);
-            expect(props.error).toEqual(data.errors[name]);
-            if (fieldSpec.required !== undefined) {
-                expect(props.required).toBe(fieldSpec.required);
-            }
-        }
-        location.base === 'state'
-            ? this._mounted.setState({ [location.name]: oldData })
-            : this._mounted.setProps({ [location.name]: oldData });
-        return this;
-    };
-
-    change = (value: string | boolean | number): FormWrapper => {
-        if (!this.focused) {
-            throw new Error('No field was focused');
-        }
-        const { name, component } = this.focused;
-        const field = this.find(name);
+    find = (name: string): ReactWrapper => {
+        const field = _findWithin(this._mounted.find(Field), name);
         if (!field) {
-            throw new Error('Focused field does not exist anymore');
+            throw new Error(`Field "${name}" does not exist`);
         }
-        const comp = field.find(component);
-        if (comp.length !== 1) {
-            throw new Error('Did not find exactly one component for field with name: ' + name);
-        }
-        comp.props().onChange(value);
+        return field.childAt(0).childAt(0);
+    };
+
+    change = (name: string, value: string | boolean | number): FormWrapper => {
+        this.focus(name);
+        const field = this.find(name);
+        field.props().onChange(value);
         this._mounted.update();
         return this;
     };
 
-    valueIs = (value: any): FormWrapper => {
-        if (!this.focused) {
-            throw new Error('No field was focused');
-        }
-        const { name, component } = this.focused;
-        const field = this.find(name);
-        if (!field) {
-            throw new Error('Focused field does not exist anymore');
-        }
-        const comp = field.find(component);
-        if (comp.length !== 1) {
-            throw new Error('Did not find exactly one component for field with name: ' + name);
-        }
-        const props = comp.props();
-        expect(props.value).toEqual(value);
+    _assume = (obj: { [string]: any }, check: (field: ReactWrapper, v: any, k: string) => void): FormWrapper => {
+        Object.keys(obj).forEach(key => check(this.find(key), obj[key], key));
         return this;
     };
 
-    errorIs = (error: ErrorMessage | void): FormWrapper => {
-        if (!this.focused) {
-            throw new Error('No field was focused');
-        }
-        const { name, component } = this.focused;
-        const field = this.find(name);
-        if (!field) {
-            throw new Error('Focused field does not exist anymore');
-        }
-        const comp = field.find(component);
-        if (comp.length !== 1) {
-            throw new Error('Did not find exactly one component for field with name: ' + name);
-        }
-        const props = comp.props();
-        expect(props.error).toEqual(error);
+    assumeValues = (values: { [string]: any }): FormWrapper =>
+        this._assume(values, (comp, value) => {
+            const found = comp.props().value;
+            expect(found).toEqual(value);
+        });
+    assumeErrors = (errors: { [string]: ErrorMessage | void }): FormWrapper =>
+        this._assume(errors, (comp, error) => {
+            const found = comp.props().error;
+            expect(found).toEqual(error);
+        });
+    assumeRequired = (requiredFields: { [string]: boolean }): FormWrapper =>
+        this._assume(requiredFields, (comp, required, key) => {
+            const found = comp.props().required;
+            if (found !== required) throw new Error(`Expected field ${key} to be ${required ? '' : 'not '}required.`);
+        });
+    assume = (data: {
+        values?: { [string]: any },
+        errors?: { [string]: ErrorMessage | void },
+        required?: { [string]: boolean },
+    }): FormWrapper => {
+        const { values, errors, required } = data;
+        if (values) this.assumeValues(values);
+        if (errors) this.assumeErrors(errors);
+        if (required) this.assumeRequired(required);
         return this;
     };
 
@@ -233,3 +130,5 @@ export class FormWrapper {
         return this;
     };
 }
+
+export const mountForm = (node: React$Node) => new FormWrapper(node);

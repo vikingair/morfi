@@ -9,44 +9,41 @@
 import React from 'react';
 import AsyncValidationSample from './AsyncValidationSample';
 import { shallow } from 'enzyme';
-import toJson from 'enzyme-to-json';
-import { Input } from '../../fields/FormInput';
-import { FormWrapper } from '../../../test/form-test-util';
+import { mountForm } from '../../../test/form-test-util';
 
 describe('AsyncValidationSample', () => {
     it('renders the initial form', () => {
-        expect(toJson(shallow(<AsyncValidationSample />))).toMatchSnapshot();
+        expect(shallow(<AsyncValidationSample />)).toMatchSnapshot();
     });
 
     it('validates the form integration', async () => {
-        const wrapper = new FormWrapper(<AsyncValidationSample />)
-            .validate(
-                { base: 'state', name: 'data' },
-                { name: 'userName', component: Input, required: true },
-                { name: 'realName', component: Input, required: false }
-            )
-            .lookAt('realName')
-            .change('Tester')
-            .valueIs('Tester')
-            .errorIs(undefined)
-            .change('Tester @ga!n')
-            .valueIs('Tester @ga!n')
-            .errorIs({ id: 'AsyncValidationSample.realName.validation.requirements' })
-            .lookAt('userName')
-            .change('Tom')
-            .errorIs(undefined);
+        const wrapper = mountForm(<AsyncValidationSample />)
+            .assumeRequired({ userName: true, realName: false })
+            .change('realName', 'Tester')
+            .assume({ values: { realName: 'Tester' }, errors: { realName: undefined } })
+            .change('realName', 'Tester @ga!n')
+            .assume({
+                values: { realName: 'Tester @ga!n' },
+                errors: { realName: { id: 'AsyncValidationSample.realName.validation.requirements' } },
+            })
+            .change('userName', 'Tom')
+            .assume({ errors: { userName: undefined } });
 
         await wrapper.blur().nextTick();
 
         wrapper
-            .valueIs('Tom')
-            .errorIs({ id: 'AsyncValidationSample.userName.already.registered', values: { userName: 'Tom' } })
-            .change('otherFooName')
-            .errorIs(undefined);
+            .assume({
+                values: { userName: 'Tom' },
+                errors: {
+                    userName: { id: 'AsyncValidationSample.userName.already.registered', values: { userName: 'Tom' } },
+                },
+            })
+            .change('userName', 'otherFooName')
+            .assume({ errors: { userName: undefined } });
 
         await wrapper.blur().nextTick();
 
-        wrapper.valueIs('otherFooName').errorIs(undefined);
+        wrapper.assume({ values: { userName: 'otherFooName' }, errors: { userName: undefined } });
 
         wrapper.submit();
     });

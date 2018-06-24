@@ -13,11 +13,11 @@ import { Spinner } from '../../icons/Spinner';
 
 const validation = {
     password: {
-        onChange: v => {
+        onChange: (v: string) => {
             if (!v) return { id: 'PasswordRepeatForm.validation.password.required' };
             if (RegExp('[^0-9a-zA-Z]').test(v)) return { id: 'PasswordRepeatForm.validation.password.validChars' };
         },
-        onBlur: v => {
+        onBlur: (v: string) => {
             if (!v || v.length < 8) return { id: 'PasswordRepeatForm.validation.password.length' };
             if (!RegExp('[^0-9]').test(v) || !RegExp('[^a-zA-Z]').test(v))
                 return { id: 'PasswordRepeatForm.validation.password.mixed' };
@@ -41,7 +41,7 @@ export default class PasswordRepeatForm extends Component<{}, PasswordRepeatForm
     validation = {
         ...validation,
         repeat: {
-            onChange: v => {
+            onChange: (v: string) => {
                 if (!v || v !== this.state.data.values.password)
                     return { id: 'PasswordRepeatForm.validation.repeat.wrong' };
             },
