@@ -6,10 +6,9 @@
  * @flow
  */
 
-import { Form, Field } from '../js/form';
+import { Form, Field, type ErrorMessage } from '../js/form';
 import { mount } from 'enzyme';
 import type { ReactWrapper } from 'enzyme';
-import type { ErrorMessage } from '../js/form';
 
 const _findWithin = (fields: ReactWrapper, name: string): ReactWrapper | void => {
     const found = [];
@@ -91,35 +90,35 @@ class FormWrapper {
         return this;
     };
 
-    _assume = (obj: { [string]: any }, check: (field: ReactWrapper, v: any, k: string) => void): FormWrapper => {
+    _expect = (obj: { [string]: any }, check: (field: ReactWrapper, v: any, k: string) => void): FormWrapper => {
         Object.keys(obj).forEach(key => check(this.find(key), obj[key], key));
         return this;
     };
 
-    assumeValues = (values: { [string]: any }): FormWrapper =>
-        this._assume(values, (comp, value) => {
+    expectValues = (values: { [string]: any }): FormWrapper =>
+        this._expect(values, (comp, value) => {
             const found = comp.props().value;
             expect(found).toEqual(value);
         });
-    assumeErrors = (errors: { [string]: ErrorMessage | void }): FormWrapper =>
-        this._assume(errors, (comp, error) => {
+    expectErrors = (errors: { [string]: ErrorMessage | void }): FormWrapper =>
+        this._expect(errors, (comp, error) => {
             const found = comp.props().error;
             expect(found).toEqual(error);
         });
-    assumeRequired = (requiredFields: { [string]: boolean }): FormWrapper =>
-        this._assume(requiredFields, (comp, required, key) => {
+    expectRequired = (requiredFields: { [string]: boolean }): FormWrapper =>
+        this._expect(requiredFields, (comp, required, key) => {
             const found = comp.props().required;
             if (found !== required) throw new Error(`Expected field ${key} to be ${required ? '' : 'not '}required.`);
         });
-    assume = (data: {
+    expect = (data: {
         values?: { [string]: any },
         errors?: { [string]: ErrorMessage | void },
         required?: { [string]: boolean },
     }): FormWrapper => {
         const { values, errors, required } = data;
-        if (values) this.assumeValues(values);
-        if (errors) this.assumeErrors(errors);
-        if (required) this.assumeRequired(required);
+        if (values) this.expectValues(values);
+        if (errors) this.expectErrors(errors);
+        if (required) this.expectRequired(required);
         return this;
     };
 

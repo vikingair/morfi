@@ -18,32 +18,32 @@ describe('AsyncValidationSample', () => {
 
     it('validates the form integration', async () => {
         const wrapper = mountForm(<AsyncValidationSample />)
-            .assumeRequired({ userName: true, realName: false })
+            .expectRequired({ userName: true, realName: false })
             .change('realName', 'Tester')
-            .assume({ values: { realName: 'Tester' }, errors: { realName: undefined } })
+            .expect({ values: { realName: 'Tester' }, errors: { realName: undefined } })
             .change('realName', 'Tester @ga!n')
-            .assume({
+            .expect({
                 values: { realName: 'Tester @ga!n' },
                 errors: { realName: { id: 'AsyncValidationSample.realName.validation.requirements' } },
             })
             .change('userName', 'Tom')
-            .assume({ errors: { userName: undefined } });
+            .expect({ errors: { userName: undefined } });
 
         await wrapper.blur().nextTick();
 
         wrapper
-            .assume({
+            .expect({
                 values: { userName: 'Tom' },
                 errors: {
                     userName: { id: 'AsyncValidationSample.userName.already.registered', values: { userName: 'Tom' } },
                 },
             })
             .change('userName', 'otherFooName')
-            .assume({ errors: { userName: undefined } });
+            .expect({ errors: { userName: undefined } });
 
         await wrapper.blur().nextTick();
 
-        wrapper.assume({ values: { userName: 'otherFooName' }, errors: { userName: undefined } });
+        wrapper.expect({ values: { userName: 'otherFooName' }, errors: { userName: undefined } });
 
         wrapper.submit();
     });

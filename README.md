@@ -300,6 +300,11 @@ onClear = () => {
 ```
 Now if we hit the clear button all entered values will be cleared.
 
+### Testing
+
+Check out [morfi-test-utils](https://www.npmjs.com/package/morfi-test-utils) to write your tests
+almost as a user would test your form manually.
+
 ### FAQ
   
 * Why are there no ready-to-use components exported like `FormSelect` 
