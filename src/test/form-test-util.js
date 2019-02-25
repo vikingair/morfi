@@ -6,7 +6,7 @@
  * @flow
  */
 
-import { Form, Field, type ErrorMessage } from '../js/form';
+import { type ErrorMessage } from '../js/form';
 import { mount } from 'enzyme';
 import type { ReactWrapper } from 'enzyme';
 
@@ -30,15 +30,15 @@ class FormWrapper {
 
     constructor(node: React$Node) {
         this._mounted = mount(node);
-        const forms = this._mounted.find(Form);
+        const forms = this._mounted.find('Form');
         if (forms.length !== 1) {
             throw new Error('Did not find exactly one form.');
         }
-        const fields = this._mounted.find(Field);
+        const fields = this._mounted.find('Field');
         if (fields.length === 0) {
             throw new Error('There were no fields within the form.');
         }
-        if (forms.at(0).find(Field).length !== fields.length) {
+        if (forms.at(0).find('Field').length !== fields.length) {
             throw new Error('Found fields outside the form.');
         }
     }
@@ -75,7 +75,7 @@ class FormWrapper {
     };
 
     find = (name: string): ReactWrapper => {
-        const field = _findWithin(this._mounted.find(Field), name);
+        const field = _findWithin(this._mounted.find('Field'), name);
         if (!field) {
             throw new Error(`Field "${name}" does not exist`);
         }
@@ -124,7 +124,7 @@ class FormWrapper {
 
     submit = (): FormWrapper => {
         this.blur();
-        const form = this._mounted.find(Form).at(0);
+        const form = this._mounted.find('Form').at(0);
         form.simulate('submit');
         return this;
     };

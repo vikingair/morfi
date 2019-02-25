@@ -7,18 +7,16 @@
  */
 
 import React from 'react';
-import type { _ErrorMessage } from '../form/Form-classes';
+import type { ErrorMessage } from '../form';
 import messages from '../../messages';
 
-export const __ = (m: _ErrorMessage): string => {
-    let result = messages[m.id];
-    const values = m.values;
+export const __ = ({ id, values }: ErrorMessage): string => {
+    let result = messages[id];
     if (result && values) {
-        for (const key in values) {
-            if (values.hasOwnProperty(key)) {
-                result = result.replace(`{${key}}`, values[key]);
-            }
-        }
+        result = Object.keys(values).reduce(
+            (red: string, key: string) => red.replace(`{${key}}`, String(values[key])),
+            result
+        );
     }
     return result;
 };
@@ -27,7 +25,7 @@ export const Label = ({ label, required = false }: { label: string, required?: b
     return <label className="control-label">{label + (required ? ' *' : '')}</label>;
 };
 
-export const Error = ({ error }: { error: _ErrorMessage }) => {
+export const DisplayError = ({ error }: { error: ErrorMessage }) => {
     return <span className="invalid-feedback">{__(error)}</span>;
 };
 

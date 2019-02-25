@@ -6,18 +6,18 @@
  * @flow
  */
 
-import type { _FormValidation, _FormData } from '../js/form/Form-classes';
+import type { FormValidation, FormData } from '../js/form';
 import { Validators } from '../js/validators/validators';
 
-type formValues = { name: string, age: number, size: number, nickname?: string, email: string };
+type MyFormValues = {| name: string, age: number, size: number, nickname?: string, email: string |};
 
-export const formValidation: _FormValidation<formValues> = {
+export const formValidation: FormValidation<MyFormValues> = {
     name: { onChange: Validators.string({ min: 2, max: 10 }) },
     age: { onChange: Validators.number({ minLength: 1, maxLength: 3 }) },
     nickname: { onBlur: Validators.string({ min: 5, max: 5 }) },
     email: { onSubmit: Validators.email },
 };
-export const formData: _FormData<formValues> = {
+export const formData: FormData<MyFormValues> = {
     values: {
         name: 'Kenny',
         age: 81,
@@ -27,7 +27,7 @@ export const formData: _FormData<formValues> = {
     },
     errors: {},
 };
-export const invalidFormData: _FormData<formValues> = {
+export const invalidFormData: FormData<MyFormValues> = {
     values: {
         name: 'Kenny - The King',
         age: 9999,

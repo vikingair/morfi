@@ -1,23 +1,17 @@
-/**
- * This file is part of morfi which is released under MIT license.
- *
- * The LICENSE file can be found in the root directory of this project.
- *
- * @flow
- */
+// @flow
 
 import React, { Component } from 'react';
-import { Form, type FormData } from '../../form/index';
-import { FormInput } from '../../fields/index';
 import { Spinner } from '../../icons/Spinner';
+import { FormInput } from '../../fields/FormInput';
+import { Morfi, type FormData } from '../../form';
 
 const validation = {
     password: {
-        onChange: (v: string) => {
+        onChange: (v?: string) => {
             if (!v) return { id: 'PasswordRepeatForm.validation.password.required' };
             if (RegExp('[^0-9a-zA-Z]').test(v)) return { id: 'PasswordRepeatForm.validation.password.validChars' };
         },
-        onBlur: (v: string) => {
+        onBlur: (v?: string) => {
             if (!v || v.length < 8) return { id: 'PasswordRepeatForm.validation.password.length' };
             if (!RegExp('[^0-9]').test(v) || !RegExp('[^a-zA-Z]').test(v))
                 return { id: 'PasswordRepeatForm.validation.password.mixed' };
@@ -25,23 +19,22 @@ const validation = {
     },
 };
 
-type MyFormValues = {
-    password: string,
-    repeat: string,
-};
+type MyFormValues = {| password: string, repeat: string |};
 
-type PasswordRepeatFormState = {
-    data: FormData<MyFormValues>,
-};
+const initialValues: MyFormValues = { password: '', repeat: '' };
 
-const initialState: PasswordRepeatFormState = { data: { values: { password: '', repeat: '' }, errors: {} } };
+const { Form, Fields } = Morfi.create(initialValues);
+
+type PasswordRepeatFormState = {| data: FormData<MyFormValues> |};
+
+const initialState: PasswordRepeatFormState = { data: { values: initialValues, errors: {} } };
 
 export default class PasswordRepeatForm extends Component<{}, PasswordRepeatFormState> {
     state = initialState;
     validation = {
         ...validation,
         repeat: {
-            onChange: (v: string) => {
+            onChange: (v?: string) => {
                 if (!v || v !== this.state.data.values.password)
                     return { id: 'PasswordRepeatForm.validation.repeat.wrong' };
             },
@@ -56,13 +49,13 @@ export default class PasswordRepeatForm extends Component<{}, PasswordRepeatForm
         }
     };
 
-    onSubmit = ({ password, repeat }: MyFormValues): void => window.sleep(1000);
+    onSubmit = (): void => window.sleep(1000);
 
     onSubmitFinished = () => this.setState(initialState);
 
     render(): React$Node {
         const data = this.state.data;
-        const { values, errors, submitting } = data;
+        const { submitting } = data;
         return (
             <div className="col-12">
                 <Form
@@ -73,24 +66,20 @@ export default class PasswordRepeatForm extends Component<{}, PasswordRepeatForm
                     onSubmitFinished={this.onSubmitFinished}>
                     <div className="row">
                         <FormInput
-                            name="password"
-                            value={values.password}
-                            error={errors.password}
+                            Field={Fields.password}
                             label="Password"
                             type="password"
                             className="form-group col-sm-6"
                         />
                         <FormInput
-                            name="repeat"
-                            value={values.repeat}
-                            error={errors.repeat}
+                            Field={Fields.repeat}
                             label="Password repetition"
                             type="password"
                             className="form-group col-sm-6"
                         />
                     </div>
                     <div className="btn-toolbar">
-                        <button className="btn btn-success" disabled={submitting || Form.hasErrors(data)}>
+                        <button className="btn btn-success" disabled={submitting || Morfi.hasErrors(data)}>
                             {submitting && <Spinner />} Submit
                         </button>
                     </div>

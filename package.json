@@ -1,11 +1,10 @@
 {
   "name": "morfi",
-  "version": "0.6.0",
+  "version": "1.0.0-not.yet.published",
   "description": "Abstract form handling for any purpose (2 kb gzipped)",
   "keywords": [
     "form",
     "react",
-    "compact",
     "flow"
   ],
   "license": "MIT",
@@ -21,7 +20,7 @@
   "scripts": {
     "dist": "bin/dist.sh",
     "start": "react-scripts start",
-    "build": "react-scripts build && rm -rf docs && mv build docs",
+    "build": "react-scripts build && rm build/service-worker.js && rm -rf docs && mv build docs",
     "test": "react-scripts test --env=jsdom",
     "flow": "flow --quiet",
     "eslint": "eslint --cache --cache-location 'misc/.eslintcache' src/",
@@ -29,31 +28,32 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "peerDependencies": {
-    "react": ">= 15 < 17"
+    "react": ">= 16.2"
   },
   "dependencies": {},
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "coveralls": "^3.0.0",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
-    "enzyme-to-json": "^3.3.4",
-    "eslint-config-prettier": "^2.8.0",
-    "eslint-plugin-prettier": "^2.3.1",
-    "flow-bin": "^0.73.0",
-    "prettier": "^1.12.1",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.1.4",
-    "react-test-renderer": "^16.4.0",
-    "spy4js": "^1.5.2"
+    "@babel/cli": "^7.2.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "coveralls": "^3.0.2",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.9.1",
+    "enzyme-to-json": "^3.3.5",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "flow-bin": "^0.93.0",
+    "prettier": "^1.16.1",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^2.1.3",
+    "spy4js": "^2.3.1"
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/js/form/*.{js}",
-      "!src/js/form/index.js"
+      "src/js/form/*.{js}"
     ],
     "coverageReporters": [
       "lcov"
@@ -70,5 +70,11 @@
   "main": "dist/index.js",
   "files": [
     "dist"
+  ],
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
   ]
 }

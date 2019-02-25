@@ -7,24 +7,20 @@
  */
 
 import React from 'react';
-import { Error, Label, onActionWrap } from './Basic';
-import { Field } from '../form';
-import type { _ErrorMessage } from '../form/Form-classes';
+import { DisplayError, Label, onActionWrap } from './Basic';
+import type { FieldProps, iField } from '../form';
 
-type NumberInputProps = {
-    value?: number,
+type CommonNumberInputProps = {|
     label?: string,
-    error?: _ErrorMessage,
-    required?: boolean,
     className?: string,
-    onChange?: number => void,
-    onBlur?: number => void,
     autoFocus?: boolean,
     disabled?: boolean,
-};
+|};
+
+type NumberInputProps = {| ...FieldProps<number | void>, ...CommonNumberInputProps |};
 
 export const NumberInput = ({
-    value = 0,
+    value,
     label,
     error,
     required,
@@ -34,43 +30,27 @@ export const NumberInput = ({
     autoFocus,
     disabled,
 }: NumberInputProps) => {
+    const onChangeWrapped = (v: string) => {
+        onChange(v === '' ? undefined : Number(v));
+    };
     return (
         <div className={className}>
             {label && <Label {...{ label, required }} />}
             <input
                 type="number"
-                onChange={onActionWrap(onChange)}
+                value={value === undefined ? '' : String(value)}
+                onChange={onActionWrap(onChangeWrapped)}
                 onBlur={onActionWrap(onBlur)}
                 className={'form-control' + (error ? ' is-invalid' : '')}
-                {...{ value, autoFocus, disabled }}
+                {...{ autoFocus, disabled }}
             />
-            {error && <Error error={error} />}
+            {error && <DisplayError error={error} />}
         </div>
     );
 };
 
-type FormNumberInputProps = {|
-    name: string,
-    value?: number,
-    error?: _ErrorMessage,
-    label?: string,
-    className?: string,
-    disabled?: boolean,
-    autoFocus?: boolean,
-|};
+type FormNumberInputProps = {| Field: iField<number | void>, ...CommonNumberInputProps |};
 
-export const _FormNumberInput = ({
-    name,
-    value,
-    error,
-    label,
-    className = 'form-group',
-    disabled,
-    autoFocus,
-}: FormNumberInputProps) => (
-    <Field name={name}>
-        {({ onChange, onBlur, required }) => (
-            <NumberInput {...{ error, value, required, onBlur, onChange, label, className, disabled, autoFocus }} />
-        )}
-    </Field>
+export const FormNumberInput = ({ Field, ...rest }: FormNumberInputProps) => (
+    <Field>{fieldProps => <NumberInput {...fieldProps} {...rest} />}</Field>
 );

@@ -1,86 +1,76 @@
-/**
- * This file is part of morfi which is released under MIT license.
- *
- * The LICENSE file can be found in the root directory of this project.
- *
- * @flow
- */
+// @flow
 
 import React from 'react';
 import { ValidationSample } from './ValidationSample';
-import { shallow } from 'enzyme';
-import { mountForm } from '../../../test/form-test-util';
 import { Select } from '../../fields/FormSelect';
+import { morfiMount } from '../../../test/morfi-test-util';
 
-describe('AsyncValidationSample', () => {
-    it('renders the initial form', () => {
-        expect(shallow(<ValidationSample />)).toMatchSnapshot();
+describe('ValidationSample', () => {
+    it('validates onChange', () => {
+        const { getState, updateValue, getError } = morfiMount(<ValidationSample />);
+
+        updateValue('email', 'nomail.com');
+        expect(getState('email')).toEqual({ value: 'nomail.com', error: { id: 'validation.email.requirements' } });
+
+        updateValue('email', 'some@mail.com');
+        expect(getError('email')).toBe(undefined);
+
+        updateValue('pw', '1234567');
+        expect(getError('pw')).toEqual({ id: 'validation.pw.requirements' });
+
+        updateValue('pw', '12345678');
+        expect(getError('pw')).toBe(undefined);
     });
 
-    it('validates the form integration with onChange - Validations', () => {
-        mountForm(<ValidationSample />)
-            .change('email', 'nomail.com')
-            .expect({ values: { email: 'nomail.com' }, errors: { email: { id: 'validation.email.requirements' } } })
-            .change('email', 'some@mail.com')
-            .expect({ values: { email: 'some@mail.com' }, errors: { email: undefined } })
-            .change('pw', '1234567')
-            .expectErrors({ pw: { id: 'validation.pw.requirements' } })
-            .change('pw', '12345678')
-            .expectErrors({ pw: undefined });
-    });
+    it('validates onBlur', () => {
+        const { updateValue, getErrorId, getValue, blur, instance } = morfiMount(<ValidationSample />);
 
-    it('validates the form integration with onBlur - Validations', () => {
-        const wrapper = mountForm(<ValidationSample />);
-        wrapper
-            .mounted()
+        instance
             .find(Select)
             .props()
             .onChange('onBlur');
-        wrapper
-            .change('email', 'nomail.com')
-            .expect({ values: { email: 'nomail.com' }, errors: { email: undefined } })
-            .blur()
-            .expect({ values: { email: 'nomail.com' }, errors: { email: { id: 'validation.email.requirements' } } })
-            .change('email', 'some@mail.com')
-            .expect({ values: { email: 'some@mail.com' }, errors: { email: undefined } })
-            .blur()
-            .expect({ values: { email: 'some@mail.com' }, errors: { email: undefined } })
-            .change('pw', '1234567')
-            .expect({ errors: { pw: undefined } })
-            .blur()
-            .expect({ errors: { pw: { id: 'validation.pw.requirements' } } })
-            .change('pw', '12345678')
-            .expect({ errors: { pw: undefined } })
-            .blur()
-            .expect({ errors: { pw: undefined } });
+
+        updateValue('email', 'nomail.com');
+        expect(getValue('email')).toBe('nomail.com');
+        expect(getErrorId('email')).toBe(undefined);
+
+        // now blur
+        blur();
+        expect(getErrorId('email')).toBe('validation.email.requirements');
+
+        updateValue('pw', '1234567');
+        expect(getErrorId('pw')).toBe(undefined);
+
+        // focus another input triggers the blur
+        updateValue('email', 'foo@bar.com');
+        expect(getErrorId('pw')).toBe('validation.pw.requirements');
+        expect(getErrorId('email')).toBe(undefined);
     });
 
-    it('validates the form integration with onSubmit - Validations', async () => {
-        const wrapper = mountForm(<ValidationSample />);
-        wrapper
-            .mounted()
+    it('validates onSubmit', () => {
+        const { updateValue, getErrorId, focus, instance, submit } = morfiMount(<ValidationSample />);
+
+        instance
             .find(Select)
             .props()
             .onChange('onSubmit');
-        wrapper
-            .change('email', 'nomail.com')
-            .change('pw', '1234567')
-            .blur()
-            .expectErrors({ email: undefined, pw: undefined });
 
-        await wrapper.submit().nextTick();
+        updateValue('email', 'nomail.com');
+        focus('pw');
+        expect(getErrorId('email')).toBe(undefined);
+        expect(getErrorId('pw')).toBe(undefined);
 
-        wrapper
-            .expectErrors({
-                email: { id: 'validation.email.requirements' },
-                pw: { id: 'validation.pw.requirements' },
-            })
-            .change('email', 'some@mail.com')
-            .change('pw', '12345678')
-            .expectErrors({ email: undefined, pw: undefined });
+        submit();
 
-        await wrapper.submit().nextTick();
+        expect(getErrorId('email')).toBe('validation.email.requirements');
+        expect(getErrorId('pw')).toBe('validation.pw.requirements');
 
-        wrapper.expectErrors({ email: undefined, pw: undefined });
+        updateValue('email', 'foo@bar.com');
+        updateValue('pw', '12345678');
+
+        submit();
+
+        expect(getErrorId('email')).toBe(undefined);
+        expect(getErrorId('pw')).toBe(undefined);
     });
 });

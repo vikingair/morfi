@@ -8,7 +8,7 @@
 
 import type { ErrorMessage, Validator } from '../form';
 
-const stringValidator = ({ min = 0, max = -1 }: { min?: number, max?: number }): Validator => {
+const stringValidator = ({ min = 0, max = -1 }: { min?: number, max?: number }): Validator<string> => {
     const exactMessage =
         min === max
             ? { id: 'validation.characters.exactly.x', values: { num: min, s: min === 1 ? '' : 's' } }
@@ -23,9 +23,6 @@ const stringValidator = ({ min = 0, max = -1 }: { min?: number, max?: number }):
     };
     return v => {
         const val = v === undefined ? '' : v;
-        if (typeof val !== 'string') {
-            return { id: 'validation.value.incompatible' };
-        }
         if (max >= 0 && val.length > max) {
             return atMostMessage;
         }
@@ -35,12 +32,9 @@ const stringValidator = ({ min = 0, max = -1 }: { min?: number, max?: number }):
     };
 };
 
-const regexValidator = ({ re, message }: { re: RegExp, message?: ErrorMessage }): Validator => {
+const regexValidator = ({ re, message }: { re: RegExp, message?: ErrorMessage }): Validator<string> => {
     return v => {
         const val = v === undefined ? '' : v;
-        if (typeof val !== 'string') {
-            return { id: 'validation.value.incompatible' };
-        }
         if (!re.test(val)) {
             return message || { id: 'validation.value.mismatch' };
         }
@@ -49,16 +43,22 @@ const regexValidator = ({ re, message }: { re: RegExp, message?: ErrorMessage })
 
 const __regexNumberValidator = regexValidator({ re: /^\d*$/, message: { id: 'validation.value.onlyNumbers' } });
 
-const numberValidator = ({ minLength = 0, maxLength = -1 }: { minLength?: number, maxLength?: number }): Validator => {
+const numberValidator = ({
+    minLength = 0,
+    maxLength = -1,
+}: {
+    minLength?: number,
+    maxLength?: number,
+}): Validator<number> => {
     const strValidator = stringValidator({ min: minLength, max: maxLength });
     return val => {
-        const str = typeof val === 'number' ? String(val) : val;
+        const str = val === undefined ? undefined : String(val);
         const error = strValidator(str);
         return error || __regexNumberValidator(str);
     };
 };
 
-const optionalOf = (validator: Validator): Validator => {
+const optionalOf = <T>(validator: Validator<T>): Validator<T> => {
     return val => {
         if (val) {
             return validator(val);

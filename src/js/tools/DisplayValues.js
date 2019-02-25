@@ -9,7 +9,6 @@
 import React, { Component } from 'react';
 import type { FormData } from '../form/index';
 import './DisplayValues.css';
-import { forEach } from '../form/Form-classes';
 
 const sanitize = (str: string): string => {
     return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -18,7 +17,8 @@ const sanitize = (str: string): string => {
 const htmlForObject = (o: { [string]: mixed }): string => {
     let result = '<p>{</p><div class="ml-3"><p>';
     let firstValue = true;
-    forEach(o, (value: mixed, key: string) => {
+    Object.keys(o).forEach((key: string) => {
+        const value = o[key];
         if (value !== undefined) {
             if (!firstValue) {
                 result += ',</p><p>';

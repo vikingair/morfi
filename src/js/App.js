@@ -12,7 +12,7 @@ import { Link, Switch, Route } from 'react-router-dom';
 import { FormContainer } from './FormContainer';
 import FirstSample from './samples/first/FirstSample';
 import { ValidationSample } from './samples/validation-types/ValidationSample';
-import AsyncValidationSample from './samples/async/AsyncValidationSample';
+import { AsyncValidationSample } from './samples/async/AsyncValidationSample';
 import { Arrow } from './icons/Arrow';
 import PasswordRepeatForm from './samples/password-repeat/PasswordRepeatForm';
 
@@ -52,8 +52,8 @@ export default class App extends Component<AppProps, { sideBarOpen?: boolean }> 
         );
     }
 
-    componentWillReceiveProps = (nextProps: AppProps): void => {
-        if (nextProps.location.pathname !== this.props.location.pathname) {
+    componentDidUpdate = (prevProps: AppProps): void => {
+        if (prevProps.location.pathname !== this.props.location.pathname) {
             this.setState({ sideBarOpen: false });
         }
     };

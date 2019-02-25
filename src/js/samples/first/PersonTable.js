@@ -1,18 +1,11 @@
-/**
- * This file is part of morfi which is released under MIT license.
- *
- * The LICENSE file can be found in the root directory of this project.
- *
- * @flow
- */
+// @flow
 
 import React, { Component } from 'react';
 
-export type Person = { gender: 'M' | 'F', firstName: string, lastName: string, age: number };
+export type Gender = 'M' | 'F';
+export type Person = { gender: Gender, firstName: string, lastName: string, age: number };
 
-type PersonTableProps = {
-    persons: Person[],
-};
+type PersonTableProps = {| persons: Person[] |};
 
 export default class PersonTable extends Component<PersonTableProps> {
     renderPerson = (person: Person, index: number): React$Node => (

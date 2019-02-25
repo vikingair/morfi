@@ -13,7 +13,6 @@ import './styles/css/bootstrap.min.css';
 import './styles/css/bootstrap-grid.min.css';
 import './index.css';
 import App from './js/App';
-import registerServiceWorker from './registerServiceWorker';
 
 window.sleep = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -27,4 +26,3 @@ if (root) {
         root
     );
 }
-registerServiceWorker();

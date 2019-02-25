@@ -1,23 +1,16 @@
-/**
- * This file is part of morfi which is released under MIT license.
- *
- * The LICENSE file can be found in the root directory of this project.
- *
- * @flow
- */
+// @flow
 
 import React, { Component } from 'react';
 import { Validators } from '../../validators/validators';
-import { Form } from '../../form/index';
-import { FormInput } from '../../fields/index';
-import type { FormData, FormValidation } from '../../form/index';
 import DisplayValues from '../../tools/DisplayValues';
-import type { ValidationType } from '../../form/Form-classes';
+import type { ValidationType } from '../../form';
 import { Select } from '../../fields/FormSelect';
 import type { SelectOption } from '../../fields/FormSelect';
 import { Spinner } from '../../icons/Spinner';
+import { FormInput } from '../../fields/FormInput';
+import { Morfi, type FormData, type FormValidation } from '../../form';
 
-const ValidationTypeOptions: Array<SelectOption> = [
+const ValidationTypeOptions: Array<SelectOption<ValidationType>> = [
     { label: 'onChange', value: 'onChange' },
     { label: 'onBlur', value: 'onBlur' },
     { label: 'onSubmit', value: 'onSubmit' },
@@ -42,10 +35,11 @@ const descriptionFor = (type: ValidationType) => {
     }
 };
 
-type FormValues = {
-    email?: string,
-    pw?: string,
-};
+type FormValues = {| email: string, pw: string |};
+
+const initialValues: FormValues = { email: '', pw: '' };
+
+const { Form, Fields } = Morfi.create(initialValues);
 
 const validationFor = (type: ValidationType): FormValidation<FormValues> => {
     return {
@@ -54,14 +48,14 @@ const validationFor = (type: ValidationType): FormValidation<FormValues> => {
     };
 };
 
-type ValidationSampleState = {
+type ValidationSampleState = {|
     data: FormData<FormValues>,
     validation: FormValidation<FormValues>,
     currentValidationType: ValidationType,
-};
+|};
 
 const initialState = {
-    data: { values: {}, errors: {} },
+    data: { values: initialValues, errors: {} },
     validation: validationFor('onChange'),
     currentValidationType: 'onChange',
 };
@@ -82,7 +76,7 @@ export class ValidationSample extends Component<{}, ValidationSampleState> {
 
     render(): React$Node {
         const data = this.state.data;
-        const { values, errors, submitting } = data;
+        const { submitting } = data;
         return (
             <div className="col-12">
                 <Select
@@ -98,22 +92,18 @@ export class ValidationSample extends Component<{}, ValidationSampleState> {
                     <div className="row">
                         <div className="col-md-6">
                             <FormInput
-                                name="email"
-                                value={values.email}
-                                error={errors.email}
+                                Field={Fields.email}
                                 label="Email"
                                 placeholder="Please enter your email address"
                             />
                             <FormInput
-                                name="pw"
+                                Field={Fields.pw}
                                 type="password"
-                                value={values.pw}
-                                error={errors.pw}
                                 label="Password"
                                 placeholder="Set your password"
                             />
                             <div className="btn-toolbar">
-                                <button className="btn btn-success" disabled={submitting || Form.hasErrors(data)}>
+                                <button className="btn btn-success" disabled={submitting || Morfi.hasErrors(data)}>
                                     <span>{submitting && <Spinner />} Submit</span>
                                 </button>
                             </div>

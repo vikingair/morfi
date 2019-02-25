@@ -1,34 +1,24 @@
-/**
- * This file is part of morfi which is released under MIT license.
- *
- * The LICENSE file can be found in the root directory of this project.
- *
- * @flow
- */
+// @flow
 
 import React, { Component } from 'react';
-import { Error, Label, onActionWrap } from './Basic';
-import { Field } from '../form';
-import type { _ErrorMessage } from '../form/Form-classes';
-import { Spinner } from '../icons/Spinner';
+import { DisplayError, Label, onActionWrap } from '../fields/Basic';
 import { Eye } from '../icons/Eye';
+import { Spinner } from '../icons/Spinner';
+import type { FieldProps, iField } from '../form';
 
 type AllowedTypes = 'text' | 'password';
 
-type InputProps = {
-    value?: string,
+type CommonInputProps = {|
     label?: string,
-    error?: _ErrorMessage,
-    required?: boolean,
     className?: string,
-    onChange?: string => void,
-    onBlur?: string => void,
     autoFocus?: boolean,
     disabled?: boolean,
     type?: AllowedTypes,
     placeholder?: string,
     pending?: boolean,
-};
+|};
+
+type InputProps = {| ...FieldProps<string>, ...CommonInputProps |};
 
 export class Input extends Component<InputProps, { showPassword: boolean }> {
     state = { showPassword: false };
@@ -40,7 +30,7 @@ export class Input extends Component<InputProps, { showPassword: boolean }> {
             label,
             error,
             required,
-            className,
+            className = 'form-group',
             onChange,
             onBlur,
             autoFocus,
@@ -55,7 +45,7 @@ export class Input extends Component<InputProps, { showPassword: boolean }> {
                 <input
                     onChange={onActionWrap(onChange)}
                     onBlur={onActionWrap(onBlur)}
-                    disabled={disabled || pending}
+                    disabled={disabled}
                     className={'form-control' + (error ? ' is-invalid' : '')}
                     type={this.type()}
                     {...{ placeholder, value, autoFocus }}
@@ -66,55 +56,14 @@ export class Input extends Component<InputProps, { showPassword: boolean }> {
                     </span>
                 )}
                 {pending && <Spinner />}
-                {error && <Error error={error} />}
+                {error && <DisplayError error={error} />}
             </div>
         );
     }
 }
 
-type FormInputProps = {|
-    name: string,
-    value?: string,
-    error?: _ErrorMessage,
-    label?: string,
-    className?: string,
-    disabled?: boolean,
-    autoFocus?: boolean,
-    type?: AllowedTypes,
-    placeholder?: string,
-    pending?: boolean,
-|};
+type FormInputProps = {| Field: iField<string>, ...CommonInputProps |};
 
-export const _FormInput = ({
-    name,
-    value,
-    error,
-    label,
-    className = 'form-group',
-    disabled,
-    autoFocus,
-    type,
-    placeholder,
-    pending,
-}: FormInputProps) => (
-    <Field name={name}>
-        {({ onChange, onBlur, required }) => (
-            <Input
-                {...{
-                    error,
-                    value,
-                    required,
-                    onBlur,
-                    onChange,
-                    label,
-                    className,
-                    disabled,
-                    autoFocus,
-                    type,
-                    placeholder,
-                    pending,
-                }}
-            />
-        )}
-    </Field>
+export const FormInput = ({ Field, ...rest }: FormInputProps) => (
+    <Field>{fieldProps => <Input {...fieldProps} {...rest} />}</Field>
 );

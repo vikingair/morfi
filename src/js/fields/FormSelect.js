@@ -5,77 +5,86 @@
  *
  * @flow
  */
-
 import React from 'react';
-import type { _ErrorMessage } from '../form/Form-classes';
-import { _Field as Field } from '../form/Field';
-import { Error, Label, onActionWrap } from './Basic';
+import type { ErrorMessage, iField } from '../form';
+import { EventUtil } from './event-util';
+import { DisplayError, Label } from './Basic';
 
-export type SelectOption = {| label: string, value: string |};
+export type SelectOption<T> = {| label: string, value: T |};
 
-type SelectProps = {
-    value?: string,
+type CommonSelectProps<T> = {|
+    serialize?: T => string,
     label?: string,
-    error?: _ErrorMessage,
     required?: boolean,
     className?: string,
-    onChange?: string => void,
-    onBlur?: string => void,
-    options: Array<SelectOption>,
+    options: $ReadOnlyArray<SelectOption<T>>,
     disabled?: boolean,
-};
+|};
 
-const Option = ({ option }: { option: SelectOption }) => <option value={option.value}>{option.label}</option>;
+type SelectProps<T> = {|
+    value: T,
+    error?: ErrorMessage,
+    required?: boolean,
+    onChange?: T => void,
+    onBlur?: T => void,
+    ...CommonSelectProps<T>,
+|};
 
-export const Select = ({
+/**
+ * ATTENTION: Since react v16.6 you have to supply strings or numbers within <option> tags.
+ *            So you should not use any placeholders inside the messages you use as
+ *            label for the select options.
+ */
+const Option = ({ label, value }: { label: string, value: string }) => <option value={value}>{label}</option>;
+
+const _identity = v => v;
+
+const getOptionValues = <T>(options: $ReadOnlyArray<SelectOption<T>>, serialize?: T => string): string[] =>
+    options
+        .map(o => o.value)
+        .map(serialize || _identity)
+        .map((v, i) => (v === undefined ? '' : typeof v === 'string' ? v : String(i)));
+
+export const Select = <T>({
     value,
+    serialize,
     label,
     error,
-    required,
-    className,
+    required = false,
+    className = 'form-group',
     onChange,
     onBlur,
     options,
     disabled,
-}: SelectProps) => {
+}: SelectProps<T>) => {
+    const optionValues = getOptionValues(options, serialize);
+    const handlerRemapped = handler => (optionValue: string) =>
+        handler && handler(options[optionValues.indexOf(optionValue)].value);
+    const currentIndex = options.indexOf(options.find(option => option.value === value));
+
     return (
         <div className={className}>
             {label && <Label {...{ label, required }} />}
             <select
                 className={'form-control custom-select' + (error ? ' is-invalid' : '')}
                 disabled={disabled}
-                onChange={onActionWrap(onChange)}
-                onBlur={onActionWrap(onBlur, false)}
-                value={value}>
-                {options.map((option: SelectOption, index: number) => <Option option={option} key={index} />)}
+                onChange={EventUtil.inputHandler(handlerRemapped(onChange))}
+                onBlur={EventUtil.inputHandler(handlerRemapped(onBlur))}
+                value={optionValues[currentIndex]}>
+                {options.map((option: SelectOption<T>, index: number) => (
+                    <Option label={option.label} value={optionValues[index]} key={index} />
+                ))}
             </select>
-            {error && <Error error={error} />}
+            {error && <DisplayError error={error} />}
         </div>
     );
 };
 
-type FormSelectProps = {|
-    name: string,
-    value?: string,
-    error?: _ErrorMessage,
-    label?: string,
-    className?: string,
-    options: Array<SelectOption>,
-    disabled?: boolean,
+type FormSelectProps<T> = {|
+    Field: iField<T>,
+    ...CommonSelectProps<T>,
 |};
 
-export const _FormSelect = ({
-    name,
-    value,
-    error,
-    options,
-    label,
-    className = 'form-group',
-    disabled,
-}: FormSelectProps) => (
-    <Field name={name}>
-        {({ onChange, onBlur, required }) => (
-            <Select {...{ error, value, required, onBlur, onChange, label, className, disabled, options }} />
-        )}
-    </Field>
+export const FormSelect = <T>({ Field, ...rest }: FormSelectProps<T>) => (
+    <Field>{formProps => <Select {...formProps} {...rest} />}</Field>
 );
