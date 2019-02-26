@@ -13,8 +13,9 @@
     "url": "https://github.com/fdc-viktor-luft/morfi/issues"
   },
   "peerDependencies": {
-    "react": ">= 16.2",
-    "morfi": ">= 1.0.0"
+    "enzyme": ">= 3.0.0",
+    "morfi": ">= 1.0.0",
+    "react": ">= 16.2"
   },
   "dependencies": {},
   "devDependencies": {

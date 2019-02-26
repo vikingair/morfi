@@ -5,7 +5,7 @@
 [![styled with prettier][prettier-image]][prettier-url]
 
 # ![morfi logo](src/form-logo.svg?sanitize=true) morfi
-Abstract form handling for any purpose (2 kb gzipped)
+Abstract form handling for any purpose (1.8 kb gzipped)
 
 ### Why morfi?
 
@@ -323,13 +323,13 @@ The following table includes results from [bundlephobia](https://bundlephobia.co
 
 Package                 | Version | Size (minified + gzipped)
 ------------------------|---------|--------------------------
-`morfi`                 | 0.5.6   | 2 kB
-`react-form`            | 3.0.1   | Missing Dependecy Error
-`redux-form`            | 7.2.3   | 27.1 kB
-`react-redux-form`      | 1.16.5  | 22 kB
-`formik`                | 0.11.11 | 10.7 kB
-`react-final-form`      | 3.1.0   | 2.9 kB + 3.8 kB (hidden peer dependecy: `final-form`)
-`react-jsonschema-form` | 1.0.1   | Install Error
+`morfi`                 | 1.0.0   | 1.8 kB
+`react-form`            | 3.5.7   | Missing Dependency Error
+`redux-form`            | 8.1.0   | 26.7 kB
+`react-redux-form`      | 1.16.12 | 22.5 kB
+`formik`                | 1.5.1   | 12 kB
+`react-final-form`      | 4.0.2   | 2.9 kB + 4.7 kB (hidden peer dependency: `final-form@4.11.1`)
+`react-jsonschema-form` | 1.2.1   | 53.4 kB
 
 The following statements represent only my personal opinion, although I did
 not work a lot with the following pretty good packages.
