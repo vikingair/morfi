@@ -39,34 +39,7 @@ npm install --save morfi
 ```
 
 ### Introduction
-
-First take a look at the outer form element.
-```js
-import { Form } from 'morfi';
-
-const render = () => (
-    <Form validation={validation}
-          onChange={onChange}
-          data={data}
-          onSubmit={onSubmit}>
-       {/* form content */}
-    </Form>
-);
-```
-It expects the following props: (See below for the missing [Flow types](#flow-types))
-
-Props              | Type                                    | Description                                                       | Example
------------------- | --------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------
-`className`        | `string`                                | Will be applied to the form tag                                   | `'my-form'`
-`validation`       | `FormValidation<V>`                     | Contains all validators                                           | `{ name: { onChange: customValidator } }`
-`data`             | `FormData<V>`                           | Contains all values, errors and submitting state                  | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`
-`onChange`         | `(FormData<V>) => void`                 | Handles the next data after any changes have been made            |
-`onSubmit`         | `V => void \ Promise<void>`             | Will be called if submitted without any failing validators        |
-`onSubmitFailed`   | `void \ ((Error, FormData<V>) => void)` | Will be called if submitting was aborted due to validation errors or if your submit returned a rejected promise |
-`onSubmitFinished` | `void \ ((FormData<V>) => void)`        | Will be called after submitting finished                       |
-
-Now lets take a look on a single integrated form element:
-
+Let's get a first impression...
 ```js
 import React from 'react';
 import { Morfi } from 'morfi';
@@ -98,7 +71,6 @@ const render = () => (
     </Form>
 );
 ```
-
 By calling `Morfi.create` with the initial values, a `React` context will generated
 and you get `Form` element together with `Fields` which itself contains different
 elements for each specified initial value. ATTENTION: It is mandatory to supply all
@@ -107,6 +79,17 @@ keys of your initial values matter.
 
 The `Form` element receives certain "control" props and needs to provide the current
 context state to each of the `Fields`.
+It expects the following props: (See below for the missing [Flow types](#flow-types))
+
+Props              | Type                                    | Description                                                       | Example
+------------------ | --------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------
+`className`        | `void \ string`                         | Will be applied to the form tag                                   | `'my-form'`
+`validation`       | `FormValidation<V>`                     | Contains all validators                                           | `{ name: { onChange: customValidator } }`
+`data`             | `FormData<V>`                           | Contains all values, errors and submitting state                  | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`
+`onChange`         | `(FormData<V>) => void`                 | Handles the next data after any changes have been made            |
+`onSubmit`         | `V => void \ Promise<void>`             | Will be called if submitted without any failing validators        |
+`onSubmitFailed`   | `void \ ((Error, FormData<V>) => void)` | Will be called if submitting was aborted due to validation errors or if your submit returned a rejected promise |
+`onSubmitFinished` | `void \ ((FormData<V>) => void)`        | Will be called after submitting finished                          |
 
 In the above example was a single value specified with the key "phone". Hence
 `Fields.phone` is a element mapped to the generic type "string". It accepts only
