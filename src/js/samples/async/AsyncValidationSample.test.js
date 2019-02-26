@@ -6,7 +6,7 @@ import { morfiMount } from '../../../test/morfi-test-util';
 
 describe('AsyncValidationSample', () => {
     it('behaves like expected', async () => {
-        const { updateValue, isRequired, getErrorId, nextTick, getError, blur, instance } = morfiMount(
+        const { update, isRequired, getErrorId, nextTick, getError, blur, instance } = morfiMount(
             <AsyncValidationSample />
         );
 
@@ -14,13 +14,13 @@ describe('AsyncValidationSample', () => {
         expect(isRequired('userName')).toBe(true);
         expect(isRequired('realName')).toBe(false);
 
-        updateValue('realName', 'Tester');
+        update('realName', 'Tester');
         expect(getErrorId('realName')).toBe(undefined);
 
-        updateValue('realName', 'Tester @ga!n');
+        update('realName', 'Tester @ga!n');
         expect(getErrorId('realName')).toBe('AsyncValidationSample.realName.validation.requirements');
 
-        updateValue('userName', 'Tom');
+        update('userName', 'Tom');
         expect(getErrorId('userName')).toBe(undefined);
 
         blur();
@@ -30,7 +30,7 @@ describe('AsyncValidationSample', () => {
             values: { userName: 'Tom' },
         });
 
-        updateValue('userName', 'otherName');
+        update('userName', 'otherName');
         expect(getErrorId('userName')).toBe(undefined);
 
         blur();
@@ -39,9 +39,9 @@ describe('AsyncValidationSample', () => {
     });
 
     it('validates the user name on submit', async () => {
-        const { updateValue, nextTick, getError, submit } = morfiMount(<AsyncValidationSample />);
+        const { update, nextTick, getError, submit } = morfiMount(<AsyncValidationSample />);
 
-        updateValue('userName', 'Tom');
+        update('userName', 'Tom');
 
         submit();
 
@@ -53,10 +53,10 @@ describe('AsyncValidationSample', () => {
     });
 
     it('maps the server error to the field', async () => {
-        const { updateValue, nextTick, getErrorId, submit, getValue } = morfiMount(<AsyncValidationSample />);
+        const { update, nextTick, getErrorId, submit, getValue } = morfiMount(<AsyncValidationSample />);
 
-        updateValue('userName', 'Mike');
-        updateValue('alias', 'Foo');
+        update('userName', 'Mike');
+        update('alias', 'Foo');
 
         submit();
 
@@ -66,11 +66,11 @@ describe('AsyncValidationSample', () => {
     });
 
     it('resets inputs after submitting succeeded', async () => {
-        const { updateValue, nextTick, submit, getValue } = morfiMount(<AsyncValidationSample />);
+        const { update, nextTick, submit, getValue } = morfiMount(<AsyncValidationSample />);
 
-        updateValue('userName', 'Hammer');
-        updateValue('alias', 'Foo');
-        updateValue('realName', 'Some One');
+        update('userName', 'Hammer');
+        update('alias', 'Foo');
+        update('realName', 'Some One');
 
         submit();
 
@@ -82,11 +82,11 @@ describe('AsyncValidationSample', () => {
     });
 
     it('triggers no further changes if component would unmount', async () => {
-        const { updateValue, nextTick, submit, unmount } = morfiMount(<AsyncValidationSample />);
+        const { update, nextTick, submit, unmount } = morfiMount(<AsyncValidationSample />);
 
-        updateValue('userName', 'Hammer');
-        updateValue('alias', 'Foo');
-        updateValue('realName', 'Some One');
+        update('userName', 'Hammer');
+        update('alias', 'Foo');
+        update('realName', 'Some One');
 
         submit();
 
@@ -96,14 +96,14 @@ describe('AsyncValidationSample', () => {
     });
 
     it('displays no errors if async validation results does not belong to entered input', async () => {
-        const { updateValue, nextTick, getValue, getErrorId } = morfiMount(<AsyncValidationSample />);
+        const { update, nextTick, getValue, getErrorId } = morfiMount(<AsyncValidationSample />);
 
-        updateValue('alias', 'Tom');
+        update('alias', 'Tom');
         expect(getValue('alias')).toBe('Tom');
         expect(getErrorId('alias')).toBe(undefined);
 
         // do not wait
-        updateValue('alias', 'Tommy');
+        update('alias', 'Tommy');
         expect(getValue('alias')).toBe('Tommy');
 
         await nextTick();

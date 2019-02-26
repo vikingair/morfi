@@ -50,7 +50,7 @@ export default class FirstSample extends Component<{}, FirstSampleState> {
     };
 
     render(): React$Node {
-        const data = this.state.data;
+        const { data } = this.state;
         return (
             <div className="col-12">
                 <Form validation={validation} onChange={this.onChange} data={data} onSubmit={this.onSubmit}>

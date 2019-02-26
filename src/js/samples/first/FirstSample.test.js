@@ -16,10 +16,10 @@ describe('FirstSample', () => {
     });
 
     it('updates custom values', () => {
-        const { updateValue, getValue, getError } = morfiMount(<FirstSample />);
+        const { update, getValue, getError } = morfiMount(<FirstSample />);
 
         expect(getValue('gender')).toBe('M');
-        updateValue('gender', 'F');
+        update('gender', 'F');
         expect(getValue('gender')).toBe('F');
 
         // no validation does exist, so no error will be displayed
@@ -27,11 +27,11 @@ describe('FirstSample', () => {
     });
 
     it('handles synchronous submits', () => {
-        const { submit, updateValue, instance } = morfiMount(<FirstSample />);
+        const { submit, update, instance } = morfiMount(<FirstSample />);
 
         expect(instance.find(PersonTable).props().persons.length).toBe(0);
 
-        updateValue('lastName', 'Bush');
+        update('lastName', 'Bush');
         submit();
 
         const { persons } = instance.find(PersonTable).props();

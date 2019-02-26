@@ -41,7 +41,7 @@ export const morfiMount = (node: React$Element<any>) => {
             const { error, value } = getField(instance, name).props();
             return { error, value };
         },
-        updateValue: (name: string, value: any): void => {
+        update: (name: string, value: any): void => {
             if (lastFocus !== name) blur();
             getField(instance, name)
                 .props()
