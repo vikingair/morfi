@@ -160,7 +160,7 @@ In this table you get an overview of relevant types.
 
  Name                | Flow declaration                                                     | Information
  ------------------- | -------------------------------------------------------------------- | ---------------------
- `ErrorMessage`      | `{ id: string, values?: {[string]: mixed}}`                          | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
+ `ErrorMessage`      | `{ id: string, values?: { [string]: React$Node} }`                   | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
  `FormData<V>`       | `$Shape<$ObjMap<V, () => ErrorMessage>>`                             | This is the main structure for the data represent the form state
  `Validator<F>`      | `(F | void) => ErrorMessage \ void \ Promise<ErrorMessage \ void>`   | The validator returns void if no error occurred or a Promise if the validation is asynchronous 
  `ValidationType`    | `'onChange' \ 'onBlur' \ 'onSubmit'`                                 | Currently only those to validation types can be specified
