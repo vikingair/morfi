@@ -10,7 +10,7 @@ export const morfiMount = (node: React$Element<any>) => {
     const blur = () => {
         if (lastFocus) {
             const fieldProps = getField(instance, lastFocus).props();
-            fieldProps.onBlur(fieldProps.value);
+            fieldProps.onBlur && fieldProps.onBlur(fieldProps.value);
             lastFocus = undefined;
             instance.update();
         }

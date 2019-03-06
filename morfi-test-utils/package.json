@@ -1,6 +1,6 @@
 {
   "name": "morfi-test-utils",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Test utils for morfi",
   "license": "MIT",
   "author": "Viktor Luft <viktor.luft@freiheit.com> (https://github.com/fdc-viktor-luft)",
@@ -14,7 +14,7 @@
   },
   "peerDependencies": {
     "enzyme": ">= 3.0.0",
-    "morfi": ">= 1.0.0",
+    "morfi": ">= 1.1.0",
     "react": ">= 16.2"
   },
   "dependencies": {},
