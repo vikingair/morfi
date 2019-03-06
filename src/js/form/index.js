@@ -9,7 +9,7 @@
 import React, { Component } from 'react';
 
 // first all used flow types that are relevant for the package user
-export type ErrorMessage = { id: string, values?: { [string]: mixed } };
+export type ErrorMessage = { id: string, values?: { [string]: React$Node } };
 type MaybeError = ErrorMessage | void;
 export type Validator<F> = (F | void) => MaybeError | Promise<MaybeError>;
 export type ValidationType = 'onChange' | 'onBlur' | 'onSubmit';
