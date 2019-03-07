@@ -1,7 +1,7 @@
 // @flow
 
 import { mount, type ReactWrapper } from 'enzyme';
-import type { ErrorMessage } from '../js/form';
+import type { ErrorMessage } from '../src/js/form';
 
 export const morfiMount = (node: React$Element<any>) => {
     const instance: ReactWrapper = mount(node);

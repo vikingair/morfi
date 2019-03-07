@@ -2,7 +2,7 @@
 
 import React from 'react';
 import FirstSample from './FirstSample';
-import { morfiMount } from '../../../test/morfi-test-util';
+import { morfiMount } from '../../../../test/morfi-test-util';
 import PersonTable from './PersonTable';
 
 describe('FirstSample', () => {

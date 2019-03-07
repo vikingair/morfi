@@ -17,8 +17,8 @@ for i in `ls src/js/form/`; do cp src/js/form/$i dist/$i.flow; done
 # deploy utility
 rm -rf morfi-test-utils/dist
 mkdir -p morfi-test-utils/dist
-NODE_ENV=production babel src/test/morfi-test-util.js --out-file morfi-test-utils/dist/index.js
-cp src/test/morfi-test-util.js morfi-test-utils/dist/index.js.flow
+NODE_ENV=production babel test/morfi-test-util.js --out-file morfi-test-utils/dist/index.js
+cp test/morfi-test-util.js morfi-test-utils/dist/index.js.flow
 
 sed -i "s|'\.\.\/js\/form'|'morfi'|" morfi-test-utils/dist/index.js
 sed -i "s|'\.\.\/js\/form'|'morfi'|" morfi-test-utils/dist/index.js.flow

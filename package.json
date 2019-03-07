@@ -21,11 +21,11 @@
     "dist": "bin/dist.sh",
     "start": "react-scripts start",
     "build": "react-scripts build && rm build/service-worker.js && rm -rf docs && mv build docs",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
     "flow": "flow --quiet",
     "eslint": "eslint --cache --cache-location 'misc/.eslintcache' src/",
     "prettier": "prettier --config .prettierrc --write 'src/**/*.js'",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
+    "coveralls": "cat ./build/coverage/lcov.info | coveralls"
   },
   "peerDependencies": {
     "react": ">= 16.2"
@@ -33,6 +33,7 @@
   "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-flow": "^7.0.0",
@@ -44,6 +45,7 @@
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-prettier": "^3.0.1",
     "flow-bin": "^0.93.0",
+    "jest": "^24.1.0",
     "prettier": "^1.16.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
@@ -52,12 +54,11 @@
     "spy4js": "^2.3.1"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "src/js/form/*.{js}"
-    ],
-    "coverageReporters": [
-      "lcov"
-    ],
+    "setupFilesAfterEnv": ["<rootDir>/test/setupTests.js"],
+    "collectCoverageFrom": ["src/js/form/*.js"],
+    "testMatch": ["<rootDir>/src/**/?(*.)test.js"],
+    "coverageDirectory": "<rootDir>/build/coverage",
+    "coverageReporters": ["lcov"],
     "coverageThreshold": {
       "global": {
         "statements": 100,
@@ -65,6 +66,9 @@
         "functions": 100,
         "lines": 100
       }
+    },
+    "moduleNameMapper": {
+      "\\.(css)$": "identity-obj-proxy"
     }
   },
   "main": "dist/index.js",

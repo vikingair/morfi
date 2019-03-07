@@ -3,7 +3,7 @@
 import React from 'react';
 import { ValidationSample } from './ValidationSample';
 import { Select } from '../../fields/FormSelect';
-import { morfiMount } from '../../../test/morfi-test-util';
+import { morfiMount } from '../../../../test/morfi-test-util';
 
 describe('ValidationSample', () => {
     it('validates onChange', () => {

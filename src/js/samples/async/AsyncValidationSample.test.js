@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AsyncValidationSample } from './AsyncValidationSample';
-import { morfiMount } from '../../../test/morfi-test-util';
+import { morfiMount } from '../../../../test/morfi-test-util';
 
 describe('AsyncValidationSample', () => {
     it('behaves like expected', async () => {

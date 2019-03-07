@@ -6,8 +6,8 @@
  * @flow
  */
 
-import type { FormValidation, FormData } from '../js/form';
-import { Validators } from '../js/validators/validators';
+import type { FormValidation, FormData } from '../src/js/form';
+import { Validators } from '../src/js/validators/validators';
 
 type MyFormValues = {| name: string, age: number, size: number, nickname?: string, email: string |};
 
