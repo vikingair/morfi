@@ -26,7 +26,7 @@ type FormProps<V: Object> = {|
     onSubmit: V => void | Promise<void>,
     onSubmitFailed?: (Error, FormData<V>) => void,
     onSubmitFinished?: (FormData<V>) => void,
-|};
+|};FormValidation
 export type iForm<V: Object> = React$ComponentType<FormProps<V>>;
 export type FieldProps<F> = {|
     onChange: F => void,

@@ -42,34 +42,48 @@ npm install --save morfi
 Let's get a first impression...
 ```js
 import React from 'react';
-import { Morfi } from 'morfi';
+import { Morfi, type FormData, type FormValidation } from 'morfi';
+ // this can be replaced by any intl framework of your choice
+import { myOwnIntlFramework } from 'my-own-intl-framwwork';
 
+// first define your form value types
 type MyFormValues = {| phone: string |};
 
 const initialValues: MyFormValues = { phone: '' };
-const validation = {};
+const initialData: FormData<MyFormValues> = { values: initialValues, errors: {} };
+const validation: FormValidation<MyFormValues> = {}; // will be explained later
 
+// initialize the used components
 const { Form, Fields } = Morfi.create(initialValues);
 
-const render = () => (
-    <Form validation={validation}
-          onChange={onChange}
-          data={data}
-          onSubmit={onSubmit}>
-        <Fields.phone>
-            {({ onChange, onBlur, required, value, error }) => (
-                <div>
-                    <label>{`Phone${required ? ' *' : ''}`}</label>
-                    <input value={value} 
-                           onChange={e => onChange(e.target.value)}
-                           onBlur={e => onBlur(e.target.value)} />
-                    <span className="error">{__(error)}</span>
-                </div>
-            )}
-        </Fields.phone>
-        <button type="submit">Submit</button>
-    </Form>
-);
+// you can initialize the submit callback outside of the component
+// if it does not depend on further component state
+const onSubmit = (values: MyFormValues) => console.log(values);
+
+const MyForm = () => {
+    // you don't have to use hooks (see example below)
+    const [data, setData] = React.useState<FormData<MyFormValues>>(initialData);
+    
+    return (
+        <Form validation={validation}
+              onChange={setData}
+              data={data}
+              onSubmit={onSubmit}>
+            <Fields.phone>
+                {({ onChange, onBlur, required, value, error }) => (
+                    <div>
+                        <label>{`Phone${required ? ' *' : ''}`}</label>
+                        <input value={value} 
+                               onChange={e => onChange(e.target.value)}
+                               onBlur={e => onBlur(e.target.value)} />
+                        <span className="error">{myOwnIntlFramework(error)}</span>
+                    </div>
+                )}
+            </Fields.phone>
+            <button type="submit">Submit</button>
+        </Form>
+    );
+}
 ```
 By calling `Morfi.create` with the initial values, a `React` context will generated
 and you get `Form` element together with `Fields` which itself contains different
@@ -162,7 +176,7 @@ In this table you get an overview of relevant types.
  ------------------- | -------------------------------------------------------------------- | ---------------------
  `ErrorMessage`      | `{ id: string, values?: { [string]: React$Node} }`                   | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
  `FormData<V>`       | `$Shape<$ObjMap<V, () => ErrorMessage>>`                             | This is the main structure for the data represent the form state
- `Validator<F>`      | `(F | void) => ErrorMessage \ void \ Promise<ErrorMessage \ void>`   | The validator returns void if no error occurred or a Promise if the validation is asynchronous 
+ `Validator<F>`      | `(F \ void) => ErrorMessage \ void \ Promise<ErrorMessage \ void>`   | The validator returns void if no error occurred or a Promise if the validation is asynchronous 
  `ValidationType`    | `'onChange' \ 'onBlur' \ 'onSubmit'`                                 | Currently only those to validation types can be specified
  `FormValidation<V>` | `$Shape<$ObjMap<V, <F>(F) => FieldValidation<F>>>`                   | For each key of the specified form values V here can be specified all validations for this field
 
