@@ -5,7 +5,9 @@
 
 # production
 /build
-dist/
+/dist
+/morfi-test-utils/npm/dist
+/morfi-test-utils/npm/src
 
 # misc
 .DS_Store

@@ -3,22 +3,12 @@
 set -eu
 
 # first clean up old files
-rm -rf dist
+rm -rf dist morfi-test-utils/npm/dist morfi-test-utils/npm/src
 
-# use the same babel configurations as create-react-app
-NODE_ENV=production babel src/js/form --out-dir dist
+# run rollup
+rollup -c
 
-# generate flow source maps
-for i in `ls src/js/form/`; do cp src/js/form/$i dist/$i.flow; done
-
-# remove redundant test files
-# rm `ls dist/*.test.js*`
-
-# deploy utility
-rm -rf morfi-test-utils/dist
-mkdir -p morfi-test-utils/dist
-NODE_ENV=production babel test/morfi-test-util.js --out-file morfi-test-utils/dist/index.js
-cp test/morfi-test-util.js morfi-test-utils/dist/index.js.flow
-
-sed -i "s|'\.\.\/js\/form'|'morfi'|" morfi-test-utils/dist/index.js
-sed -i "s|'\.\.\/js\/form'|'morfi'|" morfi-test-utils/dist/index.js.flow
+# now copy some files for distribution of morfi-test-utils
+cp -r morfi-test-utils/src morfi-test-utils/npm/src
+# modify the import to use the external peer dependency morfi
+sed -i "s|'\.\.\/\.\.\/src'|'morfi'|" morfi-test-utils/npm/src/index.js
