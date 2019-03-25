@@ -1,5 +1,5 @@
 [ignore]
-<PROJECT_ROOT>/morfi-test-utils/npm/src.*
+<PROJECT_ROOT>/morfi-test-utils/npm/.*
 
 [include]
 

@@ -12,3 +12,6 @@ rollup -c
 cp -r morfi-test-utils/src morfi-test-utils/npm/src
 # modify the import to use the external peer dependency morfi
 sed -i "s|'\.\.\/\.\.\/src'|'morfi'|" morfi-test-utils/npm/src/index.js
+# fix incorrect flow paths
+sed -i "s|\.\.\/src|src|" morfi-test-utils/npm/dist/cjs/index.js.flow
+sed -i "s|\.\.\/src|src|" morfi-test-utils/npm/dist/esm/index.js.flow

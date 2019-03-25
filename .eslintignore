@@ -1,3 +1,7 @@
+# configs
 /config
 jest.config.js
 rollup.config.js
+
+# build
+morfi-test-utils/npm/dist
