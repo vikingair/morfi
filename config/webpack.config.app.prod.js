@@ -18,7 +18,7 @@ module.exports = {
     output: {
         path: paths.appBuild,
         filename: 'static/js/[name].[chunkhash:8].js',
-        publicPath: '/',
+        publicPath: '/morfi',
     },
     mode: 'production',
     module: {
