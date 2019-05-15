@@ -6,7 +6,7 @@ set -eu
 rm -rf dist morfi-test-utils/npm/dist morfi-test-utils/npm/src
 
 # run rollup
-rollup -c
+yarn run rollup -c
 
 # now copy some files for distribution of morfi-test-utils
 cp -r morfi-test-utils/src morfi-test-utils/npm/src

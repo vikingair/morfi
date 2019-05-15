@@ -37,6 +37,6 @@ describe('FirstSample', () => {
         const { persons } = instance.find(PersonTable).props();
         expect(persons.length).toBe(1);
 
-        expect(persons[0]).toEqual({ age: 1, firstName: 'Nick', gender: 'M', lastName: 'Bush' });
+        expect(persons[0]).toEqual({ age: 21, firstName: 'Nick', gender: 'M', lastName: 'Bush' });
     });
 });

@@ -37,9 +37,9 @@ export class FirstSample extends Component<{}, FirstSampleState> {
 
     onChange = (data: FormData<MyFormValues>) => this.setState({ data });
 
-    onSubmit = ({ firstName, lastName, gender }: MyFormValues): void => {
+    onSubmit = ({ firstName, lastName, gender, age }: MyFormValues): void => {
         this.setState({
-            persons: [...this.state.persons, { gender, firstName, lastName, age: 1 }],
+            persons: [...this.state.persons, { gender, firstName, lastName, age }],
         });
     };
 

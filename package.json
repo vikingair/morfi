@@ -69,8 +69,8 @@
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "prettier": "^1.16.1",
     "promise": "^8.0.3",
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-router-dom": "^4.3.1",
     "rollup": "^1.7.0",
     "rollup-plugin-babel": "^4.3.2",
@@ -78,7 +78,6 @@
     "sass-loader": "^7.1.0",
     "spy4js": "^2.3.1",
     "terser-webpack-plugin": "^1.2.3",
-    "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1"
