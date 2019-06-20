@@ -1,3 +1,6 @@
+# typescript defs
+src/index.d.ts
+
 # configs
 /config
 jest.config.js

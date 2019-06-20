@@ -337,13 +337,13 @@ The following table includes results from [bundlephobia](https://bundlephobia.co
 
 Package                 | Version | Size (minified + gzipped)
 ------------------------|---------|--------------------------
-`morfi`                 | 1.0.0   | 1.8 kB
+`morfi`                 | 1.1.3   | 1.7 kB
 `react-form`            | 3.5.7   | Missing Dependency Error
-`redux-form`            | 8.1.0   | 26.7 kB
-`react-redux-form`      | 1.16.12 | 22.5 kB
-`formik`                | 1.5.1   | 12 kB
-`react-final-form`      | 4.0.2   | 2.9 kB + 4.7 kB (hidden peer dependency: `final-form@4.11.1`)
-`react-jsonschema-form` | 1.2.1   | 53.4 kB
+`redux-form`            | 8.2.4   | 27 kB
+`react-redux-form`      | 1.16.13 | 22.5 kB
+`formik`                | 1.5.7   | 12.6 kB
+`react-final-form`      | 6.3.0   | 3.1 kB + 4.9 kB (hidden peer dependency: `final-form@4.16.1`)
+`react-jsonschema-form` | 1.6.1   | 61.6 kB
 
 The following statements represent only my personal opinion, although I did
 not work a lot with the following pretty good packages.
