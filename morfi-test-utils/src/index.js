@@ -1,10 +1,10 @@
 // @flow
 
-import { mount, type ReactWrapper } from 'enzyme';
+import { mount } from 'enzyme';
 import type { ErrorMessage } from '../../src';
 
 export const morfiMount = (node: React$Element<any>) => {
-    const instance: ReactWrapper = mount(node);
+    const instance = mount(node);
 
     let lastFocus = undefined;
     const blur = () => {
@@ -62,20 +62,20 @@ export const morfiMount = (node: React$Element<any>) => {
             instance.update();
         },
         nextTick: async (): Promise<void> => {
-            await new Promise(resolve => process.nextTick(resolve));
+            await new Promise(resolve => (process: any).nextTick(resolve));
             instance.update();
         },
     };
 };
 
-const getField = (instance: ReactWrapper, name) => {
+const getField = (instance: any, name) => {
     const results = instance.find(`Field[name="${name}"]`);
     if (results.length > 1) throw new Error('Found more than one field with name: ' + name);
     if (results.length === 0) throw new Error('Found no field with name: ' + name);
     return results.at(0).childAt(0);
 };
 
-const getForm = (instance: ReactWrapper) => {
+const getForm = (instance: any) => {
     const results = instance.find('Form');
     if (results.length > 1) throw new Error('Found more than one Form. This is not yet supported');
     if (results.length === 0) throw new Error('Found no Form!');
