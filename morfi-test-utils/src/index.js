@@ -1,10 +1,10 @@
 // @flow
 
-import { mount } from 'enzyme';
+import { mount, type ReactWrapper } from 'enzyme';
 import type { ErrorMessage } from '../../src';
 
 export const morfiMount = (node: React$Element<any>) => {
-    const instance = mount(node);
+    const instance: ReactWrapper<any> = mount(node);
 
     let lastFocus = undefined;
     const blur = () => {

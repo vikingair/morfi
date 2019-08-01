@@ -40,7 +40,7 @@ const htmlForObject = (o: { [string]: mixed }): string => {
                     result += `<span class="number">${value}</span>`;
                     return;
                 default:
-                    result += sanitize(JSON.stringify(value));
+                    result += sanitize(JSON.stringify(value) || '');
             }
         }
     });

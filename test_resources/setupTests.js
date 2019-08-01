@@ -10,7 +10,7 @@ import { configure } from 'enzyme';
 import { createSerializer } from 'enzyme-to-json';
 import Adapter from 'enzyme-adapter-react-16';
 
-expect.addSnapshotSerializer(createSerializer({ mode: 'deep' }));
+(expect: any).addSnapshotSerializer(createSerializer({ mode: 'deep' }));
 configure({ adapter: new Adapter() });
 // sadly enzyme support for react hooks is atm very poor
 // e.g. we do not need to wrap the code into "act" to make it work, but React will complain if we don't
