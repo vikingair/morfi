@@ -1,5 +1,5 @@
 # typescript defs
-src/index.d.ts
+*.d.ts
 
 # configs
 /config

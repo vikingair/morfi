@@ -1,5 +1,5 @@
 
-import { Component, ReactNode, StatelessComponent } from 'react';
+import { Component, ReactNode, FC } from 'react';
 
 export type ErrorMessage = { id: string, values?: { [key: string]: ReactNode } };
 type MaybeError = ErrorMessage | void;
@@ -31,7 +31,7 @@ export type FieldProps<F> = {
 };
 export type FieldChildren<F> = (props: FieldProps<F>) => ReactNode;
 type iFieldProps<F> = { children: FieldChildren<F> };
-export type iField<F> = StatelessComponent<iFieldProps<F>>;
+export type iField<F> = FC<iFieldProps<F>>;
 export type TypeToField = <F>(F) => iField<F>;
 export type FormFields<V> = { [key in keyof V]: iField<key> };
 export type FormContext<V> = { Form: iForm<V>, Fields: FormFields<V> };

@@ -17,7 +17,7 @@ npm install --save-dev morfi-test-utils
 ### How-to
 Import the utility in your tests...
 ```js
-import { morfiMount } from './morfi-test-utils';
+import { morfiMount } from 'morfi-test-utils';
 ```
 And now have a look on a list of all returned utilities and how to use them.
 ```js
@@ -60,12 +60,17 @@ it('interacts with my form', async () => {
     blur();
     
     // "submit" lets you submit the currently entered inputs (like a user would)
-    submit();
+    // you can even supply an optional callback that will be called directly after
+    // after the click was simulated (can be necessary for concurrent actions)
+    await submit();
     
     // "unmount" will unmount the enzyme instance and therefore the included form
     unmount();
 });
 ```
+### Hint
+One peer dependency is `react-dom@16.9` or higher. Since all actions are already wrapped into
+`act` from `react-dom/test-utils` to fully support the behaviour of React Hooks. 
 
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-url]: https://github.com/fdc-viktor-luft/morfi/blob/master/LICENSE

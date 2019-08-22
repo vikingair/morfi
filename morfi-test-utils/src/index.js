@@ -1,17 +1,35 @@
 // @flow
 
 import { mount, type ReactWrapper } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 import type { ErrorMessage } from '../../src';
 
-export const morfiMount = (node: React$Element<any>) => {
+type MorfiMount = {|
+    instance: ReactWrapper<any>,
+    unmount: () => void,
+    isRequired: (name: string) => boolean,
+    getValue: (name: string) => any,
+    getError: (name: string) => ErrorMessage | void,
+    getErrorId: (name: string) => string | void,
+    getState: (name: string) => {| error: ErrorMessage | void, value: any |},
+    update: (name: string, value: any) => void,
+    focus: (name: string) => void,
+    blur: () => void,
+    submit: (cbAfterClick?: () => void) => Promise<void>,
+    nextTick: () => Promise<void>,
+|};
+
+export const morfiMount = (node: React$Element<any>): MorfiMount => {
     const instance: ReactWrapper<any> = mount(node);
 
-    let lastFocus = undefined;
+    let lastFocus: string | void = undefined;
     const blur = () => {
         if (lastFocus) {
-            const fieldProps = getField(instance, lastFocus).props();
-            fieldProps.onBlur && fieldProps.onBlur(fieldProps.value);
-            lastFocus = undefined;
+            act(() => {
+                const fieldProps = getField(instance, (lastFocus: any)).props();
+                fieldProps.onBlur && fieldProps.onBlur(fieldProps.value);
+                lastFocus = undefined;
+            });
             instance.update();
         }
     };
@@ -43,9 +61,11 @@ export const morfiMount = (node: React$Element<any>) => {
         },
         update: (name: string, value: any): void => {
             if (lastFocus !== name) blur();
-            getField(instance, name)
-                .props()
-                .onChange(value);
+            act(() => {
+                getField(instance, name)
+                    .props()
+                    .onChange(value);
+            });
             lastFocus = name;
             instance.update();
         },
@@ -54,21 +74,26 @@ export const morfiMount = (node: React$Element<any>) => {
             lastFocus = name;
         },
         blur,
-        submit: (): void => {
+        submit: async (cbAfterClick?: () => void): Promise<void> => {
             blur();
-            getForm(instance)
-                .props()
-                .onSubmit({ preventDefault: () => {} });
+            await act(async () => {
+                getForm(instance)
+                    .props()
+                    .onSubmit({ preventDefault: () => {} });
+                cbAfterClick && cbAfterClick();
+            });
             instance.update();
         },
         nextTick: async (): Promise<void> => {
-            await new Promise(resolve => (process: any).nextTick(resolve));
+            await act(async () => {
+                await new Promise(resolve => (process: any).nextTick(resolve));
+            });
             instance.update();
         },
     };
 };
 
-const getField = (instance: any, name) => {
+const getField = (instance: any, name: string) => {
     const results = instance.find(`Field[name="${name}"]`);
     if (results.length > 1) throw new Error('Found more than one field with name: ' + name);
     if (results.length === 0) throw new Error('Found no field with name: ' + name);

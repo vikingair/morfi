@@ -17,7 +17,7 @@ export default [
     {
         input: 'morfi-test-utils/src/index.js',
         plugins,
-        external: ['enzyme'],
+        external: ['enzyme', 'react-dom/test-utils'],
         output: [
             { dir: 'morfi-test-utils/npm/dist/cjs', format: 'cjs' },
             { dir: 'morfi-test-utils/npm/dist/esm', format: 'esm' },

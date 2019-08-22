@@ -47,7 +47,7 @@ describe('ValidationSample', () => {
         expect(getErrorId('email')).toBe(undefined);
     });
 
-    it('validates onSubmit', () => {
+    it('validates onSubmit', async () => {
         const { update, getErrorId, focus, instance, submit } = morfiMount(<ValidationSample />);
 
         instance
@@ -60,7 +60,7 @@ describe('ValidationSample', () => {
         expect(getErrorId('email')).toBe(undefined);
         expect(getErrorId('pw')).toBe(undefined);
 
-        submit();
+        await submit();
 
         expect(getErrorId('email')).toBe('validation.email.requirements');
         expect(getErrorId('pw')).toBe('validation.pw.requirements');
@@ -68,7 +68,7 @@ describe('ValidationSample', () => {
         update('email', 'foo@bar.com');
         update('pw', '12345678');
 
-        submit();
+        await submit();
 
         expect(getErrorId('email')).toBe(undefined);
         expect(getErrorId('pw')).toBe(undefined);

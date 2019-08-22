@@ -26,13 +26,13 @@ describe('FirstSample', () => {
         expect(getError('gender')).toBe(undefined);
     });
 
-    it('handles synchronous submits', () => {
+    it('handles synchronous submits', async () => {
         const { submit, update, instance } = morfiMount(<FirstSample />);
 
         expect(instance.find(PersonTable).props().persons.length).toBe(0);
 
         update('lastName', 'Bush');
-        submit();
+        await submit();
 
         const { persons } = instance.find(PersonTable).props();
         expect(persons.length).toBe(1);

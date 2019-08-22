@@ -6,11 +6,8 @@ import { morfiMount } from '../morfi-test-utils/src/';
 
 describe('AsyncValidationSample', () => {
     it('behaves like expected', async () => {
-        const { update, isRequired, getErrorId, nextTick, getError, blur, instance } = morfiMount(
-            <AsyncValidationSample />
-        );
+        const { update, isRequired, getErrorId, nextTick, getError, blur } = morfiMount(<AsyncValidationSample />);
 
-        instance.update();
         expect(isRequired('userName')).toBe(true);
         expect(isRequired('realName')).toBe(false);
 
@@ -39,13 +36,12 @@ describe('AsyncValidationSample', () => {
     });
 
     it('validates the user name on submit', async () => {
-        const { update, nextTick, getError, submit } = morfiMount(<AsyncValidationSample />);
+        const { update, getError, submit } = morfiMount(<AsyncValidationSample />);
 
         update('userName', 'Tom');
 
-        submit();
+        await submit();
 
-        await nextTick();
         expect(getError('userName')).toEqual({
             id: 'AsyncValidationSample.userName.already.registered',
             values: { userName: 'Tom' },
@@ -53,28 +49,25 @@ describe('AsyncValidationSample', () => {
     });
 
     it('maps the server error to the field', async () => {
-        const { update, nextTick, getErrorId, submit, getValue } = morfiMount(<AsyncValidationSample />);
+        const { update, getErrorId, submit, getValue } = morfiMount(<AsyncValidationSample />);
 
         update('userName', 'Mike');
         update('alias', 'Foo');
 
-        submit();
+        await submit();
 
-        await nextTick();
         expect(getValue('userName')).toBe('Mike');
         expect(getErrorId('userName')).toBe('AsyncValidationSample.userName.submit.failed');
     });
 
     it('resets inputs after submitting succeeded', async () => {
-        const { update, nextTick, submit, getValue } = morfiMount(<AsyncValidationSample />);
+        const { update, submit, getValue } = morfiMount(<AsyncValidationSample />);
 
         update('userName', 'Hammer');
         update('alias', 'Foo');
         update('realName', 'Some One');
 
-        submit();
-
-        await nextTick();
+        await submit();
 
         expect(getValue('userName')).toBe('');
         expect(getValue('alias')).toBe('');
@@ -82,17 +75,13 @@ describe('AsyncValidationSample', () => {
     });
 
     it('triggers no further changes if component would unmount', async () => {
-        const { update, nextTick, submit, unmount } = morfiMount(<AsyncValidationSample />);
+        const { update, submit, unmount } = morfiMount(<AsyncValidationSample />);
 
         update('userName', 'Hammer');
         update('alias', 'Foo');
         update('realName', 'Some One');
 
-        submit();
-
-        unmount();
-
-        await nextTick();
+        await submit(unmount);
     });
 
     it('displays no errors if async validation results does not belong to entered input', async () => {

@@ -35,5 +35,8 @@
       "version": "16.8",
       "flowVersion": "0.94"
     }
+  },
+  "globals": {
+    "process": true
   }
 }
