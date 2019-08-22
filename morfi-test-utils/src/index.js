@@ -76,12 +76,14 @@ export const morfiMount = (node: React$Element<any>): MorfiMount => {
         blur,
         submit: async (cbAfterClick?: () => void): Promise<void> => {
             blur();
-            await act(async () => {
+            const p = act(async () => {
                 getForm(instance)
                     .props()
                     .onSubmit({ preventDefault: () => {} });
-                cbAfterClick && cbAfterClick();
             });
+            instance.update();
+            cbAfterClick && cbAfterClick();
+            await p;
             instance.update();
         },
         nextTick: async (): Promise<void> => {
