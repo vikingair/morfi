@@ -1,5 +1,5 @@
 
-import { Component, ReactNode, FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 export type ErrorMessage = { id: string, values?: { [key: string]: ReactNode } };
 type MaybeError = ErrorMessage | void;
@@ -21,19 +21,18 @@ type FormProps<V> = {
     onSubmitFailed?: (error: Error, data: FormData<V>) => void,
     onSubmitFinished?: (data: FormData<V>) => void,
 };
-export type iForm<V> = Component<FormProps<V>>;
+export type iForm<V> = FC<FormProps<V>>;
 export type FieldProps<F> = {
     onChange: (value: F) => void,
     onBlur: (value: F) => void,
     required: boolean,
     value: F,
-    error?: MaybeError,
+    error?: ErrorMessage,
 };
-export type FieldChildren<F> = (props: FieldProps<F>) => ReactNode;
+export type FieldChildren<F> = FC<FieldProps<F>>;
 type iFieldProps<F> = { children: FieldChildren<F> };
 export type iField<F> = FC<iFieldProps<F>>;
-export type TypeToField = <F>(F) => iField<F>;
-export type FormFields<V> = { [key in keyof V]: iField<key> };
+export type FormFields<V> = { [key in keyof V]: iField<V[key]> };
 export type FormContext<V> = { Form: iForm<V>, Fields: FormFields<V> };
 
 type MorfiCreate = <V>(initial: V) => FormContext<V>;
