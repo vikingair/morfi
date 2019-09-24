@@ -35,6 +35,7 @@ export type iField<F> = FC<iFieldProps<F>>;
 export type FormFields<V> = { [key in keyof V]: iField<V[key]> };
 export type FormContext<V> = { Form: iForm<V>, Fields: FormFields<V> };
 
+export class MorfiError extends Error {}
 type MorfiCreate = <V>(initial: V) => FormContext<V>;
 type MorfiHasErrors = <V>(data: FormData<V>) => boolean;
 type MorfiIsValidationError = (error: any) => boolean;
