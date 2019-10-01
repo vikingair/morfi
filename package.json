@@ -1,6 +1,6 @@
 {
   "name": "morfi",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "src/index.d.ts",

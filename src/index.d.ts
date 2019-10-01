@@ -8,7 +8,7 @@ export type Validator<F> = (value?: F) => MaybeError | Promise<MaybeError>;
 export type ValidationType = 'onChange' | 'onBlur' | 'onSubmit';
 type FieldValidation<F> = Partial<{ [key in ValidationType]: Validator<F> }>;
 
-export type FormValidation<V> = Partial<{ [key in keyof V]: FieldValidation<key>}>;
+export type FormValidation<V> = Partial<{ [key in keyof V]: FieldValidation<V[key]>}>;
 export type FormErrors<V> = Partial<{ [key in keyof V]: ErrorMessage }>;
 export type FormData<V> = { values: V, errors: FormErrors<V>, submitting?: boolean };
 type FormProps<V> = {
