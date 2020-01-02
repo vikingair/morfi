@@ -15,12 +15,12 @@ experience with `react`, I decided to spend some time and think about
 an ideal solution.
 
 I tried to target the following aspects. It should be a small bundle.
-Leave the flexibility to the developer. Make it type safe, because I
-develop only with assistance of `flow`. Support the usage of any
+Leave the flexibility to the developer. Make it type safe! Support the usage of any
 internationalization framework. Absolutely no dependencies, which have
 to be installed additionally. High performing and very assisting.
 
-* Optimized `flow` assistance
+* `TypeScript` support
+* `flow` support
 * No dependencies
 * Small bundle size
 * High performance
@@ -47,7 +47,7 @@ import { Morfi, type FormData, type FormValidation } from 'morfi';
 import { myOwnIntlFramework } from 'my-own-intl-framwwork';
 
 // first define your form value types
-type MyFormValues = {| phone: string |};
+type MyFormValues = { phone: string };
 
 const initialValues: MyFormValues = { phone: '' };
 const initialData: FormData<MyFormValues> = { values: initialValues, errors: {} };
@@ -93,7 +93,7 @@ keys of your initial values matter.
 
 The `Form` element receives certain "control" props and needs to provide the current
 context state to each of the `Fields`.
-It expects the following props: (See below for the missing [Flow types](#flow-types))
+It expects the following props: (See below for the missing [types](#types))
 
 Props              | Type                                    | Description                                                       | Example
 ------------------ | --------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------
@@ -165,20 +165,36 @@ When the user submits the form, the following will happen:
 
 ![morfi-Lifecycle](morfi-Lifecycle.png)
 
-### Flow types
+### Types
 
 **morfi** comes with a lot of types and exports `FormData<T>`, `ErrorMessage`
 and `Validator`.
 
 In this table you get an overview of relevant types.
 
- Name                | Flow declaration                                                     | Information
- ------------------- | -------------------------------------------------------------------- | ---------------------
- `ErrorMessage`      | `{ id: string, values?: { [string]: React$Node} }`                   | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
- `FormData<V>`       | `$Shape<$ObjMap<V, () => ErrorMessage>>`                             | This is the main structure for the data represent the form state
- `Validator<F>`      | `(F \ void) => ErrorMessage \ void \ Promise<ErrorMessage \ void>`   | The validator returns void if no error occurred or a Promise if the validation is asynchronous 
- `ValidationType`    | `'onChange' \ 'onBlur' \ 'onSubmit'`                                 | Currently only those to validation types can be specified
- `FormValidation<V>` | `$Shape<$ObjMap<V, <F>(F) => FieldValidation<F>>>`                   | For each key of the specified form values V here can be specified all validations for this field
+ Name                 | TypeScript declaration                                               | Information
+ -------------------- | -------------------------------------------------------------------- | ---------------------
+ `ErrorMessage`       | `{ id: string, values?: { [key: string]: ReactNode } }`              | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
+ `MaybeError`         | `ErrorMessage \ void`                                                | This is the returned feedback of each validator
+ `Validator<F>`       | `(value?: F) => MaybeError \ Promise<MaybeError>`                    | The validator returns void if no error occurred or a Promise if the validation is asynchronous 
+ `ValidationType`     | `'onChange' \ 'onBlur' \ 'onSubmit'`                                 | The validation types that can be specified
+ `FieldValidation<F>` | `Partial<{ [key in ValidationType]: Validator<F> }>`                 | An object containing all specified validators for one field
+ `FormValidation<V>`  | `Partial<{ [key in keyof V]: FieldValidation<V[key]>}>`              | An object containing all validations for the whole form
+ `FormErrors<V>`      | `Partial<{ [key in keyof V]: ErrorMessage }>`                        | An object containing all current errors
+ `FormData<V>`        | `{ values: V, errors: FormErrors<V>, submitting?: boolean }`         | This is the main structure for the data represent the form state
+
+Here the corresponding `flow` declarations:
+
+ Name                 | Flow declaration                                                    
+ -------------------- | --------------------------------------------------------------------
+ `ErrorMessage`       | `{ id: string, values?: { [string]: React$Node} }`                  
+ `MaybeError`         | `ErrorMessage \ void` 
+ `Validator<F>`       | `(F \ void) => MaybeError \ Promise<MaybeError>`   
+ `ValidationType`     | `'onChange' \ 'onBlur' \ 'onSubmit'`                                
+ `FieldValidation<F>` | `$Shape<{ [ValidationType]: Validator<F> }>` 
+ `FormValidation<V>`  | `$Shape<$ObjMap<V, <F>(F) => FieldValidation<F>>>`                  
+ `FormErrors<V>`      | `$Shape<$ObjMap<V, () => ErrorMessage>>`                            
+ `FormData<V>`        | `{ values: V, errors: FormErrors<V>, submitting?: boolean }`                            
 
 ### Example
 
@@ -188,12 +204,12 @@ The [sample](https://fdc-viktor-luft.github.io/morfi/) is hosted by GitHub Pages
 We first define the types of the form values...
 ```js
 type Gender = 'M' | 'F';
-type MyFormValues = {|
+type MyFormValues = {
     firstName: string,
     lastName: string,
     gender: Gender,
     age: number,
-|};
+};
 // gender can be selected with the following available options
 const genderOptions = [{ value: 'M', label: 'male' }, { value: 'F', label: 'female' }];
 ```
@@ -212,8 +228,8 @@ const validation = {
 ```
 Let's say we decide to control the form state inside our app state...
 ```js
-type AppProps = {||};
-type AppState = {| data: FormData<MyFormValues> |};
+type AppProps = {};
+type AppState = { data: FormData<MyFormValues> };
 ```
 Now we define the first version of the app... (see [here](https://github.com/fdc-viktor-luft/morfi/tree/master/src/js/fields) for all used custom components below)
 ```js
@@ -223,8 +239,8 @@ import { Morfi, type FormData } from 'morfi';
 (...)
 
 class App extends Component<AppProps, AppState> {
-    // first we initialize the defaults (if we would not, flow would complain for all mandatory fields missing)
-    // we could also start with initial errors, but here we don't
+    // first we initialize the defaults
+    // we could even start with initial errors
     state: AppState = { data: { values: initialValues, errors: {} } };
 
     // this handler will propagate the form changes to the state
@@ -325,7 +341,7 @@ almost as a user would test your form manually.
   from the above examples?
   
   **morfi** is primarily made to handle updates, validations, storing of
-  data, assist the developer with strict flow types and serve as a guideline for form handling.
+  data, assist the developer with strict types and serve as a guideline for form handling.
   
   Later there might be subdirectories which you can optionally use, but most
   often in larger projects you want to have full control over all form components.
@@ -337,13 +353,13 @@ The following table includes results from [bundlephobia](https://bundlephobia.co
 
 Package                 | Version | Size (minified + gzipped)
 ------------------------|---------|--------------------------
-`morfi`                 | 1.1.3   | 1.7 kB
-`react-form`            | 3.5.7   | Missing Dependency Error
-`redux-form`            | 8.2.4   | 27 kB
-`react-redux-form`      | 1.16.13 | 22.5 kB
-`formik`                | 1.5.7   | 12.6 kB
-`react-final-form`      | 6.3.0   | 3.1 kB + 4.9 kB (hidden peer dependency: `final-form@4.16.1`)
-`react-jsonschema-form` | 1.6.1   | 61.6 kB
+`morfi`                 | 1.1.8   | 1.7 kB
+`react-form`            | 4.0.1   | 4.5 kB
+`redux-form`            | 8.2.6   | 27 kB
+`react-redux-form`      | 1.16.14 | 22.5 kB
+`formik`                | 2.0.10  | 14.9 kB
+`react-final-form`      | 6.3.3   | 3.1 kB + 5.1 kB (hidden peer dependency: `final-form@4.18.6`)
+`react-jsonschema-form` | 1.8.1   | 68.8 kB
 
 The following statements represent only my personal opinion, although I did
 not work a lot with the following pretty good packages.
