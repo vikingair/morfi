@@ -25,11 +25,14 @@ export const morfiMount = (node: React$Element<any>): MorfiMount => {
     let lastFocus: string | void = undefined;
     const blur = () => {
         if (lastFocus) {
-            act(() => {
-                const fieldProps = getField(instance, (lastFocus: any)).props();
-                fieldProps.onBlur && fieldProps.onBlur(fieldProps.value);
-                lastFocus = undefined;
-            });
+            const field = getFieldOrNot(instance, (lastFocus: any));
+            if (field) {
+                act(() => {
+                    const fieldProps = field.props();
+                    fieldProps.onBlur && fieldProps.onBlur(fieldProps.value);
+                });
+            }
+            lastFocus = undefined;
             instance.update();
         }
     };
@@ -95,11 +98,17 @@ export const morfiMount = (node: React$Element<any>): MorfiMount => {
     };
 };
 
-const getField = (instance: any, name: string) => {
+const getFieldOrNot = (instance: any, name: string) => {
     const results = instance.find(`Field[name="${name}"]`);
     if (results.length > 1) throw new Error('Found more than one field with name: ' + name);
-    if (results.length === 0) throw new Error('Found no field with name: ' + name);
+    if (results.length === 0) return undefined;
     return results.at(0).childAt(0);
+};
+
+const getField = (instance: any, name: string) => {
+    const field = getFieldOrNot(instance, name);
+    if (!field) throw new Error('Found no field with name: ' + name);
+    return field;
 };
 
 const getForm = (instance: any) => {
