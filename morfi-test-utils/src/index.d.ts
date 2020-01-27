@@ -15,5 +15,6 @@ type MorfiMount = {
     blur: () => void;
     submit: (cbAfterClick?: () => void) => Promise<void>;
     nextTick: () => Promise<void>;
+    rerender: () => void;
 };
 export function morfiMount(node: ReactElement): MorfiMount;

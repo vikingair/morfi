@@ -25,7 +25,7 @@ it('interacts with my form', async () => {
     const form = morfiMount(<MyForm />);
     const { instance, nextTick, isRequired, getValue, 
             getError, getErrorId, getState, update, 
-            focus, blur, submit, unmount } = form;
+            focus, blur, submit, unmount, rerender } = form;
     
     // "instance" holds the mounted enzyme instance
     expect(instance.find('button')).toHaveLength(2);
@@ -58,6 +58,9 @@ it('interacts with my form', async () => {
     
     // "blur" lets you blur the currently focused field
     blur();
+
+    // rerender the component (useful for mocked hook testing)
+    rerender();
     
     // "submit" lets you submit the currently entered inputs (like a user would)
     // you can even supply an optional callback that will be called directly after

@@ -17,6 +17,7 @@ type MorfiMount = {|
     blur: () => void,
     submit: (cbAfterClick?: () => void) => Promise<void>,
     nextTick: () => Promise<void>,
+    rerender: () => void,
 |};
 
 export const morfiMount = (node: React$Element<any>): MorfiMount => {
@@ -93,6 +94,10 @@ export const morfiMount = (node: React$Element<any>): MorfiMount => {
             await act(async () => {
                 await new Promise(resolve => (process: any).nextTick(resolve));
             });
+            instance.update();
+        },
+        rerender: () => {
+            instance.setProps({});
             instance.update();
         },
     };

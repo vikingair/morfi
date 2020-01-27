@@ -12,27 +12,35 @@ const initialData: FormData<Values> = { values: initialValues, errors: {} };
 
 const { Form, Fields } = Morfi.create(initialValues);
 
+const MockedReturnValue = { current: false };
+const useNameRequired = () => MockedReturnValue.current;
+
 const TestComponent = ({ onSubmit }: { onSubmit: Function }) => {
     const [data, setData] = useState(initialData);
+    const nameRequired = useNameRequired();
 
     return (
         <Form onChange={setData} onSubmit={onSubmit} validation={{}} data={data}>
             <FormInput Field={Fields.phone} />
-            {data.values.name === 'Devil' || <FormInput Field={Fields.name} />}
+            {nameRequired && <FormInput Field={Fields.name} />}
         </Form>
     );
 };
 
 describe('TestComponent', () => {
-    it('submits a form where the input vanishes', async () => {
+    it('let the component rerender if mocked hook return value was modified', async () => {
         const onSubmit = new Spy('onSubmit');
-        const { update, submit } = morfiMount(<TestComponent onSubmit={onSubmit} />);
+        const { update, rerender } = morfiMount(<TestComponent onSubmit={onSubmit} />);
 
-        update('phone', '123');
-        update('name', 'Devil');
+        // name field is not visible so far
+        expect(() => update('name', 'Foobar')).toThrow();
 
-        await submit();
+        // then we want the hook to return some different value
+        MockedReturnValue.current = true;
+        // and rerender
+        rerender();
 
-        onSubmit.hasCallHistory({ phone: '123', name: 'Devil' });
+        // now we are able to modify the field value
+        update('name', 'Foobar');
     });
 });
