@@ -23,14 +23,14 @@ type FormProps<V: Object> = {|
     data: FormData<V>,
     children: React$Node,
     onChange: (FormData<V>) => void,
-    onSubmit: V => void | Promise<void>,
+    onSubmit: (V) => void | Promise<void>,
     onSubmitFailed?: (Error, FormData<V>) => void,
     onSubmitFinished?: (FormData<V>) => void,
 |};
 export type iForm<V: Object> = React$ComponentType<FormProps<V>>;
 export type FieldProps<F> = {|
-    onChange: F => void,
-    onBlur: F => void,
+    onChange: (F) => void,
+    onBlur: (F) => void,
     required: boolean,
     value: F,
     error?: MaybeError,
@@ -62,7 +62,7 @@ const completeFieldValidation = <F>(
 ): MaybeError | Promise<MaybeError> => {
     const promises = [];
     let syncError;
-    ValidationTypes.forEach(validationType => {
+    ValidationTypes.forEach((validationType) => {
         if (!syncError) {
             const error = validateField(field, validators[validationType]);
             if (error) {
@@ -80,7 +80,7 @@ const completeFieldValidation = <F>(
         return syncError;
     }
     if (promises.length > 0) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             Promise.all(promises).then((results: any /* MaybeError[] */) => {
                 resolve(results.find(Boolean));
             });
@@ -126,7 +126,7 @@ export const FormUtil = {
             if (error) {
                 if (isPromise(error)) {
                     promises.push(
-                        (error: any).then(err => {
+                        (error: any).then((err) => {
                             if (err) {
                                 copy.errors[fieldId] = err;
                             }
@@ -141,7 +141,7 @@ export const FormUtil = {
         // if we have still async validations in the pipeline, we have to wait
         // for all to get resolved
         if (promises.length > 0) {
-            return new Promise(resolve => {
+            return new Promise((resolve) => {
                 Promise.all(promises).then(() => resolve(copy));
             });
         }
@@ -175,7 +175,7 @@ class Form<V: Object> extends Component<_FormProps<V>> {
                 // new value -> clear the previous error and update immediately
                 this._onFieldChangeAfterValidation(name, value, undefined);
             }
-            (error: any).then(e => {
+            (error: any).then((e) => {
                 if (this.props.data.values[name] === value) {
                     // error corresponds to current value
                     this._onFieldChangeAfterValidation(name, value, e);
@@ -202,7 +202,7 @@ class Form<V: Object> extends Component<_FormProps<V>> {
         this._onChange(FormUtil.setSubmitting(data, true));
         const validated = FormUtil.validateAll(data, this.props.validation);
         if (FormUtil.isPromise(validated)) {
-            (validated: any).then(validatedData => {
+            (validated: any).then((validatedData) => {
                 this._onSubmitAfterValidation(validatedData);
             });
         } else {
@@ -266,13 +266,13 @@ type _iFieldProps<F> = {|
     error: MaybeError,
     name: string,
     update: (string, F, ValidationType) => void,
-    required: string => boolean,
+    required: (string) => boolean,
     ...iFieldProps<F>,
 |};
 const Field = <F>({ value, error, name, children, update, required }: _iFieldProps<F>): any => {
     return children({
-        onChange: v => update(name, v, 'onChange'),
-        onBlur: v => update(name, v, 'onBlur'),
+        onChange: (v) => update(name, v, 'onChange'),
+        onBlur: (v) => update(name, v, 'onBlur'),
         value,
         error,
         required: required(name),
