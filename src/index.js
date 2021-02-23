@@ -254,7 +254,7 @@ class Form<V: Object> extends Component<_FormProps<V>> {
     render(): React$Node {
         const { className, children, data, FC } = this.props;
         return (
-            <form className={className} onSubmit={this._onSubmit}>
+            <form className={className} onSubmit={this._onSubmit} method="post">
                 <FC.Provider value={{ data, update: this.update, required: this.required }}>{children}</FC.Provider>
             </form>
         );
