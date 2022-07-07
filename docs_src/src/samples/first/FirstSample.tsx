@@ -5,6 +5,7 @@ import { type Gender, type Person, PersonTable } from './PersonTable';
 import { FormSelect, type SelectOption } from '../../fields/FormSelect';
 import { FormNumberInput } from '../../fields/FormNumberInput';
 import { FormInput } from '../../fields/FormInput';
+import { Button } from '../../fields/Basic';
 
 type MyFormValues = {
     firstName: string;
@@ -41,33 +42,20 @@ export const FirstSample: React.FC = () => {
     const { Form, fields } = Morfi.useForm<MyFormValues>();
 
     return (
-        <div className="col-12">
-            <Form validation={validation} onChange={setData} data={data} onSubmit={onSubmit}>
-                <div className="row">
-                    <FormInput field={fields.firstName} label="First name" className="form-group col-sm-6" />
-                    <FormInput field={fields.lastName} label="Last name" className="form-group col-sm-6" />
-                </div>
-                <div className="row">
-                    <FormSelect
-                        field={fields.gender}
-                        options={genderOptions}
-                        label="Gender"
-                        className="form-group col-sm-6"
-                    />
-                    <FormNumberInput field={fields.age} label="Age" className="form-group col-sm-6" />
-                </div>
+        <>
+            <Form validation={validation} onChange={setData} data={data} onSubmit={onSubmit} version={persons.length}>
+                <FormInput field={fields.firstName} label="First name" />
+                <FormInput field={fields.lastName} label="Last name" />
+                <FormSelect field={fields.gender} options={genderOptions} label="Gender" />
+                <FormNumberInput field={fields.age} label="Age" />
                 <div className="btn-toolbar">
-                    <button className="btn btn-secondary mr-2" type="button" onClick={onClear}>
+                    <Button type="button" onClick={onClear}>
                         Clear
-                    </button>
-                    <button className="btn btn-success" disabled={Morfi.notSubmittable(data)}>
-                        Submit
-                    </button>
+                    </Button>
+                    <Button disabled={Morfi.notSubmittable(data)}>Submit</Button>
                 </div>
             </Form>
-            <div className="mt-4">
-                <PersonTable persons={persons} />
-            </div>
-        </div>
+            <PersonTable persons={persons} />
+        </>
     );
 };

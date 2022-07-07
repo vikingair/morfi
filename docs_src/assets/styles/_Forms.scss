@@ -1,0 +1,69 @@
+form {
+  display: grid;
+  gap: 0.5em;
+
+  @media (max-width: 575px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+  }
+
+  .btn-toolbar {
+    display: flex;
+    gap: 0.5em;
+    margin-bottom: 2em;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 0.5em 0.75em;
+    font-size: 1.125em;
+    border-radius: 0.25em;
+
+    &[type="button"] {
+      background-color: darkgrey;
+    }
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  margin-bottom: 1em;
+
+  input, select {
+    --_focus-color: hsla(120, 100%, 19%, 0.5);
+    margin-top: 0.5em;
+    margin-bottom: 0.25em;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid grey;
+    transition: outline-width 100ms linear, outline-color 100ms linear;
+
+    &:focus-within {
+      outline: 2px solid var(--_focus-color);
+    }
+
+    &.is-invalid {
+      --_focus-color: hsla(0, 100%, 50%, 0.5);
+    }
+  }
+
+  .invalid-feedback {
+    font-size: 0.75em;
+    position: absolute;
+    color: hsla(0, 100%, 50%);
+    bottom: -1.25em;
+  }
+}

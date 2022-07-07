@@ -3,9 +3,9 @@ import { type FormValidation, Morfi, type ValidationType } from '../../../../src
 import { Validators } from '../../validators/validators';
 import { DisplayValues } from '../../tools/DisplayValues';
 import { Select, type SelectOption } from '../../fields/FormSelect';
-import { Spinner } from '../../icons/Spinner';
 import { FormInput } from '../../fields/FormInput';
 import { Utils } from '../../tools/Utils';
+import { Button } from '../../fields/Basic';
 
 const ValidationTypeOptions: Array<SelectOption<ValidationType>> = [
     { label: 'onChange', value: 'onChange' },
@@ -56,10 +56,9 @@ export const ValidationSample: React.FC = () => {
     const { Form, fields } = Morfi.useForm<FormValues>();
 
     return (
-        <div className="col-12">
+        <>
             <Select
                 label="Choose the validation type"
-                className="validation-type-picker mt-3 mb-2 col-md-6 row"
                 options={ValidationTypeOptions}
                 value={validationType}
                 onChange={setValidationType}
@@ -67,21 +66,17 @@ export const ValidationSample: React.FC = () => {
             <p className="small font-italic">{descriptionFor(validationType)}</p>
             <hr />
             <Form validation={validation} onChange={setData} data={data} onSubmit={onSubmit}>
-                <div className="row">
-                    <div className="col-md-6">
-                        <FormInput field={fields.email} label="Email" placeholder="Please enter your email address" />
-                        <FormInput field={fields.pw} type="password" label="Password" placeholder="Set your password" />
-                        <div className="btn-toolbar">
-                            <button className="btn btn-success" disabled={Morfi.notSubmittable(data)}>
-                                <span>{data.isSubmitting && <Spinner />} Submit</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="col-md-6 mt-3">
-                        <DisplayValues data={data} />
-                    </div>
+                <FormInput field={fields.email} label="Email" placeholder="Please enter your email address" />
+                <FormInput field={fields.pw} type="password" label="Password" placeholder="Set your password" />
+                <div className="btn-toolbar">
+                    <Button disabled={Morfi.notSubmittable(data)} loading={data.isSubmitting}>
+                        Submit
+                    </Button>
                 </div>
             </Form>
-        </div>
+            <div>
+                <DisplayValues data={data} />
+            </div>
+        </>
     );
 };
