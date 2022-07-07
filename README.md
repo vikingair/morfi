@@ -1,8 +1,7 @@
 [![GitHub license][license-image]][license-url]
 [![npm package][npm-image]][npm-url]
-[![Travis][build-image]][build-url]
+[![GitHub Build][build-image]][build-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
-[![styled with prettier][prettier-image]][prettier-url]
 
 # ![morfi logo](docs_src/public/images/form-logo.svg?sanitize=true) morfi
 Abstract form handling for any purpose (1.8 kb gzipped)
@@ -418,9 +417,7 @@ to individual form templating. No `flow` support.
 [license-url]: https://github.com/fdc-viktor-luft/morfi/blob/master/LICENSE
 [npm-image]: https://img.shields.io/npm/v/morfi.svg?style=flat-square
 [npm-url]: https://www.npmjs.org/package/morfi
-[build-image]: https://img.shields.io/travis/fdc-viktor-luft/morfi/master.svg?style=flat-square
-[build-url]: https://travis-ci.org/fdc-viktor-luft/morfi
+[build-image]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/build.yml/badge.svg
+[build-url]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/build.yml
 [coveralls-image]: https://coveralls.io/repos/github/fdc-viktor-luft/morfi/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/fdc-viktor-luft/morfi?branch=master
-[prettier-image]: https://img.shields.io/badge/styled_with-prettier-ff69b4.svg
-[prettier-url]: https://github.com/prettier/prettier
