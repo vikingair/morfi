@@ -10,7 +10,7 @@ Abstract form handling for any purpose (1.8 kb gzipped)
 
 ⚒️⚒️⚒️ ATTENTION: Construction work ongoing ⚒️⚒️⚒️
 
-Version 3 will be released soon and introduced massive breaking changes. Morfi@2 was not
+Version 2 will be released soon and introduced massive breaking changes. Morfi@1 was not
 state of the art anymore. Back then React hooks where not yet introduced. Also, Morfi was
 lacking many interesting features that are build-in into other form handling libs and are
 important in very advanced scenarios. E.g. editing of deeply nested data structures,
@@ -278,23 +278,22 @@ class App extends Component<AppProps, AppState> {
         return (
             <Form validation={validation} onChange={this.onChange} data={data} onSubmit={this.onSubmit}>
                 <div className="row">
-                    <FormInput Field={Fields.firstName} label="First name" className="form-group col-sm-6" />
-                    <FormInput Field={Fields.lastName} label="Last name" className="form-group col-sm-6" />
+                    <FormInput Field={Fields.firstName} label="First name" />
+                    <FormInput Field={Fields.lastName} label="Last name" />
                 </div>
                 <div className="row">
                     <FormSelect
                         Field={Fields.gender}
                         options={genderOptions}
                         label="Gender"
-                        className="form-group col-sm-6"
                     />
-                    <FormNumberInput Field={Fields.age} label="Age" className="form-group col-sm-6" />
+                    <FormNumberInput Field={Fields.age} label="Age" />
                 </div>
                 <div className="btn-toolbar">
-                    <button className="btn btn-secondary mr-2" type="button" onClick={this.onClear}>
+                    <button type="button" onClick={this.onClear}>
                         Clear
                     </button>
-                    <button className="btn btn-success" disabled={Morfi.hasErrors(data)}>
+                    <button disabled={Morfi.hasErrors(data)}>
                         Submit
                     </button>
                 </div>
@@ -342,10 +341,10 @@ onClear = () => {
 ```js
 // the submit button on the bottom of the form will be replaced by
 <div className="btn-toolbar" role="toolbar">
-    <button className="btn btn-secondary" type="button" onClick={this.onClear}>
+    <button type="button" onClick={this.onClear}>
         Clear
     </button>
-    <button className="btn btn-primary" disabled={Morfi.hasErrors(data)}>
+    <button disabled={Morfi.hasErrors(data)}>
         Submit
     </button>
 </div>

@@ -16,7 +16,7 @@ export const NumberInput = ({
     label,
     error,
     required,
-    className,
+    className = 'form-group',
     onChange,
     onBlur,
     autoFocus,

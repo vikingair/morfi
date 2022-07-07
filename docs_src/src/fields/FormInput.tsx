@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import { DisplayError, Label, onActionWrap } from './Basic';
 import { Eye } from '../icons/Eye';
 import { Spinner } from '../icons/Spinner';
-import { Morfi, FieldControls, FormField } from '../../../src';
+import { FieldControls, FormField, Morfi } from '../../../src';
 
 type AllowedTypes = 'text' | 'password';
 
@@ -13,52 +13,50 @@ type CommonInputProps = {
     disabled?: boolean;
     type?: AllowedTypes;
     placeholder?: string;
-    pending?: boolean;
+    loading?: boolean;
 };
 
 type InputProps = FieldControls<string> & CommonInputProps;
 
-export class Input extends Component<InputProps, { showPassword: boolean }> {
-    state = { showPassword: false };
-    showPasswordToggle = () => this.setState((state) => ({ showPassword: !state.showPassword }));
-    type = () => (this.props.type !== 'password' ? this.props.type : this.state.showPassword ? 'text' : 'password');
-    render() {
-        const {
-            value = '',
-            label,
-            error,
-            required,
-            className = 'form-group',
-            onChange,
-            onBlur,
-            autoFocus,
-            disabled,
-            type = 'text',
-            placeholder,
-            pending,
-        } = this.props;
-        return (
-            <div className={className}>
-                {label && <Label {...{ label, required }} />}
-                <input
-                    onChange={onActionWrap(onChange)}
-                    onBlur={onActionWrap(onBlur)}
-                    disabled={disabled}
-                    className={'form-control' + (error ? ' is-invalid' : '')}
-                    type={this.type()}
-                    {...{ placeholder, value, autoFocus }}
-                />
-                {type === 'password' && (
-                    <span onClick={this.showPasswordToggle}>
-                        <Eye stroked={this.state.showPassword} />
-                    </span>
-                )}
-                {pending && <Spinner />}
-                {error && <DisplayError error={error} />}
-            </div>
-        );
-    }
-}
+export const Input: React.FC<InputProps> = ({
+    value = '',
+    label,
+    error,
+    required,
+    className = 'form-group',
+    onChange,
+    onBlur,
+    autoFocus,
+    disabled,
+    type = 'text',
+    placeholder,
+    loading,
+}) => {
+    const [showPw, setShowPw] = useState(false);
+    const toggleShowPw = useCallback(() => setShowPw((s) => !s), []);
+    const usedType = type !== 'password' ? type : showPw ? 'text' : 'password';
+
+    return (
+        <div className={className}>
+            {label && <Label {...{ label, required }} />}
+            <input
+                onChange={onActionWrap(onChange)}
+                onBlur={onActionWrap(onBlur)}
+                disabled={disabled}
+                className={'form-control' + (error ? ' is-invalid' : '')}
+                type={usedType}
+                {...{ placeholder, value, autoFocus }}
+            />
+            {type === 'password' && (
+                <span onClick={toggleShowPw}>
+                    <Eye stroked={showPw} />
+                </span>
+            )}
+            {loading && <Spinner />}
+            {error && <DisplayError error={error} />}
+        </div>
+    );
+};
 
 type FormInputProps = { field: FormField<string> } & CommonInputProps;
 

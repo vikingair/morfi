@@ -1,10 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Validators } from '../../validators/validators';
-import { Spinner } from '../../icons/Spinner';
 import { FormInput } from '../../fields/FormInput';
-import { Morfi, FormData, FormValidation } from '../../../../src';
+import { FormData, FormValidation, Morfi } from '../../../../src';
 import { useSafeState } from '../../hooks/useSafeState';
 import { Utils } from '../../tools/Utils';
+import { Button } from '../../fields/Basic';
 
 // some fake server state
 const alreadyRegistered_userName = 'tom';
@@ -88,7 +88,16 @@ export const AsyncValidationSample = () => {
     const { fields, Form } = Morfi.useForm<FormValues>();
 
     return (
-        <div className="col-12">
+        <>
+            <p className="small font-italic form-group-apply">
+                <em>ATTENTION: The validation succeeds for all names, but the following:</em>
+                <br />
+                <strong>Tom</strong>: <em>Validation fails each time.</em>
+                <br />
+                <strong>Jack</strong>: <em>Validation fails each second time.</em>
+                <br />
+                <strong>Mike</strong>: <em>Validation succeeds but submitting fails.</em>
+            </p>
             <Form
                 validation={validation.current}
                 onChange={setData}
@@ -96,42 +105,25 @@ export const AsyncValidationSample = () => {
                 onSubmit={onSubmit}
                 onSubmitFailed={onSubmitFailed}
                 onSubmitFinished={onSubmitFinished}>
-                <div className="row">
-                    <div className="col-md-12">
-                        <p className="small font-italic form-group-apply">
-                            ATTENTION: The validation succeeds for all names, but the following:
-                            <br />
-                            <strong>Tom</strong>: Validation fails each time.
-                            <br />
-                            <strong>Jack</strong>: Validation fails each second time.
-                            <br />
-                            <strong>Mike</strong>: Validation succeeds but submitting fails.
-                        </p>
-                        <FormInput
-                            field={fields.userName}
-                            pending={pendingUserName}
-                            label="Username (async validation triggers on blur)"
-                            placeholder="Please enter your desired username"
-                        />
-                        <FormInput
-                            field={fields.alias}
-                            pending={pendingAlias}
-                            label="Alias (async validation triggers on change)"
-                            placeholder="Please enter some alias"
-                        />
-                        <FormInput
-                            field={fields.realName}
-                            label="Real name"
-                            placeholder="Please enter your real name"
-                        />
-                        <div className="btn-toolbar">
-                            <button className="btn btn-success" disabled={Morfi.notSubmittable(data)}>
-                                {data.isSubmitting && <Spinner />} Submit
-                            </button>
-                        </div>
-                    </div>
+                <FormInput
+                    field={fields.userName}
+                    loading={pendingUserName}
+                    label="Username (async validation triggers on blur)"
+                    placeholder="Please enter your desired username"
+                />
+                <FormInput
+                    field={fields.alias}
+                    loading={pendingAlias}
+                    label="Alias (async validation triggers on change)"
+                    placeholder="Please enter some alias"
+                />
+                <FormInput field={fields.realName} label="Real name" placeholder="Please enter your real name" />
+                <div className="btn-toolbar">
+                    <Button disabled={Morfi.notSubmittable(data)} loading={data.isSubmitting}>
+                        Submit
+                    </Button>
                 </div>
             </Form>
-        </div>
+        </>
     );
 };

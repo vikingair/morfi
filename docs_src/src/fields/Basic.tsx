@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ErrorMessage } from '../../../src';
 import messages from '../../messages.json';
+import { Spinner } from '../icons/Spinner';
 
 export const __ = (msgOrID: ErrorMessage): string => {
     const id = typeof msgOrID === 'string' ? msgOrID : msgOrID.id;
@@ -33,3 +34,18 @@ export const onActionWrap =
             cb(event.target.value);
         }
     };
+
+type ButtonProps = {
+    children: React.ReactNode;
+    loading?: boolean;
+    disabled?: boolean;
+    type?: 'submit' | 'button';
+    onClick?: () => void;
+};
+
+export const Button: React.FC<ButtonProps> = ({ children, loading, ...rest }) => (
+    <button {...rest}>
+        {loading && <Spinner />}
+        {children}
+    </button>
+);

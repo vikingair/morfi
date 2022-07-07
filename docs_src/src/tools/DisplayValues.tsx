@@ -4,7 +4,7 @@ import type { FormData } from '../../../src';
 const sanitize = (str: string): string => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 const htmlForObject = (o: { [key: string]: unknown }): string => {
-    let result = '<p>{</p><div class="ml-3"><p>';
+    let result = '<p>{</p><div class="pre__padding"><p>';
     let firstValue = true;
     Object.keys(o).forEach((key: string) => {
         const value = o[key];
@@ -14,20 +14,20 @@ const htmlForObject = (o: { [key: string]: unknown }): string => {
             } else {
                 firstValue = false;
             }
-            result += `<span class="prop">${key}</span>: `;
+            result += `<span class="pre__prop">${key}</span>: `;
             if (value === null) {
                 result += '<span class="null">null</span>';
                 return;
             }
             switch (typeof value) {
                 case 'string':
-                    result += `<span class="string">"${sanitize(value)}"</span>`;
+                    result += `<span class="pre__string">"${sanitize(value)}"</span>`;
                     return;
                 case 'boolean':
-                    result += `<span class="boolean">${String(value)}</span>`;
+                    result += `<span class="pre__boolean">${String(value)}</span>`;
                     return;
                 case 'number':
-                    result += `<span class="number">${value}</span>`;
+                    result += `<span class="pre__number">${value}</span>`;
                     return;
                 default:
                     result += sanitize(JSON.stringify(value) || '');

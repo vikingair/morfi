@@ -3,26 +3,32 @@ pre {
     border: 2px solid darkgreen;
     padding: 1em;
     border-radius: 1em;
-}
 
-pre .prop {
-    color: darkviolet;
-}
+    .pre {
+        &__padding {
+            margin-left: 2em;
+        }
 
-pre .string {
-    color: darkgreen;
-}
+        &__prop {
+            color: darkviolet;
+        }
 
-pre .bool {
-    color: darkorange;
-}
+        &__string {
+            color: darkgreen;
+        }
 
-pre .null {
-    color: darkorange;
-}
+        &__boolean {
+            color: darkorange;
+        }
 
-pre .number {
-    color: blue;
+        &__null {
+            color: darkorange;
+        }
+
+        &__number {
+            color: blue;
+        }
+    }
 }
 
 pre::-webkit-scrollbar-track

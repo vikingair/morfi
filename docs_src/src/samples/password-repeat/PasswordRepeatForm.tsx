@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Spinner } from '../../icons/Spinner';
 import { FormInput } from '../../fields/FormInput';
-import { Morfi, type FormData } from '../../../../src';
+import { type FormData, Morfi } from '../../../../src';
 import { Utils } from '../../tools/Utils';
+import { Button } from '../../fields/Basic';
 
 const staticValidation = {
     password: {
@@ -53,33 +53,19 @@ export const PasswordRepeatForm: React.FC = () => {
     const { fields, Form } = Morfi.useForm<MyFormValues>();
 
     return (
-        <div className="col-12">
-            <Form
-                validation={validation}
-                onChange={onChange}
-                data={data}
-                onSubmit={onSubmit}
-                onSubmitFinished={onSubmitFinished}>
-                <div className="row">
-                    <FormInput
-                        field={fields.password}
-                        label="Password"
-                        type="password"
-                        className="form-group col-sm-6"
-                    />
-                    <FormInput
-                        field={fields.repeat}
-                        label="Password repetition"
-                        type="password"
-                        className="form-group col-sm-6"
-                    />
-                </div>
-                <div className="btn-toolbar">
-                    <button className="btn btn-success" disabled={Morfi.notSubmittable(data)}>
-                        {data.isSubmitting && <Spinner />} Submit
-                    </button>
-                </div>
-            </Form>
-        </div>
+        <Form
+            validation={validation}
+            onChange={onChange}
+            data={data}
+            onSubmit={onSubmit}
+            onSubmitFinished={onSubmitFinished}>
+            <FormInput field={fields.password} label="Password" type="password" />
+            <FormInput field={fields.repeat} label="Password repetition" type="password" />
+            <div className="btn-toolbar">
+                <Button disabled={Morfi.notSubmittable(data)} loading={data.isSubmitting}>
+                    Submit
+                </Button>
+            </div>
+        </Form>
     );
 };
