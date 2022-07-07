@@ -7,6 +7,29 @@
 # ![morfi logo](docs_src/public/images/form-logo.svg?sanitize=true) morfi
 Abstract form handling for any purpose (1.8 kb gzipped)
 
+---
+
+⚒️⚒️⚒️ ATTENTION: Construction work ongoing ⚒️⚒️⚒️
+
+Version 3 will be released soon and introduced massive breaking changes. Morfi@2 was not
+state of the art anymore. Back then React hooks where not yet introduced. Also, Morfi was
+lacking many interesting features that are build-in into other form handling libs and are
+important in very advanced scenarios. E.g. editing of deeply nested data structures,
+capturing of dirty fields, possibility to merge live-updates of data into the form fields and
+maintaining form data version for multiple submit forms.
+
+All of this had to be implemented using strong type safety as this was the main reason for
+implementing Morfi instead of using any other form handling library. Meanwhile, many other
+form handling libraries have appeared, but I've tested them and learned from them.
+
+Bad news are that the lib became slightly bigger, almost 3 kB gzipped, but luckily this is
+still much smaller than most other libs out there.
+
+Some of the below links do not work properly anymore. You can however navigate through the
+code already to get an impression of how the new API looks like.
+
+---
+
 ### Why morfi?
 
 I have invested a lot of time to read about and use forms from different

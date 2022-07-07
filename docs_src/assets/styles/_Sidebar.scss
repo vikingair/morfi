@@ -1,0 +1,69 @@
+nav {
+    --_width: 34vw;
+    @media (max-width: 575px) {
+        --_width: 67vw;
+    }
+
+    width: var(--_width);
+    position: fixed;
+    overflow-y: auto;
+    z-index: 2;
+    background: beige;
+    height: 100%;
+    box-shadow: 0 0.1em 0.3em dimgrey;
+    left: -100%;
+
+    &.fade-in {
+        animation: fadeInFromLeft 0.2s ease-in forwards;
+    }
+
+    &.fade-out {
+        animation: fadeOutToLeft 0.2s ease-in forwards;
+    }
+
+    a {
+        color: darkgreen;
+        width: 100%;
+
+        &:hover {
+            color: #0b2e13;
+        }
+
+        &.active {
+            color: white;
+            background-color: darkgreen;
+        }
+    }
+
+    header {
+        color: darkgreen;
+        margin: 1em;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 1.2em;
+
+        svg {
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+    }
+}
+
+@keyframes fadeInFromLeft {
+    0% { left: -100%; }
+    100% { left: 0; }
+}
+
+@keyframes fadeOutToLeft {
+    0% { left: 0; }
+    100% { left: -100%; }
+}
+
+
+//@media (max-width: 575px) {
+//    @keyframes fadeOutToLeft {
+//        0% { left: 0; }
+//        100% { left: -67vw; }
+//    }
+//}
