@@ -82,7 +82,7 @@ const Form = <T,>({
 
     return (
         <MorfiForm data={data} onChange={setData} {...rest}>
-            {children(fields)}
+            <>{children(fields)}</>
             <button type={'submit'} />
         </MorfiForm>
     );
