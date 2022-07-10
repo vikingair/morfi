@@ -1,5 +1,5 @@
 import React from 'react';
-import { Morfi, ErrorMessage, FormField } from '../../../src';
+import { Morfi, ErrorMessage, FormField } from 'morfi';
 import { EventUtil } from './event-util';
 import { DisplayError, Label } from './Basic';
 

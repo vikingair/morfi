@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormData } from '../../../src';
+import type { FormData } from 'morfi';
 
 const sanitize = (str: string): string => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 

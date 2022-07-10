@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Validators } from '../../validators/validators';
 import { FormInput } from '../../fields/FormInput';
-import { FormData, FormValidation, Morfi } from '../../../../src';
+import { FormData, FormValidation, Morfi } from 'morfi';
 import { useSafeState } from '../../hooks/useSafeState';
 import { Utils } from '../../tools/Utils';
 import { Button } from '../../fields/Basic';

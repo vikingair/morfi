@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormInput } from '../../fields/FormInput';
-import { type FormData, Morfi } from '../../../../src';
+import { type FormData, Morfi } from 'morfi';
 import { Utils } from '../../tools/Utils';
 import { Button } from '../../fields/Basic';
 

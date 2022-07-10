@@ -1,4 +1,4 @@
-import type { ErrorMessage, Validator } from '../../../src';
+import type { ErrorMessage, Validator } from 'morfi';
 
 const stringValidator = ({ min = 0, max = -1 }: { min?: number; max?: number }): Validator<string> => {
     const exactMessage =

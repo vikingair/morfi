@@ -14,19 +14,21 @@ type MaybeError = ErrorMessage | undefined;
 export type FormErrors = { [name: FormField<any>]: ErrorMessage | undefined };
 export type Validator<F> = (value?: F) => MaybeError | Promise<MaybeError>;
 export type ValidationType = 'onChange' | 'onBlur' | 'onSubmit';
+type NonUndefined<T> = T extends undefined ? never : T;
 export type FieldValidation<F> = { [t in ValidationType]?: Validator<F> };
 export type FormValidation<V> = {
     [name in keyof V]?: V[name] extends object
         ? FormValidation<V[name]> & FieldValidation<V[name]>
-        : FieldValidation<V[name]>;
+        : FieldValidation<NonUndefined<V[name]>>;
 };
-export type FormDirty = { [name: FormField<any>]: boolean };
+export type FormDirty = { [name: FormField<any>]: boolean | undefined };
 // draw back by using "symbol" as part of the type: for nested objects accessing the "description" property can lead
 // to losing type safety, because "description" is a reserved property for symbols and results into type collision.
-export type FormField<F> = { __TYPE__: F } & symbol;
-export type FormFields<V> = V extends object
-    ? Required<{ [name in keyof V]: FormFields<V[name]> }> & FormField<V>
-    : FormField<V>;
+export type FormField<F> = { __TYPE__: F | ((t: F) => void) } & symbol;
+export type FormFields<V> = {
+    [name in keyof V]-?: V[name] extends object ? FormFields<V[name]> & FormField<V[name]> : FormField<V[name]>;
+} & FormField<V>;
+
 export type FormData<V> = {
     values: V;
     errors: FormErrors;
@@ -487,7 +489,7 @@ const notSubmittable = <V,>(
 
 const isValidationError = (err: any): boolean => err instanceof MorfiError;
 
-const clearErrors = (data: FormData<any>, field: FormFields<unknown>) => {
+const clearErrors = (data: FormData<any>, field: FormField<unknown>) => {
     const errorEntries = Object.entries(data.errors).filter(
         ([name, value]) => value && !name.startsWith(field.toString())
     );

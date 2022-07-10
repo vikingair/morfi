@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { type FormValidation, Morfi, type ValidationType } from '../../../../src';
+import { type FormValidation, Morfi, type ValidationType } from 'morfi';
 import { Validators } from '../../validators/validators';
 import { DisplayValues } from '../../tools/DisplayValues';
 import { Select, type SelectOption } from '../../fields/FormSelect';

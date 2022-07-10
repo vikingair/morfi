@@ -82,7 +82,7 @@ const FormInput: React.FC<FormInputProps> = ({ field, label }) => {
             <label>{`${label}${required ? ' *' : ''}`}</label>
             <input value={value}
                    onChange={e => onChange(e.target.value)}
-                   onBlur={e => onBlur(e.target.value)} />
+                   onBlur={onBlur} />
             <span className="error">{typeof error === 'string' ? error : error.id}</span>
         </div>
     );
