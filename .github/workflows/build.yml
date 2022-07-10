@@ -17,7 +17,3 @@ jobs:
         run: pnpm test
       - name: Check docs updated
         run: node .github/scripts/check-docs-updated.mjs
-      - name: Coveralls # only temporary
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
