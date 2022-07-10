@@ -3,6 +3,7 @@ You can find here tips for migrating breaking changes.
 
 ## 2.0.0
 Breaking changes:
+- Dropped `flow` support.
 - Requires at least `react@16.8.0` to work.
 - Instead of invoking `Morfi.create(initialValues)` you call the hook `Morfi.useForm<MyFormValues>()` to receive the `Form` component
   and the `fields` object, which is completely new designed.
