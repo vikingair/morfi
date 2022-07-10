@@ -16,7 +16,8 @@ export default defineConfig({
         },
     },
     build: {
-        outDir: 'docs',
+        outDir: '../docs',
+        emptyOutDir: true,
         sourcemap: true, // build "*.map" files for JS sources
         manifest: false, // create a manifest.json for further processing of generated assets
     },
