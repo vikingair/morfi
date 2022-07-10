@@ -1,7 +1,9 @@
-name: Build
+name: Push
 
 on:
-  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -11,13 +13,9 @@ jobs:
       - uses: ./.github/actions/pnpm-install
         with:
           target: '.'
-      - name: Lint
-        run: pnpm lint
       - name: Test
         run: pnpm test
-      - name: Check docs updated
-        run: node .github/scripts/check-docs-updated.mjs
-      - name: Coveralls # only temporary
+      - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

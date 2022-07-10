@@ -21,7 +21,7 @@ All of this had to be implemented using strong type safety as this was the main 
 implementing Morfi instead of using any other form handling library. Meanwhile, many other
 form handling libraries have appeared, but I've tested them and learned from them.
 
-Bad news are that the lib became slightly bigger, almost 3 kB gzipped, but luckily this is
+Bad news are that the lib became slightly bigger, 2.3 kB gzipped, but luckily this is
 still much smaller than most other libs out there.
 
 Some of the below links do not work properly anymore. You can however navigate through the
