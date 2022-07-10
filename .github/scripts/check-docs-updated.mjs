@@ -16,7 +16,8 @@ const exec = async (command, opts) => {
 }
 
 const isDirty = (dir) => {
-    const result = spawnSync('git', ['diff', '--stat', dir]);
+    // we need to ignore the generated source maps as their content depends on the used OS
+    const result = spawnSync('git', ['diff', '--stat', dir, "':(exclude)docs/assets/*.map'"]);
     return result.stdout.toString() !== '';
 }
 
@@ -31,7 +32,7 @@ await exec('pnpm docs:build');
 
 if (isDirty('docs')) {
     console.error('Docs are not up-to-date ❌ ');
-    // process.exit(1);
+    process.exit(1);
 } else {
     console.log('Docs are up-to-date ✔️ ');
 }
