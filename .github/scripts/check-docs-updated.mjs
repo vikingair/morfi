@@ -31,7 +31,7 @@ await exec('pnpm docs:build');
 
 if (isDirty('docs')) {
     console.error('Docs are not up-to-date ❌ ');
-    process.exit(1);
+    // process.exit(1);
+} else {
+    console.log('Docs are up-to-date ✔️ ');
 }
-
-console.log('Docs are up-to-date ✔️ ');

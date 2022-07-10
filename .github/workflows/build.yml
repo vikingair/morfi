@@ -42,5 +42,6 @@ jobs:
       - name: Test
         run: pnpm test
       - name: Check docs updated
-        run: node .github/scripts/check-docs-updated.mjs
-
+        run: |
+          node .github/scripts/check-docs-updated.mjs
+          git diff docs
