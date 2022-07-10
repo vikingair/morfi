@@ -5,7 +5,7 @@
 
 # production
 /build
-/dist
+dist
 /coverage
 
 # misc

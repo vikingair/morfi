@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Spy } from 'spy4js';
 import React, { useState } from 'react';
-import { FormValidation, Morfi } from '../../src/';
-import { Index } from '../../src/test-utils';
-import { act, render } from '@testing-library/react';
+import { FormValidation, Morfi } from 'morfi';
+import { MorfiTestUtils } from '../../test-utils/index'; // cannot be shortened because of nested package.json
+import { act, render, cleanup } from '@testing-library/react';
 
 type FormValues = { age: number; name: string; displayName?: string };
 const initialValues: FormValues = { age: 0, name: '' };
@@ -34,9 +34,9 @@ const DummyForm: React.FC<{ version?: number; validation?: FormValidation<FormVa
             validation={validation}
             onSubmitFinished={onSubmitFinished}
             onSubmitFailed={onSubmitFailed}>
-            <Index.Field field={fields.name} />
-            <Index.Field field={fields.displayName} />
-            <Index.Field field={fields.age} />
+            <MorfiTestUtils.Field field={fields.name} />
+            <MorfiTestUtils.Field field={fields.displayName} />
+            <MorfiTestUtils.Field field={fields.age} />
             <button
                 className={data.isSubmitting ? 'loading' : undefined}
                 type="submit"
@@ -50,7 +50,7 @@ const DummyMorfiTestUtilForm: React.FC<{ version?: number; validation?: FormVali
     version,
     validation = DummyValidations,
 }) => (
-    <Index.Form
+    <MorfiTestUtils.Form
         initialData={initialValues}
         onSubmit={onSubmit}
         version={version}
@@ -59,18 +59,21 @@ const DummyMorfiTestUtilForm: React.FC<{ version?: number; validation?: FormVali
         onSubmitFailed={onSubmitFailed}>
         {(fields) => (
             <>
-                <Index.Field field={fields.name} />
-                <Index.Field field={fields.displayName} />
-                <Index.Field field={fields.age} />
+                <MorfiTestUtils.Field field={fields.name} />
+                <MorfiTestUtils.Field field={fields.displayName} />
+                <MorfiTestUtils.Field field={fields.age} />
             </>
         )}
-    </Index.Form>
+    </MorfiTestUtils.Form>
 );
 
 describe('MorfiTestUtils', () => {
     beforeEach(() => {
         // this is actually optional since all fields will be unregistered between the tests
-        Index.clearFields();
+        MorfiTestUtils.clearFields();
+        // testing the cleanup of fields on unmount (this happens usually automatically if the same form is being used
+        // multiple times), but we're using two different forms here on purpose
+        cleanup();
     });
 
     it('handles the form correctly', async () => {
@@ -81,53 +84,53 @@ describe('MorfiTestUtils', () => {
         const submitButton = container.querySelector('button')!;
         expect(submitButton.className).toBe(''); // not loading
         expect(submitButton.disabled).toBe(true); // no dirty fields
-        expect(Object.keys(Index.fields).length).toBe(3);
+        expect(Object.keys(MorfiTestUtils.fields).length).toBe(3);
         // first input
-        expect(Index.fields.name.required).toBe(true);
-        expect(Index.fields.name.value).toBe('');
+        expect(MorfiTestUtils.fields.name.required).toBe(true);
+        expect(MorfiTestUtils.fields.name.value).toBe('');
         // second input
-        expect(Index.fields.displayName.required).toBe(false);
-        expect(Index.fields.displayName.value).toBe(undefined);
+        expect(MorfiTestUtils.fields.displayName.required).toBe(false);
+        expect(MorfiTestUtils.fields.displayName.value).toBe(undefined);
         // third input
-        expect(Index.fields.age.required).toBe(true);
-        expect(Index.fields.age.value).toBe(0);
+        expect(MorfiTestUtils.fields.age.required).toBe(true);
+        expect(MorfiTestUtils.fields.age.value).toBe(0);
 
-        expect(Index.hasErrors()).toBe(false);
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
 
         // when - using the "name" input with onBlur validation
-        Index.fields.name.change('');
-        expect(Index.hasErrors()).toBe(false);
-        expect(Index.fields.name.dirty).toBe(false);
-        Index.fields.name.blur();
-        expect(Index.fields.name.error).toBe('Name required');
-        Index.fields.name.change('Test Name');
-        expect(Index.fields.name.dirty).toBe(true);
+        MorfiTestUtils.fields.name.change('');
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
+        expect(MorfiTestUtils.fields.name.dirty).toBe(false);
+        MorfiTestUtils.fields.name.blur();
+        expect(MorfiTestUtils.fields.name.error).toBe('Name required');
+        MorfiTestUtils.fields.name.change('Test Name');
+        expect(MorfiTestUtils.fields.name.dirty).toBe(true);
         expect(submitButton.disabled).toBe(false);
-        expect(Index.hasErrors()).toBe(false);
-        Index.fields.name.blur();
-        expect(Index.hasErrors()).toBe(false);
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
+        MorfiTestUtils.fields.name.blur();
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
 
         // when - using the "displayName" input with onChange validation
-        Index.fields.displayName.change('Test Name');
-        expect(Index.fields.displayName.dirty).toBe(true);
-        expect(Index.fields.displayName.error).toBe('No whitespace in displayName allowed');
-        expect(Index.hasErrors()).toBe(true);
+        MorfiTestUtils.fields.displayName.change('Test Name');
+        expect(MorfiTestUtils.fields.displayName.dirty).toBe(true);
+        expect(MorfiTestUtils.fields.displayName.error).toBe('No whitespace in displayName allowed');
+        expect(MorfiTestUtils.hasErrors()).toBe(true);
         expect(submitButton.disabled).toBe(true); // has errors
-        Index.fields.displayName.change(undefined);
-        expect(Index.fields.displayName.value).toBe(undefined);
-        expect(Index.fields.displayName.dirty).toBe(false);
-        expect(Index.hasErrors()).toBe(false);
-        Index.fields.displayName.change('Test-DisplayName');
-        expect(Index.fields.displayName.dirty).toBe(true);
-        expect(Index.hasErrors()).toBe(false);
+        MorfiTestUtils.fields.displayName.change(undefined);
+        expect(MorfiTestUtils.fields.displayName.value).toBe(undefined);
+        expect(MorfiTestUtils.fields.displayName.dirty).toBe(false);
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
+        MorfiTestUtils.fields.displayName.change('Test-DisplayName');
+        expect(MorfiTestUtils.fields.displayName.dirty).toBe(true);
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
 
         // when - using the "age" input with onSubmit validation
-        Index.fields.age.change(100);
-        expect(Index.fields.age.value).toBe(100);
-        expect(Index.fields.age.dirty).toBe(true);
-        expect(Index.hasErrors()).toBe(false);
-        await Index.submit();
-        expect(Index.fields.age.error).toBe('Invalid age');
+        MorfiTestUtils.fields.age.change(100);
+        expect(MorfiTestUtils.fields.age.value).toBe(100);
+        expect(MorfiTestUtils.fields.age.dirty).toBe(true);
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
+        await MorfiTestUtils.submit();
+        expect(MorfiTestUtils.fields.age.error).toBe('Invalid age');
         onSubmit.wasNotCalled();
         onSubmitFinished.wasNotCalled();
         onSubmitFailed.wasCalledWith(Spy.COMPARE(Morfi.isValidationError), {
@@ -146,8 +149,8 @@ describe('MorfiTestUtils', () => {
                 reject = rej;
             })
         );
-        Index.fields.age.change(99);
-        await Index.submit(container.querySelector('form')!);
+        MorfiTestUtils.fields.age.change(99);
+        await MorfiTestUtils.submit(container.querySelector('form')!);
 
         // then
         onSubmitFailed.wasNotCalled(); // not yet
@@ -176,7 +179,7 @@ describe('MorfiTestUtils', () => {
 
         // when - submitting successfully
         onSubmit.resolves();
-        await Index.submit();
+        await MorfiTestUtils.submit();
 
         // then
         onSubmitFailed.wasNotCalled();
@@ -191,16 +194,16 @@ describe('MorfiTestUtils', () => {
         });
 
         // when - making the form dirty again
-        Index.fields.age.change(50);
+        MorfiTestUtils.fields.age.change(50);
 
         // then
-        expect(Index.fields.age.dirty).toBe(true);
+        expect(MorfiTestUtils.fields.age.dirty).toBe(true);
 
         // when - changing the form version
         rerender(<DummyForm version={42} />);
 
         // then
-        expect(Index.fields.age.dirty).toBe(false);
+        expect(MorfiTestUtils.fields.age.dirty).toBe(false);
     });
 
     it('handles async form validations', async () => {
@@ -214,36 +217,36 @@ describe('MorfiTestUtils', () => {
                 },
             },
         };
-        render(<DummyMorfiTestUtilForm validation={validation} />);
+        const { container } = render(<DummyMorfiTestUtilForm validation={validation} />);
 
         // when - entering a short name
-        Index.fields.name.change('Bo');
+        MorfiTestUtils.fields.name.change('Bo');
 
         // then
-        expect(Index.fields.name.required).toBe(true);
-        expect(Index.fields.name.dirty).toBe(true);
-        expect(Index.hasErrors()).toBe(false);
+        expect(MorfiTestUtils.fields.name.required).toBe(true);
+        expect(MorfiTestUtils.fields.name.dirty).toBe(true);
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
 
         // when - waiting for the async validation
         await act(global.nextTick);
 
         // then
-        expect(Index.fields.name.error).toBe('Could not find such short names');
+        expect(MorfiTestUtils.fields.name.error).toBe('Could not find such short names');
 
         // when - entering a sufficiently long name
-        Index.fields.name.change('Bob');
+        MorfiTestUtils.fields.name.change('Bob');
 
         // then
-        expect(Index.hasErrors()).toBe(false); // clears the error synchronously
+        expect(MorfiTestUtils.hasErrors()).toBe(false); // clears the error synchronously
 
         // when - waiting for the async validation
         await act(global.nextTick);
 
         // then
-        expect(Index.hasErrors()).toBe(false);
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
 
         // when - submitting with async validation
-        await Index.submit();
+        await MorfiTestUtils.submit(container.querySelector('form')!);
 
         // then
         onSubmitFinished.wasNotCalled();

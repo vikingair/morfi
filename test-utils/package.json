@@ -1,0 +1,28 @@
+{
+  "name": "morfi-test-utils",
+  "version": "3.0.0-alpha.0",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "description": "Test utils for morfi",
+  "license": "MIT",
+  "author": "Viktor Luft <viktor.luft@freiheit.com> (https://github.com/fdc-viktor-luft)",
+  "homepage": "https://fdc-viktor-luft.github.io/morfi/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fdc-viktor-luft/morfi"
+  },
+  "bugs": {
+    "url": "https://github.com/fdc-viktor-luft/morfi/issues"
+  },
+  "peerDependencies": {
+    "@testing-library/react": "^13.3.0",
+    "morfi": "^2.0.0",
+    "react": ">= 18"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

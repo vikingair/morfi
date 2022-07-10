@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.publish.json",
+  "compilerOptions": {
+    "outDir": "test-utils/dist"
+  },
+  "include": ["test-utils"]
+}

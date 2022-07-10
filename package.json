@@ -1,9 +1,9 @@
 {
   "name": "morfi",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
-  "types": "src/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -32,8 +32,9 @@
     "lint": "pnpm lint:es && pnpm lint:ts",
     "lint:ts": "tsc",
     "lint:es": "eslint --ext .ts,.tsx .",
-    "publish:types": "tsc -p tsconfig.publish.json",
-    "publish:prepare": "vite build && TEST_UTIL=true vite build && pnpm publish:types # && node scripts/post-prepare-publish.mjs"
+    "publish:prepare-core": "vite build && tsc -p tsconfig.publish.json",
+    "publish:prepare-test-util": "rm -rf test-utils/dist && TEST_UTIL=true vite build && tsc -p tsconfig.publish.test-utils.json && mv test-utils/dist/test-utils/index.d.ts test-utils/dist/index.d.ts && rm -rf test-utils/dist/test-utils test-utils/dist/src",
+    "publish:prepare": "pnpm publish:prepare-core && pnpm publish:prepare-test-util"
   },
   "peerDependencies": {
     "react": ">= 16.18"
