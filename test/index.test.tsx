@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import React, { ChangeEvent, MutableRefObject, useCallback, useEffect, useState } from 'react';
 import { Spy } from 'spy4js';
-import { FormField, FormFields, FormRef, FormValidation, Morfi } from '../src/';
+import { FormField, FormFields, FormRef, FormValidation, Morfi } from 'morfi';
 import { act, fireEvent, render } from '@testing-library/react';
 
 type FormValues = {

@@ -25,7 +25,10 @@
     "alwaysStrict": true,
     "jsx": "react",
     "noEmit": true,
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "morfi": ["./src"]
+    }
   },
   "include": ["src", "test", "docs_src"]
 }

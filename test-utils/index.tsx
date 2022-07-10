@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ErrorMessage, FormField, FormFields, FormProps, Morfi } from '../';
-import { fireEvent, act, cleanup } from '@testing-library/react';
+import { ErrorMessage, FormField, FormFields, FormProps, Morfi } from 'morfi';
+import { fireEvent, act } from '@testing-library/react';
 
 type FieldData = {
     props: Record<string, any>;
@@ -14,8 +14,7 @@ type FieldData = {
 type FieldsData = Record<string, FieldData>;
 
 const clearFields = () => {
-    Index.fields = {};
-    cleanup();
+    MorfiTestUtils.fields = {};
 };
 
 const Field: React.FC<Record<string, any> & { field: FormField<any> }> = (props) => {
@@ -36,7 +35,7 @@ const Field: React.FC<Record<string, any> & { field: FormField<any> }> = (props)
         });
     }, [onBlur]);
 
-    Index.fields[name] = {
+    MorfiTestUtils.fields[name] = {
         props,
         error,
         dirty,
@@ -48,7 +47,7 @@ const Field: React.FC<Record<string, any> & { field: FormField<any> }> = (props)
 
     useEffect(
         () => () => {
-            delete Index.fields[name];
+            delete MorfiTestUtils.fields[name];
         },
         [name]
     );
@@ -61,16 +60,15 @@ const submit = async (form?: HTMLFormElement) => {
     await act(() => new Promise((r) => setTimeout(r, 0)));
 };
 
-const errors = (): Record<string, ErrorMessage> =>
+const getErrors = (): Record<string, ErrorMessage> =>
     Object.fromEntries(
-        Object.entries(Index.fields)
+        Object.entries(MorfiTestUtils.fields)
             .map(([name, { error }]) => [name, error])
             .filter(([_name, error]) => !!error)
     );
 
-const hasErrors = (): boolean => !!Object.keys(errors()).length;
+const hasErrors = (): boolean => !!Object.keys(getErrors()).length;
 
-// FIXME: Not tested yet
 const Form = <T,>({
     children,
     initialData,
@@ -84,18 +82,18 @@ const Form = <T,>({
 
     return (
         <MorfiForm data={data} onChange={setData} {...rest}>
-            {children(fields)}
+            <>{children(fields)}</>
             <button type={'submit'} />
         </MorfiForm>
     );
 };
 
-export const Index = {
+export const MorfiTestUtils = {
     Field,
     fields: {} as FieldsData,
     clearFields,
     submit,
     hasErrors,
-    errors,
+    getErrors,
     Form,
 };
