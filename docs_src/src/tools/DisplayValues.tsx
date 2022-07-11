@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormData } from 'morfi';
+import type { MorfiData } from 'morfi';
 
 const sanitize = (str: string): string => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -38,7 +38,7 @@ const htmlForObject = (o: { [key: string]: unknown }): string => {
     return result;
 };
 
-type DisplayValuesProps = { data: FormData<any> };
+type DisplayValuesProps = { data: MorfiData<any> };
 
 export const DisplayValues: React.FC<DisplayValuesProps> = ({ data }) => (
     <pre>

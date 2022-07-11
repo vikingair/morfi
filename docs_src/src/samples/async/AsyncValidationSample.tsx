@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Validators } from '../../validators/validators';
 import { FormInput } from '../../fields/FormInput';
-import { FormData, FormValidation, Morfi } from 'morfi';
+import { MorfiData, FormValidation, Morfi } from 'morfi';
 import { useSafeState } from '../../hooks/useSafeState';
 import { Utils } from '../../tools/Utils';
 import { Button } from '../../fields/Basic';
@@ -71,7 +71,7 @@ export const AsyncValidationSample = () => {
         alias: { onChange: validateAlias },
     });
 
-    const [data, setData] = useState<FormData<FormValues>>(() => Morfi.initialData(initialValues));
+    const [data, setData] = useState<MorfiData<FormValues>>(() => Morfi.initialData(initialValues));
 
     const onSubmitFailed = useCallback((e: Error): void => {
         Morfi.isValidationError(e) ||

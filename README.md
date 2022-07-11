@@ -1,6 +1,6 @@
 [![GitHub license][license-image]][license-url]
 [![npm package][npm-image]][npm-url]
-[![GitHub Build][build-image]][build-url]
+[![GitHub Push][push-image]][push-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 
 # ![morfi logo](docs_src/public/images/form-logo.svg?sanitize=true) morfi
@@ -64,14 +64,14 @@ const FormUserPicker: React.FC<FormUserPickerProps> = ({ users, field }) => {
 And finally, you can use this custom form element in your form.
 ```tsx
 import { useState } from 'react';
-import { Morfi, FormData } from 'morfi';
+import { Morfi, MorfiData } from 'morfi';
 
 type FormValues = { userID?: string };
 type MyFormProps = { users: User[]; onSubmit: (values: FormValues) => Promise<void> };
 
 const MyForm: React.FC<MyFormProps> = ({ users, onSubmit }) => {
   const { Form, fields } = Morfi.useForm<FormValues>();
-  const [data, setData] = useState<FormData<FormValues>>(Morfi.initialData({}));
+  const [data, setData] = useState<MorfiData<FormValues>>(Morfi.initialData({}));
 
   return (
       <Form onSubmit={onSubmit} data={data} onChange={setData}>
@@ -134,7 +134,7 @@ First of the basic types explained:
 | `FormFields<V>`      | on all (nested) keys of `V`: `FormField<*>`                                                         | An object containing all field keys                                                                                                                                                                    |
 | `FormValidation<V>`  | on all (nested) keys of `V` optional: `FieldValidation<*>`                                          | An object containing all validations for the whole form                                                                                                                                                |
 | `FormErrors<V>`      | on all (nested) keys of `V` optional: `ErrorMessage`                                                | An object containing all current errors                                                                                                                                                                |
-| `FormData<V>`        | `{ values: V, errors: FormErrors<V>, isSubmitting: boolean; isDirty: boolean; hasErrors: boolean }` | This is the main structure for the data represent the form state                                                                                                                                       |
+| `MorfiData<V>`       | `{ values: V, errors: FormErrors<V>, isSubmitting: boolean; isDirty: boolean; hasErrors: boolean }` | This is the main structure for the data represent the form state                                                                                                                                       |
 | `FormRef<V>`         | `{ submit: () => void; updateInitialData: (mapper: (data: V) => V) => void; }`                      | Those are the accessible features when using the `ref` attribute on the `Form`. `submit` lets you trigger a form submit. `updateInitialData` can be super useful when working with hot updating forms. |
 
 Next we can describe the `FormProps<V>`, which are the properties of the `Form` component:
@@ -143,11 +143,11 @@ Next we can describe the `FormProps<V>`, which are the properties of the `Form` 
 |--------------------|-------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
 | `className`        | `string` (optional)                             | Will be applied to the form tag                                                                                 | `'my-form'`                                                                       |
 | `validation`       | `FormValidation<V>` (optional)                  | Contains all validators                                                                                         | `{ name: { onChange: customValidator } }`                                         |
-| `data`             | `FormData<V>`                                   | Contains all values, errors and submitting state                                                                | `Morfi.getIntialData({ name: 'Scotty' })`                                         |
-| `onChange`         | `(next: FormData<V>) => void`                   | Handles the next data after any changes have been made                                                          | `(data) => setData(data)`                                                         |
+| `data`             | `MorfiData<V>`                                  | Contains all values, errors and submitting state                                                                | `Morfi.getIntialData({ name: 'Scotty' })`                                         |
+| `onChange`         | `(next: MorfiData<V>) => void`                  | Handles the next data after any changes have been made                                                          | `(data) => setData(data)`                                                         |
 | `onSubmit`         | `(values: V) => void \ Promise<any>` (optional) | Will be called if submitted without any failing validators                                                      | `(values) => updateUserData(values)`                                              |
-| `onSubmitFailed`   | `(err: Error, FormData<V>) => void` (optional)  | Will be called if submitting was aborted due to validation errors or if your submit returned a rejected promise | `(err) => { if (err.code >= 500) showToaster('Sorry, please try again later'); }` |
-| `onSubmitFinished` | `(FormData<V>) => void` (optional)              | Will be called after submitting finished                                                                        | `() => navigate('/success')`                                                      |
+| `onSubmitFailed`   | `(err: Error, MorfiData<V>) => void` (optional) | Will be called if submitting was aborted due to validation errors or if your submit returned a rejected promise | `(err) => { if (err.code >= 500) showToaster('Sorry, please try again later'); }` |
+| `onSubmitFinished` | `(MorfiData<V>) => void` (optional)             | Will be called after submitting finished                                                                        | `() => navigate('/success')`                                                      |
 | `version`          | `number` (optional)                             | This can be used to reset the dirty states of the form. Updating the version will assume the data to be new.    | `7`                                                                               |
 | `ref`              | `React.RefObject<FormRef<V>>`  (optional)       | This can be used to access the provided ref functionalities. See description of `FormRef<V>`                    | `useRef<FormRef<MyFormValues>>(null)`                                             |
 
@@ -163,13 +163,14 @@ And finally, there are the `FieldControls<F>` returned by `Morfi.useField(myFiel
 | `name`     | `string`             | Inferred name by the given names of the (nested) data structure.                                                |
 
 ### More examples
+
 See [here](https://github.com/fdc-viktor-luft/morfi/tree/master/docs_src/src/samples) for some
 provided samples. If you're missing something, let me know.
 
 ### Testing
 
-Check out [morfi-test-utils](https://www.npmjs.com/package/morfi-test-utils) to write your tests
-almost as a user would test your form manually.
+Check out [morfi-test-utils](https://www.npmjs.com/package/morfi-test-utils) to simplify
+writing of your tests.
 
 ### FAQ
   
@@ -247,7 +248,7 @@ need to achieve very special things.
 [license-url]: https://github.com/fdc-viktor-luft/morfi/blob/master/LICENSE
 [npm-image]: https://img.shields.io/npm/v/morfi.svg?style=flat-square
 [npm-url]: https://www.npmjs.org/package/morfi
-[build-image]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/build.yml/badge.svg
-[build-url]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/build.yml
+[push-image]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/push.yml/badge.svg
+[push-url]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/push.yml
 [coveralls-image]: https://coveralls.io/repos/github/fdc-viktor-luft/morfi/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/fdc-viktor-luft/morfi?branch=master

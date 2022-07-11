@@ -555,7 +555,7 @@ describe('Morfi', () => {
         expect(fieldBar.error).toBe('ups');
     });
 
-    it('Morfi.clearErrors: removes errors from FormData', () => {
+    it('Morfi.clearErrors: removes errors from MorfiData', () => {
         // given
         const data = Morfi.initialData({ foo: 'bar', nested: { num: 123, str: 'zzz' } });
         let fields: FormFields<typeof data['values']> = null as any;

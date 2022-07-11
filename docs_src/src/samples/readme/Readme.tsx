@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { FormData, FormField, Morfi } from 'morfi';
+import { MorfiData, FormField, Morfi } from 'morfi';
 
 type User = { ID: string; name: string };
 type UserPickerProps = { users: User[]; userID?: string; onPick: (user: User) => void };
@@ -32,7 +32,7 @@ type MyFormProps = { users: User[]; onSubmit: (values: FormValues) => Promise<vo
 
 export const MyForm: React.FC<MyFormProps> = ({ users, onSubmit }) => {
     const { Form, fields } = Morfi.useForm<FormValues>();
-    const [data, setData] = useState<FormData<FormValues>>(Morfi.initialData({}));
+    const [data, setData] = useState<MorfiData<FormValues>>(Morfi.initialData({}));
 
     return (
         <Form onSubmit={onSubmit} data={data} onChange={setData}>

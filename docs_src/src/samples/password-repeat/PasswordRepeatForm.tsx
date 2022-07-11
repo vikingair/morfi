@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormInput } from '../../fields/FormInput';
-import { type FormData, Morfi } from 'morfi';
+import { type MorfiData, Morfi } from 'morfi';
 import { Utils } from '../../tools/Utils';
 import { Button } from '../../fields/Basic';
 
@@ -36,7 +36,7 @@ export const PasswordRepeatForm: React.FC = () => {
         [data.values.password]
     );
 
-    const onChange = useCallback((data: FormData<MyFormValues>) => {
+    const onChange = useCallback((data: MorfiData<MyFormValues>) => {
         setData((prevData) => {
             if (prevData.values.password !== data.values.password) {
                 return { ...data, errors: { ...data.errors, repeat: undefined } };

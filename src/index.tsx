@@ -29,7 +29,7 @@ export type FormFields<V> = {
     [name in keyof V]-?: V[name] extends object ? FormFields<V[name]> & FormField<V[name]> : FormField<V[name]>;
 } & FormField<V>;
 
-export type FormData<V> = {
+export type MorfiData<V> = {
     values: V;
     errors: FormErrors;
     hasErrors: boolean;
@@ -41,13 +41,13 @@ export type FormData<V> = {
 export type FormProps<V> = {
     className?: string;
     validation?: FormValidation<V>;
-    data: FormData<V>;
+    data: MorfiData<V>;
     version?: number;
     children: React.ReactNode;
-    onChange: (data: FormData<V>) => void;
+    onChange: (data: MorfiData<V>) => void;
     onSubmit?: (values: V) => void | Promise<any>;
-    onSubmitFailed?: (err: Error, data: FormData<V>) => void;
-    onSubmitFinished?: (data: FormData<V>) => void;
+    onSubmitFailed?: (err: Error, data: MorfiData<V>) => void;
+    onSubmitFinished?: (data: MorfiData<V>) => void;
 };
 export type FormRef<V> = {
     submit: () => void;
@@ -70,7 +70,7 @@ export class MorfiError extends Error {
 }
 
 type MorfiContext<V> = {
-    data: FormData<V>;
+    data: MorfiData<V>;
     update: Updater<V>;
     isRequired: (key: FormField<any>) => boolean;
     clearErrors: (key: FormField<any>) => void;
@@ -144,8 +144,8 @@ const getAllValidators = <V,>(validation: FormValidation<V>, prefix?: string): R
         };
     }, {} as Record<string, any>);
 
-const validateAll = <V,>(data: FormData<V>, validation: FormValidation<V>): FormData<V> | Promise<FormData<V>> => {
-    const copy: FormData<V> = deepCopyData(data);
+const validateAll = <V,>(data: MorfiData<V>, validation: FormValidation<V>): MorfiData<V> | Promise<MorfiData<V>> => {
+    const copy: MorfiData<V> = deepCopyData(data);
     const promises: Promise<void>[] = [];
     const allValidators = getAllValidators(validation);
 
@@ -177,10 +177,10 @@ const validateAll = <V,>(data: FormData<V>, validation: FormValidation<V>): Form
 };
 
 const deepUpdateValue = (
-    values: FormData<any>['values'],
+    values: MorfiData<any>['values'],
     fieldKey: FormField<any>,
     value: any
-): FormData<any>['values'] => {
+): MorfiData<any>['values'] => {
     const fieldIdParts = fieldKey.toString().split('.');
     const result = { ...values };
     let cur = result;
@@ -196,13 +196,13 @@ const deepUpdateValue = (
 };
 
 const updateField = <V, FK extends keyof V>(
-    oldData: FormData<V>,
+    oldData: MorfiData<V>,
     fieldKey: FormField<FK>,
     value: V[FK],
     dirty: boolean,
     error?: ErrorMessage
-): FormData<V> => {
-    const result: FormData<V> = deepCopyData(oldData);
+): MorfiData<V> => {
+    const result: MorfiData<V> = deepCopyData(oldData);
     result.values = deepUpdateValue(result.values, fieldKey, value);
     result.dirty[fieldKey] = dirty;
     result.errors[fieldKey] = error;
@@ -210,15 +210,15 @@ const updateField = <V, FK extends keyof V>(
 };
 
 // in order to mutate no references on old data objects, we need to create deep copies
-const deepCopyData = <V,>(data: FormData<V>): FormData<V> => ({
+const deepCopyData = <V,>(data: MorfiData<V>): MorfiData<V> => ({
     ...data,
     values: { ...data.values },
     errors: { ...data.errors },
     dirty: { ...data.dirty },
 });
 
-const _hasErrors = <T,>(data: FormData<T>): boolean => Object.values(data.errors).some((e) => e !== undefined);
-const _nextData = <T,>(data: FormData<T>): FormData<T> => ({
+const _hasErrors = <T,>(data: MorfiData<T>): boolean => Object.values(data.errors).some((e) => e !== undefined);
+const _nextData = <T,>(data: MorfiData<T>): MorfiData<T> => ({
     ...data,
     hasErrors: _hasErrors(data),
     isDirty: Object.values(data.dirty).some(Boolean),
@@ -236,17 +236,17 @@ const useFormCallbacks = <V,>(
         []
     );
 
-    const onChange = useCallback((data: FormData<V>) => {
+    const onChange = useCallback((data: MorfiData<V>) => {
         if (isMounted.current) propsRef.current.onChange(data);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
-    const onSubmitFailed = useCallback((err: Error, data: FormData<V>) => {
+    const onSubmitFailed = useCallback((err: Error, data: MorfiData<V>) => {
         if (isMounted.current)
             Promise.resolve().then(() => {
                 // we need to invoke this in the next tick, because of React18 automatic batching of updates
                 propsRef.current.onSubmitFailed?.(err, data);
             });
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
-    const onSubmitFinished = useCallback((data: FormData<V>) => {
+    const onSubmitFinished = useCallback((data: MorfiData<V>) => {
         if (isMounted.current)
             Promise.resolve().then(() => {
                 // we need to invoke this in the next tick, because of React18 automatic batching of updates
@@ -321,14 +321,14 @@ const useFormSubmit = <V,>(
     onSubmitFailed: NonNullable<FormProps<V>['onSubmitFailed']>
 ): ((e?: React.FormEvent<HTMLFormElement>) => void) => {
     const _finishSubmit = useCallback((): void => {
-        const nextData: FormData<V> = _nextData({ ...propsRef.current.data, isSubmitting: false, dirty: {} });
+        const nextData: MorfiData<V> = _nextData({ ...propsRef.current.data, isSubmitting: false, dirty: {} });
         resetInitialRef(nextData.values);
         onChange(nextData);
         onSubmitFinished(nextData);
     }, [onChange, onSubmitFinished]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const _onSubmitAfterValidation = useCallback(
-        (data: FormData<V>): void => {
+        (data: MorfiData<V>): void => {
             if (!data.hasErrors) {
                 (new Promise((r) => r(propsRef.current.onSubmit?.(data.values))) as Promise<any>)
                     .then(_finishSubmit)
@@ -354,11 +354,11 @@ const useFormSubmit = <V,>(
             onChange({ ...data, isSubmitting: true });
             const validated = validation ? validateAll(data, validation) : data;
             if (isPromise(validated)) {
-                (validated as Promise<FormData<V>>).then((validatedData) => {
+                (validated as Promise<MorfiData<V>>).then((validatedData) => {
                     _onSubmitAfterValidation(validatedData);
                 });
             } else {
-                _onSubmitAfterValidation(validated as FormData<V>);
+                _onSubmitAfterValidation(validated as MorfiData<V>);
             }
         },
         [_onSubmitAfterValidation, onChange] // eslint-disable-line react-hooks/exhaustive-deps
@@ -473,7 +473,7 @@ export type MorfiContainer<V> = {
 const useForm = <V extends Record<string, any>>(): MorfiContainer<V> =>
     useMemo(() => ({ fields: _createFieldNameProxy(), Form }), []);
 
-const initialData = <V,>(values: V): FormData<V> => ({
+const initialData = <V,>(values: V): MorfiData<V> => ({
     values,
     errors: {},
     hasErrors: false,
@@ -483,13 +483,13 @@ const initialData = <V,>(values: V): FormData<V> => ({
 });
 
 const notSubmittable = <V,>(
-    { hasErrors, isDirty, isSubmitting }: FormData<V>,
+    { hasErrors, isDirty, isSubmitting }: MorfiData<V>,
     { skipDirty }: { skipDirty?: boolean } = {}
 ): boolean => hasErrors || isSubmitting || !(isDirty || skipDirty);
 
 const isValidationError = (err: any): boolean => err instanceof MorfiError;
 
-const clearErrors = (data: FormData<any>, field: FormField<unknown>) => {
+const clearErrors = (data: MorfiData<any>, field: FormField<unknown>) => {
     const errorEntries = Object.entries(data.errors).filter(
         ([name, value]) => value && !name.startsWith(field.toString())
     );
