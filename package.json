@@ -1,13 +1,13 @@
 {
   "name": "morfi",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
-  "description": "Abstract form handling for any purpose (2 kb gzipped)",
+  "description": "Abstract form handling for any purpose (~2 kb gzipped)",
   "keywords": [
     "form",
     "react",

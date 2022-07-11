@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Validators } from '../../validators/validators';
-import { Morfi } from '../../../../src';
+import { Morfi } from 'morfi';
 import { type Gender, type Person, PersonTable } from './PersonTable';
 import { FormSelect, type SelectOption } from '../../fields/FormSelect';
 import { FormNumberInput } from '../../fields/FormNumberInput';
@@ -11,7 +11,7 @@ type MyFormValues = {
     firstName: string;
     lastName: string;
     gender: Gender;
-    age: number;
+    age?: number;
 };
 
 const initialValues: MyFormValues = { firstName: 'Nick', lastName: '', gender: 'M', age: 21 };
@@ -32,7 +32,7 @@ export const FirstSample: React.FC = () => {
     const [persons, setPersons] = useState<Person[]>([]);
 
     const onSubmit = useCallback(({ firstName, lastName, gender, age }: MyFormValues): void => {
-        setPersons((persons) => [...persons, { gender, firstName, lastName, age }]);
+        setPersons((persons) => [...persons, { gender, firstName, lastName, age: age! }]);
     }, []);
 
     const onClear = useCallback(() => {

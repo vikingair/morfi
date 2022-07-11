@@ -15,6 +15,11 @@ export default defineConfig({
             NODE_ENV: process.env.NODE_ENV,
         },
     },
+    resolve: {
+        alias: {
+            morfi: __dirname + '/src',
+        },
+    },
     build: {
         outDir: '../docs',
         emptyOutDir: true,

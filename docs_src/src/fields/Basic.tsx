@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ErrorMessage } from '../../../src';
+import type { ErrorMessage } from 'morfi';
 import messages from '../../messages.json';
 import { Spinner } from '../icons/Spinner';
 

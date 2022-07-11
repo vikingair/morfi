@@ -555,7 +555,7 @@ describe('Morfi', () => {
         expect(fieldBar.error).toBe('ups');
     });
 
-    it('Morfi.clearErrors: removes errors from FormData', () => {
+    it('Morfi.clearErrors: removes errors from MorfiData', () => {
         // given
         const data = Morfi.initialData({ foo: 'bar', nested: { num: 123, str: 'zzz' } });
         let fields: FormFields<typeof data['values']> = null as any;
@@ -567,11 +567,11 @@ describe('Morfi', () => {
         render(<Dummy />);
 
         // filled with errors
-        data.errors[fields] = 'Ops global';
-        data.errors[fields.foo] = 'Ops foo';
-        data.errors[fields.nested] = 'Ops nested';
-        data.errors[fields.nested.num] = 'Ops num';
-        data.errors[fields.nested.str] = 'Ops str';
+        data.errors[fields] = 'Ups global';
+        data.errors[fields.foo] = 'Ups foo';
+        data.errors[fields.nested] = 'Ups nested';
+        data.errors[fields.nested.num] = 'Ups num';
+        data.errors[fields.nested.str] = 'Ups str';
         data.hasErrors = true;
 
         // test cases
@@ -579,26 +579,26 @@ describe('Morfi', () => {
         expect(Morfi.clearErrors(data, fields.foo)).toEqual({
             ...data,
             errors: {
-                [fields]: 'Ops global',
-                [fields.nested]: 'Ops nested',
-                [fields.nested.num]: 'Ops num',
-                [fields.nested.str]: 'Ops str',
+                [fields]: 'Ups global',
+                [fields.nested]: 'Ups nested',
+                [fields.nested.num]: 'Ups num',
+                [fields.nested.str]: 'Ups str',
             },
         });
         expect(Morfi.clearErrors(data, fields.nested)).toEqual({
             ...data,
             errors: {
-                [fields]: 'Ops global',
-                [fields.foo]: 'Ops foo',
+                [fields]: 'Ups global',
+                [fields.foo]: 'Ups foo',
             },
         });
         expect(Morfi.clearErrors(data, fields.nested.str)).toEqual({
             ...data,
             errors: {
-                [fields]: 'Ops global',
-                [fields.foo]: 'Ops foo',
-                [fields.nested]: 'Ops nested',
-                [fields.nested.num]: 'Ops num',
+                [fields]: 'Ups global',
+                [fields.foo]: 'Ups foo',
+                [fields.nested]: 'Ups nested',
+                [fields.nested.num]: 'Ups num',
             },
         });
     });

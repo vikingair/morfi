@@ -1,156 +1,85 @@
 [![GitHub license][license-image]][license-url]
 [![npm package][npm-image]][npm-url]
-[![GitHub Build][build-image]][build-url]
+[![GitHub Push][push-image]][push-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 
 # ![morfi logo](docs_src/public/images/form-logo.svg?sanitize=true) morfi
-Abstract form handling for any purpose (1.8 kb gzipped)
-
----
-
-⚒️⚒️⚒️ ATTENTION: Construction work ongoing ⚒️⚒️⚒️
-
-Version 2 will be released soon and introduced massive breaking changes. Morfi@1 was not
-state of the art anymore. Back then React hooks where not yet introduced. Also, Morfi was
-lacking many interesting features that are build-in into other form handling libs and are
-important in very advanced scenarios. E.g. editing of deeply nested data structures,
-capturing of dirty fields, possibility to merge live-updates of data into the form fields and
-maintaining form data version for multiple submit forms.
-
-All of this had to be implemented using strong type safety as this was the main reason for
-implementing Morfi instead of using any other form handling library. Meanwhile, many other
-form handling libraries have appeared, but I've tested them and learned from them.
-
-Bad news are that the lib became slightly bigger, 2.3 kB gzipped, but luckily this is
-still much smaller than most other libs out there.
-
-Some of the below links do not work properly anymore. You can however navigate through the
-code already to get an impression of how the new API looks like.
-
----
+Abstract form handling for any purpose (2.3 kb gzipped)
 
 ### Why morfi?
 
-I have invested a lot of time to read about and use forms from different
-developers. Since I did not find the *one* solution in my year long
-experience with `react`, I decided to spend some time and think about
-an ideal solution.
+It offers simply one thing that I couldn't find in any other library. That is type safety.
+I've invested a lot of work to find the most convenient way to ensure type safety. In addition,
+I wanted to create a library with minimal footprint, i.e. no further dependencies, tiny bundle
+size, high runtime performance.
 
-I tried to target the following aspects. It should be a small bundle.
-Leave the flexibility to the developer. Make it type safe! Support the usage of any
-internationalization framework. Absolutely no dependencies, which have
-to be installed additionally. High performing and very assisting.
-
-* `TypeScript` support
-* `flow` support
+* Type safe with `TypeScript` support
 * No dependencies
 * Small bundle size
 * High performance
-* Nice features
-* Totally customizable
-* Well documented
+* Freely customizable form elements
+* [Testing utility](./test-utils/README.md)
 
 ### Installation
-##### With yarn
 ```
-yarn add morfi
-```
-##### With npm
-```
-npm install --save morfi
+npm i --save morfi
 ```
 
 ### Introduction
-Let's get a first impression...
-```js
-import React from 'react';
-import { Morfi, type FormData, type FormValidation } from 'morfi';
- // this can be replaced by any intl framework of your choice
-import { myOwnIntlFramework } from 'my-own-intl-framwwork';
+Let's get a first impression... Imagine you have created your own custom component to display
+and update some state like the following.
+```tsx
+type User = { ID: string; name: string };
+type UserPickerProps = { users: User[]; userID?: string; onPick: (user: User) => void };
 
-// first define your form value types
-type MyFormValues = { phone: string };
-
-const initialValues: MyFormValues = { phone: '' };
-const initialData: FormData<MyFormValues> = { values: initialValues, errors: {} };
-const validation: FormValidation<MyFormValues> = {}; // will be explained later
-
-// initialize the used components
-const { Form, Fields } = Morfi.create(initialValues);
-
-// you can initialize the submit callback outside of the component
-// if it does not depend on further component state
-const onSubmit = (values: MyFormValues) => console.log(values);
-
-const MyForm = () => {
-    // you don't have to use hooks (see example below)
-    const [data, setData] = React.useState<FormData<MyFormValues>>(initialData);
-    
-    return (
-        <Form validation={validation}
-              onChange={setData}
-              data={data}
-              onSubmit={onSubmit}>
-            <Fields.phone>
-                {({ onChange, onBlur, required, value, error }) => (
-                    <div>
-                        <label>{`Phone${required ? ' *' : ''}`}</label>
-                        <input value={value} 
-                               onChange={e => onChange(e.target.value)}
-                               onBlur={e => onBlur(e.target.value)} />
-                        <span className="error">{myOwnIntlFramework(error)}</span>
-                    </div>
-                )}
-            </Fields.phone>
-            <button type="submit">Submit</button>
-        </Form>
-    );
-}
+const UserPicker: React.FC<UserPickerProps> = ({ users, userID, onPick }) => (
+  <ul>
+    {users.map((user) => (
+      <li
+        key={user.ID}
+        className={userID === user.ID ? 'active' : undefined}
+        role="button"
+        onClick={() => onPick(user)}>
+        {user.name}
+      </li>
+    ))}
+  </ul>
+);
 ```
-By calling `Morfi.create` with the initial values, a `React` context will generated
-and you get `Form` element together with `Fields` which itself contains different
-elements for each specified initial value. ATTENTION: It is mandatory to supply all
-relevant fields. Even values that will be initialized with `undefined`. Because the
-keys of your initial values matter.
+To make this a picker that can be used directly in a form you need to create a wrapper form
+component for a specific field.
+```tsx
+import { useCallback } from 'react';
+import { Morfi, FormField } from 'morfi';
 
-The `Form` element receives certain "control" props and needs to provide the current
-context state to each of the `Fields`.
-It expects the following props: (See below for the missing [types](#types))
+type FormUserPickerProps = { field: FormField<string | undefined>; users: User[] };
 
-Props              | Type                                    | Description                                                       | Example
------------------- | --------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------
-`className`        | `void \ string`                         | Will be applied to the form tag                                   | `'my-form'`
-`validation`       | `FormValidation<V>`                     | Contains all validators                                           | `{ name: { onChange: customValidator } }`
-`data`             | `FormData<V>`                           | Contains all values, errors and submitting state                  | `{ values: { name: 'Scotty' }, errors: { name: { id: 'does.not.know' } }, submitting: false }`
-`onChange`         | `(FormData<V>) => void`                 | Handles the next data after any changes have been made            |
-`onSubmit`         | `V => void \ Promise<void>`             | Will be called if submitted without any failing validators        |
-`onSubmitFailed`   | `void \ ((Error, FormData<V>) => void)` | Will be called if submitting was aborted due to validation errors or if your submit returned a rejected promise |
-`onSubmitFinished` | `void \ ((FormData<V>) => void)`        | Will be called after submitting finished                          |
+const FormUserPicker: React.FC<FormUserPickerProps> = ({ users, field }) => {
+  const { value, onChange } = Morfi.useField(field);
+  const onPick = useCallback((user: User) => onChange(user.ID), [onChange]);
 
-In the above example was a single value specified with the key "phone". Hence
-`Fields.phone` is a element mapped to the generic type "string". It accepts only
-a single child function, which receives the following:
+  return <UserPicker users={users} userID={value} onPick={onPick} />;
+};
+```
+And finally, you can use this custom form element in your form.
+```tsx
+import { useState } from 'react';
+import { Morfi, MorfiData } from 'morfi';
 
-* `value`: The current value of that field. It equals the `data.values.phone`.
+type FormValues = { userID?: string };
+type MyFormProps = { users: User[]; onSubmit: (values: FormValues) => Promise<void> };
 
-* `error`: The current error message of that field. It equals the `data.errors.phone`.
+const MyForm: React.FC<MyFormProps> = ({ users, onSubmit }) => {
+  const { Form, fields } = Morfi.useForm<FormValues>();
+  const [data, setData] = useState<MorfiData<FormValues>>(Morfi.initialData({}));
 
-* `onChange`: Receives the next value of the generic type, runs the onChange-Validator on it
-and calls the `Form` - `onChange` where e.g. `data.values.phone` holds the
-updated value and `data.errors.phone` will maybe hold an occurred validation error.
-
-* `onBlur`: Same as the `onChange` but will be triggered if the input loses
-the users focus and triggers the onBlur-Validator.
-
-* `required`: A boolean which indicates if the value `undefined` for "phone"
-would pass all validations on that field. If not the value is treated as
-required.
-
-The above example shows a form with a single field. 
-The label shows "Phone *" if the value is required.
-It will update the form data accordingly to the specified `onChange` handler
-supplied to the Form.
-It will display an error message below the input if any error was encountered.
+  return (
+      <Form onSubmit={onSubmit} data={data} onChange={setData}>
+        <FormUserPicker users={users} field={fields.userID} />
+      </Form>
+  );
+};
+```
 
 ### Asynchronous form field handling
 
@@ -189,172 +118,59 @@ When the user submits the form, the following will happen:
 
 ### Types
 
-**morfi** comes with a lot of types and exports `FormData<T>`, `ErrorMessage`
-and `Validator`.
+**morfi** ships some important types that will be explained in this section.
 
-In this table you get an overview of relevant types.
+First of the basic types explained:
 
- Name                 | TypeScript declaration                                               | Information
- -------------------- | -------------------------------------------------------------------- | ---------------------
- `ErrorMessage`       | `{ id: string, values?: { [key: string]: ReactNode } }`              | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values
- `MaybeError`         | `ErrorMessage \ void`                                                | This is the returned feedback of each validator
- `Validator<F>`       | `(value?: F) => MaybeError \ Promise<MaybeError>`                    | The validator returns void if no error occurred or a Promise if the validation is asynchronous 
- `ValidationType`     | `'onChange' \ 'onBlur' \ 'onSubmit'`                                 | The validation types that can be specified
- `FieldValidation<F>` | `Partial<{ [key in ValidationType]: Validator<F> }>`                 | An object containing all specified validators for one field
- `FormValidation<V>`  | `Partial<{ [key in keyof V]: FieldValidation<V[key]>}>`              | An object containing all validations for the whole form
- `FormErrors<V>`      | `Partial<{ [key in keyof V]: ErrorMessage }>`                        | An object containing all current errors
- `FormData<V>`        | `{ values: V, errors: FormErrors<V>, submitting?: boolean }`         | This is the main structure for the data represent the form state
+| Name                 | TypeScript declaration                                                                              | Information                                                                                                                                                                                            |
+|----------------------|-----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ErrorMessage`       | `string \ { id: string; values?: { [key: string]: ReactNode } }`                                    | This structure allows to handle internationalization by transporting the required information like the intl key and placeholder values                                                                 |
+| `MaybeError`         | `ErrorMessage \ undefined`                                                                          | This is the returned feedback of each validator                                                                                                                                                        |
+| `Validator<F>`       | `(value?: F) => MaybeError \ Promise<MaybeError>`                                                   | The validator returns void if no error occurred or a Promise if the validation is asynchronous                                                                                                         | 
+| `ValidationType`     | `'onChange' \ 'onBlur' \ 'onSubmit'`                                                                | The validation types that can be specified                                                                                                                                                             |
+| `FieldValidation<F>` | `{ [t in ValidationType]?: Validator<F> }`                                                          | An object containing all specified validators for one field                                                                                                                                            |
+| `FormField<F>`       | special key, which can be used to access field specific data                                        | An object containing all specified validators for one field                                                                                                                                            |
+| `FormDirty`          | `{ [name: FormField<any>]: boolean \ undefined }`                                                   | An object containing all dirty states                                                                                                                                                                  |
+| `FormFields<V>`      | on all (nested) keys of `V`: `FormField<*>`                                                         | An object containing all field keys                                                                                                                                                                    |
+| `FormValidation<V>`  | on all (nested) keys of `V` optional: `FieldValidation<*>`                                          | An object containing all validations for the whole form                                                                                                                                                |
+| `FormErrors<V>`      | on all (nested) keys of `V` optional: `ErrorMessage`                                                | An object containing all current errors                                                                                                                                                                |
+| `MorfiData<V>`       | `{ values: V, errors: FormErrors<V>, isSubmitting: boolean; isDirty: boolean; hasErrors: boolean }` | This is the main structure for the data represent the form state                                                                                                                                       |
+| `FormRef<V>`         | `{ submit: () => void; updateInitialData: (mapper: (data: V) => V) => void; }`                      | Those are the accessible features when using the `ref` attribute on the `Form`. `submit` lets you trigger a form submit. `updateInitialData` can be super useful when working with hot updating forms. |
 
-Here the corresponding `flow` declarations:
+Next we can describe the `FormProps<V>`, which are the properties of the `Form` component:
 
- Name                 | Flow declaration                                                    
- -------------------- | --------------------------------------------------------------------
- `ErrorMessage`       | `{ id: string, values?: { [string]: React$Node} }`                  
- `MaybeError`         | `ErrorMessage \ void` 
- `Validator<F>`       | `(F \ void) => MaybeError \ Promise<MaybeError>`   
- `ValidationType`     | `'onChange' \ 'onBlur' \ 'onSubmit'`                                
- `FieldValidation<F>` | `$Shape<{ [ValidationType]: Validator<F> }>` 
- `FormValidation<V>`  | `$Shape<$ObjMap<V, <F>(F) => FieldValidation<F>>>`                  
- `FormErrors<V>`      | `$Shape<$ObjMap<V, () => ErrorMessage>>`                            
- `FormData<V>`        | `{ values: V, errors: FormErrors<V>, submitting?: boolean }`                            
+| Props              | Type                                            | Description                                                                                                     | Example                                                                           |
+|--------------------|-------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| `className`        | `string` (optional)                             | Will be applied to the form tag                                                                                 | `'my-form'`                                                                       |
+| `validation`       | `FormValidation<V>` (optional)                  | Contains all validators                                                                                         | `{ name: { onChange: customValidator } }`                                         |
+| `data`             | `MorfiData<V>`                                  | Contains all values, errors and submitting state                                                                | `Morfi.getIntialData({ name: 'Scotty' })`                                         |
+| `onChange`         | `(next: MorfiData<V>) => void`                  | Handles the next data after any changes have been made                                                          | `(data) => setData(data)`                                                         |
+| `onSubmit`         | `(values: V) => void \ Promise<any>` (optional) | Will be called if submitted without any failing validators                                                      | `(values) => updateUserData(values)`                                              |
+| `onSubmitFailed`   | `(err: Error, MorfiData<V>) => void` (optional) | Will be called if submitting was aborted due to validation errors or if your submit returned a rejected promise | `(err) => { if (err.code >= 500) showToaster('Sorry, please try again later'); }` |
+| `onSubmitFinished` | `(MorfiData<V>) => void` (optional)             | Will be called after submitting finished                                                                        | `() => navigate('/success')`                                                      |
+| `version`          | `number` (optional)                             | This can be used to reset the dirty states of the form. Updating the version will assume the data to be new.    | `7`                                                                               |
+| `ref`              | `React.RefObject<FormRef<V>>`  (optional)       | This can be used to access the provided ref functionalities. See description of `FormRef<V>`                    | `useRef<FormRef<MyFormValues>>(null)`                                             |
 
-### Example
+And finally, there are the `FieldControls<F>` returned by `Morfi.useField(myField)`:
 
-In this chapter we will examine how a sample form could be implemented.
-The [sample](https://fdc-viktor-luft.github.io/morfi/) is hosted by GitHub Pages.
+| Props      | Type                 | Description                                                                                                     |
+|------------|----------------------|-----------------------------------------------------------------------------------------------------------------|
+| `onChange` | `(value: F) => void` | Will update the field value and run the "onChange" validator                                                    |
+| `onBlur`   | `() => void`         | Will run the "onBlur" validator                                                                                 |
+| `required` | `boolean`            | Will be true if any validator type returns something else than `undefined` after being invoked with `undefined` |
+| `dirty`    | `boolean`            | Will be true if the current value is not identical to the initial value.                                        |
+| `error`    | `MaybeError`         | The current error                                                                                               |
+| `name`     | `string`             | Inferred name by the given names of the (nested) data structure.                                                |
 
-We first define the types of the form values...
-```js
-type Gender = 'M' | 'F';
-type MyFormValues = {
-    firstName: string,
-    lastName: string,
-    gender: Gender,
-    age: number,
-};
-// gender can be selected with the following available options
-const genderOptions = [{ value: 'M', label: 'male' }, { value: 'F', label: 'female' }];
-```
-Let's initialize the form elements...
-```js
-const initialValues: MyFormValues = { firstName: 'Nick', lastName: '', gender: 'M', age: 21 };
-const { Form, Fields } = Morfi.create(initialValues);
-```
-Then we define the validations... (see [here](https://github.com/fdc-viktor-luft/morfi/blob/master/src/js/validators/validators.js) for the used validators below)
-```js
-const validation = {
-    firstName: { onChange: Validators.string({ min: 1, max: 10 }) },
-    lastName: { onBlur: Validators.string({ min: 1, max: 10 }) },
-    age: { onChange: Validators.number({ minLength: 1, maxLength: 3 }) },
-};
-```
-Let's say we decide to control the form state inside our app state...
-```js
-type AppProps = {};
-type AppState = { data: FormData<MyFormValues> };
-```
-Now we define the first version of the app... (see [here](https://github.com/fdc-viktor-luft/morfi/tree/master/src/js/fields) for all used custom components below)
-```js
-import React, { Component } from 'react';
-import { Morfi, type FormData } from 'morfi';
+### More examples
 
-(...)
-
-class App extends Component<AppProps, AppState> {
-    // first we initialize the defaults
-    // we could even start with initial errors
-    state: AppState = { data: { values: initialValues, errors: {} } };
-
-    // this handler will propagate the form changes to the state
-    onChange = (data: FormData<MyFormValues>) => this.setState({ data });
-
-    // for now we leave the submit handler empty
-    onSubmit = ({ gender, firstName, lastName, age }: MyFormValues): void => {
-        // do something
-    };
-
-    render(): React$Node {
-        const { data } = this.state;
-        return (
-            <Form validation={validation} onChange={this.onChange} data={data} onSubmit={this.onSubmit}>
-                <div className="row">
-                    <FormInput Field={Fields.firstName} label="First name" />
-                    <FormInput Field={Fields.lastName} label="Last name" />
-                </div>
-                <div className="row">
-                    <FormSelect
-                        Field={Fields.gender}
-                        options={genderOptions}
-                        label="Gender"
-                    />
-                    <FormNumberInput Field={Fields.age} label="Age" />
-                </div>
-                <div className="btn-toolbar">
-                    <button type="button" onClick={this.onClear}>
-                        Clear
-                    </button>
-                    <button disabled={Morfi.hasErrors(data)}>
-                        Submit
-                    </button>
-                </div>
-            </Form>
-        );
-    }
-}
-```
-This version does the specified validations on the fields and prevents our empty
-`onSubmit` function from being called, when any validations would not succeed.
-
-So now we add a table (see [here](https://github.com/fdc-viktor-luft/morfi/blob/master/src/js/PersonTable.js) 
-for the implementation and the new type `Person`) to hold all entered person data. What changes...
-```js
-// the state interface
-type AppState = {| data: FormData<MyFormValues>, persons: Person[] |};
-```
-```js
-// the initial state
-state: AppState = { data: { values: initialValues, errors: {} }, persons: [] };
-```
-```js
-// we add below the form the table
-<PersonTable persons={this.state.persons} />
-```
-```js
-// we implement functionality for the onSubmit
-onSubmit = ({ gender, firstName, lastName = '', age }: MyFormValues): void => {
-    this.setState({
-        persons: [...this.state.persons, { gender, firstName, lastName, age }],
-    });
-};
-```
-Now each time we submit the entered data which succeeds all validations, a new
-person entry will be displayed in the `PersonTable`.
-
-Finally we will add a clear button for all inputs and disable the submit button if
-any errors are present. What changes...
-```js
-// a new function inside our App
-onClear = () => {
-    this.setState({ data: { values: initialValues, errors: {} } });
-};
-```
-```js
-// the submit button on the bottom of the form will be replaced by
-<div className="btn-toolbar" role="toolbar">
-    <button type="button" onClick={this.onClear}>
-        Clear
-    </button>
-    <button disabled={Morfi.hasErrors(data)}>
-        Submit
-    </button>
-</div>
-```
-Now if we hit the clear button all entered values will be cleared.
+See [here](https://github.com/fdc-viktor-luft/morfi/tree/master/docs_src/src/samples) for some
+provided samples. If you're missing something, let me know.
 
 ### Testing
 
-Check out [morfi-test-utils](https://www.npmjs.com/package/morfi-test-utils) to write your tests
-almost as a user would test your form manually.
+Check out [morfi-test-utils](https://www.npmjs.com/package/morfi-test-utils) to simplify
+writing of your tests. The test util requires `react` version to be at least `18.0.0`.
 
 ### FAQ
   
@@ -364,59 +180,75 @@ almost as a user would test your form manually.
   **morfi** is primarily made to handle updates, validations, storing of
   data, assist the developer with strict types and serve as a guideline for form handling.
   
-  Later there might be subdirectories which you can optionally use, but most
-  often in larger projects you want to have full control over all form components.
-
+  In larger projects you want to have full control over all form components, and they are 
+  very individual. Creating `Form*` wrappers is most often very straight forward.
 
 ### Alternatives...
 
-The following table includes results from [bundlephobia](https://bundlephobia.com).
+The following table includes results from [bundlephobia](https://bundlephobia.com). At the end
+you'll find my personal recommendation.
 
-Package                 | Version | Size (minified + gzipped)
-------------------------|---------|--------------------------
-`morfi`                 | 1.1.8   | 1.7 kB
-`react-form`            | 4.0.1   | 4.5 kB
-`redux-form`            | 8.2.6   | 27 kB
-`react-redux-form`      | 1.16.14 | 22.5 kB
-`formik`                | 2.0.10  | 14.9 kB
-`react-final-form`      | 6.3.3   | 3.1 kB + 5.1 kB (hidden peer dependency: `final-form@4.18.6`)
-`react-jsonschema-form` | 1.8.1   | 68.8 kB
+| Package                 | Version | Size (minified + gzipped)                                     |
+|-------------------------|---------|---------------------------------------------------------------|
+| `morfi`                 | 2.0.0   | 2.3 kB                                                        |
+| `react-hook-form`       | 7.33.1  | 8.6 kB                                                        |
+| `formik`                | 2.2.9   | 13 kB                                                         |
+| `react-final-form`      | 6.5.9   | 3.3 kB + 5.5 kB (hidden peer dependency: `final-form@4.20.7`) |
+| `react-redux-form`      | 1.16.14 | 22.5 kB                                                       |
+| `redux-form`            | 8.3.8   | 26.4 kB                                                       |
+| `react-jsonschema-form` | 1.8.1   | 69.3 kB                                                       |
 
 The following statements represent only my personal opinion, although I did
 not work a lot with the following pretty good packages.
 
-* [**react-form**](https://github.com/react-tools/react-form): 
-A lot of features, *but* a large package with less flexibility when it comes
-to very individual forms. No `flow` support.
+* [**react-hook-form**](https://github.com/react-hook-form/react-hook-form):
+  Most trending, I guess. Great documentation. Embraces native HTML form validation. **But**
+  hard to use with non-native elements such as the `UserPicker` from above. Pseudo
+  type safety as it doesn't prevent data from being set differently. It doesn't support
+  nested data structures as form data.
+
+* [**formik**](https://github.com/jaredpalmer/formik):
+  Very flexible library that allows to do a lot with your forms. However, it is not type
+  safe as it uses strings and dot-separated strings (for nested data structures) without
+  any type reference to the used data structure. Also, the API is quite huge and in some
+  aspects not very convenient, e.g. you have to take care about form state cleanup after
+  submitting.
+
+* [**react-final-form**](https://github.com/final-form/react-final-form):
+  A lot of features, optimized for performance,
+  small bundle size, totally customizable and needs no integrative work,
+  *but* is not as well documented, has `peerDependecies` which you also need
+  to install and has no `flow` assistance.
 
 * [**redux-form**](https://github.com/erikras/redux-form): 
-A lot of features, nice documented and easy to use
-form handling tool, *but* it comes with the cost of a little integrative work,
-the cost of big package size, forces you to hold the form data in the redux store
-and to connect every form and has poor `flow` assistance. Almost the same for
-[**react-redux-form**](https://github.com/davidkpiano/react-redux-form).
-
-
-* [**formik**](https://github.com/jaredpalmer/formik): 
-Indicates what it does better than `redux-form`, *but* is not so much better
-because it uses its own pseudo store and pseudo connect-function called
-`withFormik` and still is not a very small package.
-
-* [**react-final-form**](https://github.com/final-form/react-final-form): 
-A lot of features, optimized for performance,
-small bundle size, totally customizable and needs no integrative work, 
-*but* is not as well documented, has `peerDependecies` which you also need
-to install and has no `flow` assistance.
+  A lot of features, nice documented and easy to use
+  form handling tool, *but* it comes with the cost of a little integrative work,
+  the cost of big package size, forces you to hold the form data in the redux store
+  and to connect every form and has poor `flow` assistance. Almost the same for
+  [**react-redux-form**](https://github.com/davidkpiano/react-redux-form).
 
 * [**react-jsonschema-form**](https://github.com/mozilla-services/react-jsonschema-form): 
-A lot of features and very nice docs, *but* a large package with less flexibility when it comes
-to individual form templating. No `flow` support.
+  A lot of features and very nice docs, *but* a large package with less flexibility when it comes
+  to individual form templating. No `flow` support.
+
+* [**react-form**](https://github.com/react-tools/react-form):
+  Considered dead, as the last update was a long time ago.
+
+#### Conclusion 
+Thank you for reading parts of my docs. ✌️
+
+If you don't want to consider using `morfi` in your project for form handling, because it is
+currently maintained only by me, I would recommend to you to choose either `react-hook-form`
+or `formik`. Those have a great community behind them, are still well maintained and offer
+enough flexibility to reach your goals. I would say `react-hook-form` looks more opinionated
+and easy to use, but `formik` offers greater flexibility for the cost of complexity if you
+need to achieve very special things.
 
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-url]: https://github.com/fdc-viktor-luft/morfi/blob/master/LICENSE
 [npm-image]: https://img.shields.io/npm/v/morfi.svg?style=flat-square
 [npm-url]: https://www.npmjs.org/package/morfi
-[build-image]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/build.yml/badge.svg
-[build-url]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/build.yml
+[push-image]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/push.yml/badge.svg
+[push-url]: https://github.com/fdc-viktor-luft/morfi/actions/workflows/push.yml
 [coveralls-image]: https://coveralls.io/repos/github/fdc-viktor-luft/morfi/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/fdc-viktor-luft/morfi?branch=master

@@ -9,12 +9,12 @@ Breaking changes:
   and the `fields` object, which is completely new designed.
 - The `fields` object contains arbitrary deeply nested values containing information about the field, which
   can be accessed via `Morfi.useField(fields.myData)`.
-- The `FormData<T>` changed now to include some additional properties. 
+- The `FormData<T>` changed now to include some additional properties and was renamed to `MorfiData<T>` to avoid name collisions with the native type. 
   - `dirty` -> A map of all dirty form elements.
   - `isDirty` -> Boolean, which is true, when any field is dirty.
   - `hasErrors` -> Boolean, which is true, when any field has an error.
 - `Morfi.hasErrors(data)` -> `data.hasErrors`
-- New: `Morfi.initialData(values)` -> Returns a pre-filled `FormData<typeof values>` object.
+- New: `Morfi.initialData(values)` -> Returns a pre-filled `MorfiData<typeof values>` object.
 - New: `Morfi.notSubmittable(data)` -> A form is considered submittable, if it is dirty, has no errors and is not currently being submitted
 - New: `Morfi.clearErrors(data, fields.myField)` -> Returns data with cleared error on field `myField`. 
   Using `fields` itself will clear all errors.
@@ -82,7 +82,7 @@ const FormInput: React.FC<FormInputProps> = ({ field, label }) => {
             <label>{`${label}${required ? ' *' : ''}`}</label>
             <input value={value}
                    onChange={e => onChange(e.target.value)}
-                   onBlur={e => onBlur(e.target.value)} />
+                   onBlur={onBlur} />
             <span className="error">{typeof error === 'string' ? error : error.id}</span>
         </div>
     );

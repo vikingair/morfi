@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { DisplayError, Label, onActionWrap } from './Basic';
 import { Eye } from '../icons/Eye';
 import { Spinner } from '../icons/Spinner';
-import { FieldControls, FormField, Morfi } from '../../../src';
+import { FieldControls, FormField, Morfi } from 'morfi';
 
 type AllowedTypes = 'text' | 'password';
 
