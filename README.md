@@ -170,7 +170,7 @@ provided samples. If you're missing something, let me know.
 ### Testing
 
 Check out [morfi-test-utils](https://www.npmjs.com/package/morfi-test-utils) to simplify
-writing of your tests.
+writing of your tests. The test util requires `react` version to be at least `18.0.0`.
 
 ### FAQ
   

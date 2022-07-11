@@ -1,6 +1,6 @@
 {
   "name": "morfi",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
