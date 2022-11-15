@@ -69,7 +69,7 @@ const getErrors = (): Record<string, ErrorMessage> =>
 
 const hasErrors = (): boolean => !!Object.keys(getErrors()).length;
 
-const Form = <T,>({
+const Form = <T extends Record<string, any>>({
     children,
     initialData,
     ...rest

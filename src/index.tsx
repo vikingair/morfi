@@ -29,7 +29,7 @@ export type FormFields<V> = {
     [name in keyof V]-?: V[name] extends object ? FormFields<V[name]> & FormField<V[name]> : FormField<V[name]>;
 } & FormField<V>;
 
-export type MorfiData<V> = {
+export type MorfiData<V extends Record<string, any>> = {
     values: V;
     errors: FormErrors;
     hasErrors: boolean;
@@ -38,7 +38,7 @@ export type MorfiData<V> = {
     isSubmitting: boolean;
 };
 
-export type FormProps<V> = {
+export type FormProps<V extends Record<string, any>> = {
     className?: string;
     validation?: FormValidation<V>;
     data: MorfiData<V>;
@@ -49,12 +49,12 @@ export type FormProps<V> = {
     onSubmitFailed?: (err: Error, data: MorfiData<V>) => void;
     onSubmitFinished?: (data: MorfiData<V>) => void;
 };
-export type FormRef<V> = {
+export type FormRef<V extends Record<string, any>> = {
     submit: () => void;
     updateInitialData: (mapper: (data: V) => V) => void;
 };
 
-type Updater<V> = <F extends keyof V, VT extends ValidationType>(
+type Updater<V extends Record<string, any>> = <F extends keyof V, VT extends ValidationType>(
     key: FormField<any>,
     valType: VT,
     value: VT extends 'onChange' ? V[F] : undefined
@@ -69,7 +69,7 @@ export class MorfiError extends Error {
     /* c8 ignore next */
 }
 
-type MorfiContext<V> = {
+type MorfiContext<V extends Record<string, any>> = {
     data: MorfiData<V>;
     update: Updater<V>;
     isRequired: (key: FormField<any>) => boolean;
@@ -132,7 +132,10 @@ const dotPrefix = (name: string, prefix = ''): string => (prefix && prefix + '.'
 /**
  * Given a validation this function returns an object containing the field validations by field keys.
  */
-const getAllValidators = <V,>(validation: FormValidation<V>, prefix?: string): Record<string, FieldValidation<any>> =>
+const getAllValidators = <V extends Record<string, any>>(
+    validation: FormValidation<V>,
+    prefix?: string
+): Record<string, FieldValidation<any>> =>
     Object.entries(validation).reduce((red, [name, val]) => {
         const dottedPrefix = dotPrefix(name, prefix);
         if (!val) return red;
@@ -144,7 +147,10 @@ const getAllValidators = <V,>(validation: FormValidation<V>, prefix?: string): R
         };
     }, {} as Record<string, any>);
 
-const validateAll = <V,>(data: MorfiData<V>, validation: FormValidation<V>): MorfiData<V> | Promise<MorfiData<V>> => {
+const validateAll = <V extends Record<string, any>>(
+    data: MorfiData<V>,
+    validation: FormValidation<V>
+): MorfiData<V> | Promise<MorfiData<V>> => {
     const copy: MorfiData<V> = deepCopyData(data);
     const promises: Promise<void>[] = [];
     const allValidators = getAllValidators(validation);
@@ -195,7 +201,7 @@ const deepUpdateValue = (
     return result;
 };
 
-const updateField = <V, FK extends keyof V>(
+const updateField = <V extends Record<string, any>, FK extends keyof V>(
     oldData: MorfiData<V>,
     fieldKey: FormField<FK>,
     value: V[FK],
@@ -210,22 +216,23 @@ const updateField = <V, FK extends keyof V>(
 };
 
 // in order to mutate no references on old data objects, we need to create deep copies
-const deepCopyData = <V,>(data: MorfiData<V>): MorfiData<V> => ({
+const deepCopyData = <V extends Record<string, any>>(data: MorfiData<V>): MorfiData<V> => ({
     ...data,
     values: { ...data.values },
     errors: { ...data.errors },
     dirty: { ...data.dirty },
 });
 
-const _hasErrors = <T,>(data: MorfiData<T>): boolean => Object.values(data.errors).some((e) => e !== undefined);
-const _nextData = <T,>(data: MorfiData<T>): MorfiData<T> => ({
+const _hasErrors = <V extends Record<string, any>>(data: MorfiData<V>): boolean =>
+    Object.values(data.errors).some((e) => e !== undefined);
+const _nextData = <V extends Record<string, any>>(data: MorfiData<V>): MorfiData<V> => ({
     ...data,
     hasErrors: _hasErrors(data),
     isDirty: Object.values(data.dirty).some(Boolean),
 });
 
-type PropsRef<V> = React.MutableRefObject<Omit<FormProps<V>, 'children' | 'clasName'>>;
-const useFormCallbacks = <V,>(
+type PropsRef<V extends Record<string, any>> = React.MutableRefObject<Omit<FormProps<V>, 'children' | 'clasName'>>;
+const useFormCallbacks = <V extends Record<string, any>>(
     propsRef: PropsRef<V>
 ): Required<Pick<FormProps<V>, 'onChange' | 'onSubmitFinished' | 'onSubmitFailed'>> => {
     const isMounted = useRef(true);
@@ -257,7 +264,7 @@ const useFormCallbacks = <V,>(
     return { onChange, onSubmitFinished, onSubmitFailed };
 };
 
-const useFormUpdater = <V,>(
+const useFormUpdater = <V extends Record<string, any>>(
     propsRef: PropsRef<V>,
     initialRef: React.MutableRefObject<V>,
     onChange: FormProps<V>['onChange']
@@ -313,7 +320,7 @@ const useFormUpdater = <V,>(
     return update;
 };
 
-const useFormSubmit = <V,>(
+const useFormSubmit = <V extends Record<string, any>>(
     propsRef: PropsRef<V>,
     onChange: FormProps<V>['onChange'],
     resetInitialRef: (values: V) => void,
@@ -365,7 +372,7 @@ const useFormSubmit = <V,>(
     );
 };
 
-const FormInner = <V,>(
+const FormInner = <V extends Record<string, any>>(
     { className, children, version, ...props }: FormProps<V>,
     formRef: React.ForwardedRef<FormRef<V>>
 ) => {
@@ -429,7 +436,7 @@ const FormInner = <V,>(
     );
 };
 
-type FormComponent<V> = React.FC<FormProps<V> & RefAttributes<FormRef<V>>>;
+type FormComponent<V extends Record<string, any>> = React.FC<FormProps<V> & RefAttributes<FormRef<V>>>;
 const Form: FormComponent<any> = React.forwardRef(FormInner);
 
 export type FieldControls<F> = {
@@ -465,7 +472,7 @@ const _createFieldNameProxy = (prefix = ''): any =>
         },
     });
 
-export type MorfiContainer<V> = {
+export type MorfiContainer<V extends Record<string, any>> = {
     fields: FormFields<V>;
     Form: FormComponent<V>;
 };
@@ -473,7 +480,7 @@ export type MorfiContainer<V> = {
 const useForm = <V extends Record<string, any>>(): MorfiContainer<V> =>
     useMemo(() => ({ fields: _createFieldNameProxy(), Form }), []);
 
-const initialData = <V,>(values: V): MorfiData<V> => ({
+const initialData = <V extends Record<string, any>>(values: V): MorfiData<V> => ({
     values,
     errors: {},
     hasErrors: false,
@@ -482,7 +489,7 @@ const initialData = <V,>(values: V): MorfiData<V> => ({
     isSubmitting: false,
 });
 
-const notSubmittable = <V,>(
+const notSubmittable = <V extends Record<string, any>>(
     { hasErrors, isDirty, isSubmitting }: MorfiData<V>,
     { skipDirty }: { skipDirty?: boolean } = {}
 ): boolean => hasErrors || isSubmitting || !(isDirty || skipDirty);
