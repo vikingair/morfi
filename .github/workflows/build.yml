@@ -15,5 +15,7 @@ jobs:
         run: pnpm lint
       - name: Test
         run: pnpm test
+      - name: Build
+        run: pnpm publish:prepare
       - name: Check docs updated
         run: node .github/scripts/check-docs-updated.mjs

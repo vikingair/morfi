@@ -25,7 +25,7 @@ export const DisplayError = ({ error }: { error: ErrorMessage }) => (
 );
 
 export const onActionWrap =
-    (cb?: (arg: any) => void, preventDefault: boolean = true): React.EventHandler<any> =>
+    (cb?: (arg: any) => void, preventDefault = true): React.EventHandler<any> =>
     (event) => {
         if (preventDefault) {
             event.preventDefault();

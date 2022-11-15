@@ -143,7 +143,7 @@ describe('MorfiTestUtils', () => {
         });
 
         // when - submitting with backend error
-        let reject = (_err: Error) => {};
+        let reject = (_err: Error): void => undefined;
         onSubmit.returns(
             new Promise((_, rej) => {
                 reject = rej;
