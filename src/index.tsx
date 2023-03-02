@@ -70,7 +70,7 @@ export class MorfiError extends Error {
 }
 
 type MorfiContext<V extends Record<string, any>> = {
-    data: MorfiData<V>;
+    getData: () => MorfiData<V>;
     update: Updater<V>;
     isRequired: (key: FormField<any>) => boolean;
     clearErrors: (key: FormField<any>) => void;
@@ -236,12 +236,12 @@ const useFormCallbacks = <V extends Record<string, any>>(
     propsRef: PropsRef<V>
 ): Required<Pick<FormProps<V>, 'onChange' | 'onSubmitFinished' | 'onSubmitFailed'>> => {
     const isMounted = useRef(true);
-    useEffect(
-        () => () => {
+    useEffect(() => {
+        isMounted.current = true;
+        return () => {
             isMounted.current = false;
-        },
-        []
-    );
+        };
+    }, []);
 
     const onChange = useCallback((data: MorfiData<V>) => {
         if (isMounted.current) propsRef.current.onChange(data);
@@ -320,6 +320,19 @@ const useFormUpdater = <V extends Record<string, any>>(
     return update;
 };
 
+// React strict mode calls all effects twice, so we need this helper
+// see: https://github.com/streamich/react-use/blob/master/src/useFirstMountState.ts
+export const useFirstMountState = (): boolean => {
+    const isFirst = useRef(true);
+
+    if (isFirst.current) {
+        isFirst.current = false;
+        return true;
+    }
+
+    return isFirst.current;
+};
+
 const useFormSubmit = <V extends Record<string, any>>(
     propsRef: PropsRef<V>,
     onChange: FormProps<V>['onChange'],
@@ -390,7 +403,7 @@ const FormInner = <V extends Record<string, any>>(
     const onSubmit = useFormSubmit(propsRef, onChange, resetInitialRef, onSubmitFinished, onSubmitFailed);
 
     const [ctx, setCtx] = useState<MorfiContext<V>>(() => ({
-        data: props.data,
+        getData: () => propsRef.current.data,
         update: ((...args) => update.current(...args)) as Updater<V>,
         isRequired: <F extends keyof V>(field: FormField<F>) =>
             !!completeFieldValidation(getByFormField(field, propsRef.current.validation)),
@@ -399,22 +412,20 @@ const FormInner = <V extends Record<string, any>>(
     }));
 
     // update all fields if parent component provides new data
-    const skipInitial = useRef(true);
+    const firstMount = useFirstMountState();
+
     useEffect(() => {
-        if (skipInitial.current) return;
-        setCtx((prev) => ({ ...prev, data: props.data }));
-    }, [props.data]);
+        if (firstMount) return;
+        // only purpose is flushing of context update
+        setCtx((prev) => ({ ...prev }));
+    }, [props.data]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // update initial values on version change (can be used for multi submit forms)
     useEffect(() => {
-        if (skipInitial.current) return;
+        if (firstMount) return;
         resetInitialRef(propsRef.current.data.values);
         onChange(_nextData({ ...propsRef.current.data, errors: {}, dirty: {} }));
     }, [version]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    useEffect(() => {
-        skipInitial.current = false;
-    }, []);
 
     useImperativeHandle<FormRef<V> | null, FormRef<V>>(
         formRef,
@@ -450,7 +461,8 @@ export type FieldControls<F> = {
 };
 
 const useField = <F,>(field: FormField<F>): FieldControls<F> => {
-    const { update, data, isRequired } = useContext(morfiContext);
+    const { update, getData, isRequired } = useContext(morfiContext);
+    const data = getData();
     return {
         onChange: useCallback((v) => update(field, 'onChange', v), [update, field]),
         onBlur: useCallback(() => update(field, 'onBlur', undefined), [update, field]),

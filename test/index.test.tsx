@@ -467,13 +467,13 @@ describe('Morfi', () => {
         // given
         const initialData = Morfi.initialData({ foo: 'bar', nested: { num: 123, str: 'zzz' } });
         let useFieldReturn: any = null as any;
-        const DummyInner: React.FC<{ fields: FormFields<typeof initialData['values']> }> = ({ fields }) => {
+        const DummyInner: React.FC<{ fields: FormFields<(typeof initialData)['values']> }> = ({ fields }) => {
             useFieldReturn = Morfi.useField(fields);
             return null;
         };
         const Dummy = () => {
             const [data, setData] = useState(initialData);
-            const { fields, Form } = Morfi.useForm<typeof initialData['values']>();
+            const { fields, Form } = Morfi.useForm<(typeof initialData)['values']>();
             return (
                 <Form data={data} onChange={setData} onSubmit={onSubmit}>
                     <DummyInner fields={fields} />
@@ -496,7 +496,7 @@ describe('Morfi', () => {
         const initialData = Morfi.initialData({ foo: 'one', bar: 'two' });
         let fieldFoo: any = null as any;
         let fieldBar: any = null as any;
-        const DummyInner: React.FC<{ fields: FormFields<typeof initialData['values']> }> = ({ fields }) => {
+        const DummyInner: React.FC<{ fields: FormFields<(typeof initialData)['values']> }> = ({ fields }) => {
             fieldFoo = Morfi.useField(fields.foo);
             fieldBar = Morfi.useField(fields.bar);
             const clearErrors = Morfi.useClearErrors();
@@ -508,13 +508,13 @@ describe('Morfi', () => {
 
             return null;
         };
-        const alwaysFailingValidation: FormValidation<typeof initialData['values']> = {
+        const alwaysFailingValidation: FormValidation<(typeof initialData)['values']> = {
             foo: { onChange: () => 'ups' },
             bar: { onChange: () => 'ups' },
         };
         const Dummy = () => {
             const [data, setData] = useState(initialData);
-            const { fields, Form } = Morfi.useForm<typeof initialData['values']>();
+            const { fields, Form } = Morfi.useForm<(typeof initialData)['values']>();
             return (
                 <Form data={data} onChange={setData} onSubmit={onSubmit} validation={alwaysFailingValidation}>
                     <DummyInner fields={fields} />
@@ -558,9 +558,9 @@ describe('Morfi', () => {
     it('Morfi.clearErrors: removes errors from MorfiData', () => {
         // given
         const data = Morfi.initialData({ foo: 'bar', nested: { num: 123, str: 'zzz' } });
-        let fields: FormFields<typeof data['values']> = null as any;
+        let fields: FormFields<(typeof data)['values']> = null as any;
         const Dummy = () => {
-            const useFormReturn = Morfi.useForm<typeof data['values']>();
+            const useFormReturn = Morfi.useForm<(typeof data)['values']>();
             fields = useFormReturn.fields;
             return null;
         };

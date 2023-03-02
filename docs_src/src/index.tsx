@@ -15,7 +15,9 @@ import { App } from './App';
 const root = createRoot(document.getElementById('root')!);
 
 root.render(
-    <BrowserRouter basename="/morfi">
-        <App />
-    </BrowserRouter>
+    <React.StrictMode>
+        <BrowserRouter basename="/morfi">
+            <App />
+        </BrowserRouter>
+    </React.StrictMode>
 );
