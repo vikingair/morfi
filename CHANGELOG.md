@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Value update is propagated now immediately to prevent lose of cursor positions in input fields
 - Stateful effect hooks adjusted to fix the `React.StrictMode`
+- Do not minify library code for better debuggability
 
 
 ## [2.0.0] - 2022-07-10
