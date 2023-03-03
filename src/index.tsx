@@ -322,7 +322,7 @@ const useFormUpdater = <V extends Record<string, any>>(
 
 // React strict mode calls all effects twice, so we need this helper
 // see: https://github.com/streamich/react-use/blob/master/src/useFirstMountState.ts
-export const useFirstMountState = (): boolean => {
+const useFirstMountState = (): boolean => {
     const isFirst = useRef(true);
 
     if (isFirst.current) {
