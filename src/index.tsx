@@ -281,7 +281,7 @@ const useFormUpdater = <V extends Record<string, any>>(
                         data,
                         fieldKey,
                         nextValue,
-                        nextValue !== getByFormField(fieldKey, initialRef.current),
+                        !morfiSetupOptions.comparator(nextValue, getByFormField(fieldKey, initialRef.current)),
                         nextError
                     )
                 );
@@ -518,4 +518,19 @@ const clearErrors = (data: MorfiData<any>, field: FormField<unknown>) => {
 
 const useClearErrors = () => useContext(morfiContext).clearErrors;
 
-export const Morfi = { useForm, useField, initialData, notSubmittable, isValidationError, clearErrors, useClearErrors };
+type MorfiSetupOptions = {
+    comparator: <T>(val1: T, val2: T)=> boolean
+};
+const morfiSetupOptions: MorfiSetupOptions = {
+    comparator(val1, val2) {
+        return val1 === val2;
+    },
+};
+let isSetupCalled = false;
+const setup = (props: Partial<MorfiSetupOptions>)=>{
+    if(isSetupCalled) throw new Error('[Morfi] Setup function must be called once');
+    isSetupCalled = true;
+    if(props.comparator) morfiSetupOptions.comparator = props.comparator
+};
+
+export const Morfi = { setup, useForm, useField, initialData, notSubmittable, isValidationError, clearErrors, useClearErrors };
