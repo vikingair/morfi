@@ -1,21 +1,18 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { Spy } from 'spy4js';
-import React, { useState } from 'react';
-import { FormValidation, Morfi } from 'morfi';
-import { MorfiTestUtils } from '../../test-utils/index'; // cannot be shortened because of nested package.json
 import { act, render, cleanup } from '@testing-library/react';
-Morfi.setup({
-    comparator(val, val2){
-        if(val instanceof Date && val2 instanceof Date) return val.toString() === val2.toString()
-        return val === val2;
-    }
-})
+import { FormValidation, Morfi } from 'morfi';
+import React, { useState } from 'react';
+import { Spy } from 'spy4js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { MorfiTestUtils } from '../../test-utils/index'; // cannot be shortened because of nested package.json
+Morfi.configure({
+    comparator: (a, b) => {
+        if (a instanceof Date && b instanceof Date) return +a === +b;
+        return a === b;
+    },
+});
 
-function getCurrentDateWithoutTime(){
-    const date = new Date();
-    date.setTime(0);
-    return date;
-}
+const getCurrentDateWithoutTime = () => new Date(2023, 1, 1);
+
 type FormValues = { age: number; name: string; displayName?: string; birthDate: Date };
 const initialValues: FormValues = { age: 0, name: '', birthDate: getCurrentDateWithoutTime() };
 
@@ -122,7 +119,11 @@ describe('MorfiTestUtils', () => {
         MorfiTestUtils.fields.name.blur();
         expect(MorfiTestUtils.hasErrors()).toBe(false);
 
-        // when - using the "birthDate" input with onBlur validation
+        // when - setting the "birthDate" input to the same date but different reference
+        MorfiTestUtils.fields.birthDate.change(new Date());
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
+        expect(MorfiTestUtils.fields.birthDate.dirty).toBe(true);
+
         MorfiTestUtils.fields.birthDate.change(getCurrentDateWithoutTime());
         expect(MorfiTestUtils.hasErrors()).toBe(false);
         expect(MorfiTestUtils.fields.birthDate.dirty).toBe(false);
@@ -156,7 +157,12 @@ describe('MorfiTestUtils', () => {
             hasErrors: true,
             isDirty: true,
             isSubmitting: false,
-            values: { age: 100, displayName: 'Test-DisplayName', name: 'Test Name', birthDate: initialValues.birthDate },
+            values: {
+                age: 100,
+                displayName: 'Test-DisplayName',
+                name: 'Test Name',
+                birthDate: initialValues.birthDate,
+            },
         });
 
         // when - submitting with backend error
@@ -172,7 +178,12 @@ describe('MorfiTestUtils', () => {
         // then
         onSubmitFailed.wasNotCalled(); // not yet
         onSubmitFinished.wasNotCalled();
-        onSubmit.wasCalledWith({ age: 99, displayName: 'Test-DisplayName', name: 'Test Name', birthDate: initialValues.birthDate });
+        onSubmit.wasCalledWith({
+            age: 99,
+            displayName: 'Test-DisplayName',
+            name: 'Test Name',
+            birthDate: initialValues.birthDate,
+        });
         expect(submitButton.className).toBe('loading');
         expect(submitButton.disabled).toBe(true); // isSubmitting
 
@@ -190,7 +201,12 @@ describe('MorfiTestUtils', () => {
                 hasErrors: false,
                 isDirty: true,
                 isSubmitting: false,
-                values: { age: 99, displayName: 'Test-DisplayName', name: 'Test Name', birthDate: initialValues.birthDate },
+                values: {
+                    age: 99,
+                    displayName: 'Test-DisplayName',
+                    name: 'Test Name',
+                    birthDate: initialValues.birthDate,
+                },
             }
         );
 
@@ -200,7 +216,12 @@ describe('MorfiTestUtils', () => {
 
         // then
         onSubmitFailed.wasNotCalled();
-        onSubmit.wasCalledWith({ age: 99, displayName: 'Test-DisplayName', name: 'Test Name', birthDate: initialValues.birthDate });
+        onSubmit.wasCalledWith({
+            age: 99,
+            displayName: 'Test-DisplayName',
+            name: 'Test Name',
+            birthDate: initialValues.birthDate,
+        });
         onSubmitFinished.wasCalledWith({
             dirty: { age: undefined, displayName: undefined, name: undefined },
             errors: { age: undefined, displayName: undefined, name: undefined },

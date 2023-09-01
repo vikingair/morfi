@@ -519,18 +519,27 @@ const clearErrors = (data: MorfiData<any>, field: FormField<unknown>) => {
 const useClearErrors = () => useContext(morfiContext).clearErrors;
 
 type MorfiSetupOptions = {
-    comparator: <T>(val1: T, val2: T)=> boolean
+    comparator: <T>(val1: T, val2: T) => boolean;
+};
+const initialOptions: MorfiSetupOptions = {
+    comparator: (val1, val2) => val1 === val2,
 };
 const morfiSetupOptions: MorfiSetupOptions = {
-    comparator(val1, val2) {
-        return val1 === val2;
-    },
-};
-let isSetupCalled = false;
-const setup = (props: Partial<MorfiSetupOptions>)=>{
-    if(isSetupCalled) throw new Error('[Morfi] Setup function must be called once');
-    isSetupCalled = true;
-    if(props.comparator) morfiSetupOptions.comparator = props.comparator
+    comparator: initialOptions.comparator,
 };
 
-export const Morfi = { setup, useForm, useField, initialData, notSubmittable, isValidationError, clearErrors, useClearErrors };
+const configure = (props: Partial<MorfiSetupOptions>) => {
+    if (props.comparator) morfiSetupOptions.comparator = props.comparator;
+    else if (props.comparator === undefined) morfiSetupOptions.comparator = initialOptions.comparator;
+};
+
+export const Morfi = {
+    configure,
+    useForm,
+    useField,
+    initialData,
+    notSubmittable,
+    isValidationError,
+    clearErrors,
+    useClearErrors,
+};
