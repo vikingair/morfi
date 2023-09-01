@@ -519,7 +519,7 @@ const clearErrors = (data: MorfiData<any>, field: FormField<unknown>) => {
 const useClearErrors = () => useContext(morfiContext).clearErrors;
 
 type MorfiSetupOptions = {
-    comparator: <T>(val1: T, val2: T) => boolean;
+    comparator: <T>(a: T, b: T) => boolean;
 };
 const initialOptions: MorfiSetupOptions = {
     comparator: (a, b) => a === b,
