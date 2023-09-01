@@ -522,7 +522,7 @@ type MorfiSetupOptions = {
     comparator: <T>(val1: T, val2: T) => boolean;
 };
 const initialOptions: MorfiSetupOptions = {
-    comparator: (val1, val2) => val1 === val2,
+    comparator: (a, b) => a === b,
 };
 const morfiSetupOptions: MorfiSetupOptions = {
     comparator: initialOptions.comparator,
