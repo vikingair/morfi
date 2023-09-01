@@ -528,9 +528,8 @@ const morfiSetupOptions: MorfiSetupOptions = {
     comparator: initialOptions.comparator,
 };
 
-const configure = (props: Partial<MorfiSetupOptions>) => {
-    if (props.comparator) morfiSetupOptions.comparator = props.comparator;
-    else if (props.comparator === undefined) morfiSetupOptions.comparator = initialOptions.comparator;
+const configure = ({ comparator = initialOptions.comparator }: Partial<MorfiSetupOptions>) => {
+    morfiSetupOptions.comparator = comparator;
 };
 
 export const Morfi = {
