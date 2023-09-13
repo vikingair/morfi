@@ -244,7 +244,13 @@ const useFormCallbacks = <V extends Record<string, any>>(
     }, []);
 
     const onChange = useCallback((data: MorfiData<V>) => {
-        if (isMounted.current) propsRef.current.onChange(data);
+        if (isMounted.current) {
+            propsRef.current.onChange(data);
+            // optimistically updating internal data, which will be overwritten as soon as Form component is re-assigned
+            // data update. To fix this issue: https://github.com/fdc-viktor-luft/morfi/issues/19
+            // Attention: In cases where calling "onChange" would have no effect, this can cause invalid internal state.
+            propsRef.current.data = data;
+        }
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
     const onSubmitFailed = useCallback((err: Error, data: MorfiData<V>) => {
         if (isMounted.current)
