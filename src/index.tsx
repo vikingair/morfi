@@ -281,7 +281,7 @@ const useFormUpdater = <V extends Record<string, any>>(
                         data,
                         fieldKey,
                         nextValue,
-                        nextValue !== getByFormField(fieldKey, initialRef.current),
+                        !morfiSetupOptions.comparator(nextValue, getByFormField(fieldKey, initialRef.current)),
                         nextError
                     )
                 );
@@ -518,4 +518,27 @@ const clearErrors = (data: MorfiData<any>, field: FormField<unknown>) => {
 
 const useClearErrors = () => useContext(morfiContext).clearErrors;
 
-export const Morfi = { useForm, useField, initialData, notSubmittable, isValidationError, clearErrors, useClearErrors };
+type MorfiSetupOptions = {
+    comparator: <T>(a: T, b: T) => boolean;
+};
+const initialOptions: MorfiSetupOptions = {
+    comparator: (a, b) => a === b,
+};
+const morfiSetupOptions: MorfiSetupOptions = {
+    comparator: initialOptions.comparator,
+};
+
+const configure = ({ comparator = initialOptions.comparator }: Partial<MorfiSetupOptions>) => {
+    morfiSetupOptions.comparator = comparator;
+};
+
+export const Morfi = {
+    configure,
+    useForm,
+    useField,
+    initialData,
+    notSubmittable,
+    isValidationError,
+    clearErrors,
+    useClearErrors,
+};

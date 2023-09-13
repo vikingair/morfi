@@ -1,12 +1,20 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { Spy } from 'spy4js';
-import React, { useState } from 'react';
-import { FormValidation, Morfi } from 'morfi';
-import { MorfiTestUtils } from '../../test-utils/index'; // cannot be shortened because of nested package.json
 import { act, render, cleanup } from '@testing-library/react';
+import { FormValidation, Morfi } from 'morfi';
+import React, { useState } from 'react';
+import { Spy } from 'spy4js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { MorfiTestUtils } from '../../test-utils/index'; // cannot be shortened because of nested package.json
+Morfi.configure({
+    comparator: (a, b) => {
+        if (a instanceof Date && b instanceof Date) return +a === +b;
+        return a === b;
+    },
+});
 
-type FormValues = { age: number; name: string; displayName?: string };
-const initialValues: FormValues = { age: 0, name: '' };
+const getCurrentDateWithoutTime = () => new Date(2023, 1, 1);
+
+type FormValues = { age: number; name: string; displayName?: string; birthDate: Date };
+const initialValues: FormValues = { age: 0, name: '', birthDate: getCurrentDateWithoutTime() };
 
 const DummyValidations: FormValidation<FormValues> = {
     age: { onSubmit: (value) => (value ? (value < 0 || value > 99 ? 'Invalid age' : undefined) : 'Age required') },
@@ -37,6 +45,7 @@ const DummyForm: React.FC<{ version?: number; validation?: FormValidation<FormVa
             <MorfiTestUtils.Field field={fields.name} />
             <MorfiTestUtils.Field field={fields.displayName} />
             <MorfiTestUtils.Field field={fields.age} />
+            <MorfiTestUtils.Field field={fields.birthDate} />
             <button
                 className={data.isSubmitting ? 'loading' : undefined}
                 type="submit"
@@ -84,7 +93,7 @@ describe('MorfiTestUtils', () => {
         const submitButton = container.querySelector('button')!;
         expect(submitButton.className).toBe(''); // not loading
         expect(submitButton.disabled).toBe(true); // no dirty fields
-        expect(Object.keys(MorfiTestUtils.fields).length).toBe(3);
+        expect(Object.keys(MorfiTestUtils.fields).length).toBe(4);
         // first input
         expect(MorfiTestUtils.fields.name.required).toBe(true);
         expect(MorfiTestUtils.fields.name.value).toBe('');
@@ -110,6 +119,15 @@ describe('MorfiTestUtils', () => {
         MorfiTestUtils.fields.name.blur();
         expect(MorfiTestUtils.hasErrors()).toBe(false);
 
+        // when - setting the "birthDate" input to the same date but different reference
+        MorfiTestUtils.fields.birthDate.change(new Date());
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
+        expect(MorfiTestUtils.fields.birthDate.dirty).toBe(true);
+
+        MorfiTestUtils.fields.birthDate.change(getCurrentDateWithoutTime());
+        expect(MorfiTestUtils.hasErrors()).toBe(false);
+        expect(MorfiTestUtils.fields.birthDate.dirty).toBe(false);
+
         // when - using the "displayName" input with onChange validation
         MorfiTestUtils.fields.displayName.change('Test Name');
         expect(MorfiTestUtils.fields.displayName.dirty).toBe(true);
@@ -134,12 +152,17 @@ describe('MorfiTestUtils', () => {
         onSubmit.wasNotCalled();
         onSubmitFinished.wasNotCalled();
         onSubmitFailed.wasCalledWith(Spy.COMPARE(Morfi.isValidationError), {
-            dirty: { age: true, displayName: true, name: true },
+            dirty: { age: true, displayName: true, name: true, birthDate: false },
             errors: { age: 'Invalid age', displayName: undefined, name: undefined },
             hasErrors: true,
             isDirty: true,
             isSubmitting: false,
-            values: { age: 100, displayName: 'Test-DisplayName', name: 'Test Name' },
+            values: {
+                age: 100,
+                displayName: 'Test-DisplayName',
+                name: 'Test Name',
+                birthDate: initialValues.birthDate,
+            },
         });
 
         // when - submitting with backend error
@@ -155,7 +178,12 @@ describe('MorfiTestUtils', () => {
         // then
         onSubmitFailed.wasNotCalled(); // not yet
         onSubmitFinished.wasNotCalled();
-        onSubmit.wasCalledWith({ age: 99, displayName: 'Test-DisplayName', name: 'Test Name' });
+        onSubmit.wasCalledWith({
+            age: 99,
+            displayName: 'Test-DisplayName',
+            name: 'Test Name',
+            birthDate: initialValues.birthDate,
+        });
         expect(submitButton.className).toBe('loading');
         expect(submitButton.disabled).toBe(true); // isSubmitting
 
@@ -168,12 +196,17 @@ describe('MorfiTestUtils', () => {
         onSubmitFailed.wasCalledWith(
             Spy.COMPARE((err) => !Morfi.isValidationError(err) && err === specialBackendErr),
             {
-                dirty: { age: true, displayName: true, name: true },
+                dirty: { age: true, displayName: true, name: true, birthDate: false },
                 errors: { age: undefined, displayName: undefined, name: undefined },
                 hasErrors: false,
                 isDirty: true,
                 isSubmitting: false,
-                values: { age: 99, displayName: 'Test-DisplayName', name: 'Test Name' },
+                values: {
+                    age: 99,
+                    displayName: 'Test-DisplayName',
+                    name: 'Test Name',
+                    birthDate: initialValues.birthDate,
+                },
             }
         );
 
@@ -183,14 +216,19 @@ describe('MorfiTestUtils', () => {
 
         // then
         onSubmitFailed.wasNotCalled();
-        onSubmit.wasCalledWith({ age: 99, displayName: 'Test-DisplayName', name: 'Test Name' });
+        onSubmit.wasCalledWith({
+            age: 99,
+            displayName: 'Test-DisplayName',
+            name: 'Test Name',
+            birthDate: initialValues.birthDate,
+        });
         onSubmitFinished.wasCalledWith({
             dirty: { age: undefined, displayName: undefined, name: undefined },
             errors: { age: undefined, displayName: undefined, name: undefined },
             hasErrors: false,
             isDirty: false,
             isSubmitting: false,
-            values: { age: 99, displayName: 'Test-DisplayName', name: 'Test Name' },
+            values: { age: 99, displayName: 'Test-DisplayName', name: 'Test Name', birthDate: initialValues.birthDate },
         });
 
         // when - making the form dirty again
@@ -257,7 +295,7 @@ describe('MorfiTestUtils', () => {
             hasErrors: true,
             isDirty: true,
             isSubmitting: false,
-            values: { age: 0, name: 'Bob' },
+            values: { age: 0, name: 'Bob', birthDate: initialValues.birthDate },
         });
     });
 });
