@@ -4,9 +4,10 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 
 # ![morfi logo](docs_src/public/images/form-logo.svg?sanitize=true) morfi
+
 Abstract form handling for any purpose (2.3 kb gzipped)
 
-### Why morfi?
+## Why morfi?
 
 It offers simply one thing that I couldn't find in any other library. That is type safety.
 I've invested a lot of work to find the most convenient way to ensure type safety. In addition,
@@ -20,14 +21,18 @@ size, high runtime performance.
 * Freely customizable form elements
 * [Testing utility](./test-utils/README.md)
 
-### Installation
-```
+## Installation
+
+```sh
 npm i --save morfi
+pnpm add morfi
 ```
 
-### Introduction
+## Introduction
+
 Let's get a first impression... Imagine you have created your own custom component to display
 and update some state like the following.
+
 ```tsx
 type User = { ID: string; name: string };
 type UserPickerProps = { users: User[]; userID?: string; onPick: (user: User) => void };
@@ -46,8 +51,10 @@ const UserPicker: React.FC<UserPickerProps> = ({ users, userID, onPick }) => (
   </ul>
 );
 ```
+
 To make this a picker that can be used directly in a form you need to create a wrapper form
 component for a specific field.
+
 ```tsx
 import { useCallback } from 'react';
 import { Morfi, FormField } from 'morfi';
@@ -61,7 +68,9 @@ const FormUserPicker: React.FC<FormUserPickerProps> = ({ users, field }) => {
   return <UserPicker users={users} userID={value} onPick={onPick} />;
 };
 ```
+
 And finally, you can use this custom form element in your form.
+
 ```tsx
 import { useState } from 'react';
 import { Morfi, MorfiData } from 'morfi';
@@ -81,7 +90,7 @@ const MyForm: React.FC<MyFormProps> = ({ users, onSubmit }) => {
 };
 ```
 
-### Asynchronous form field handling
+## Asynchronous form field handling
 
 To implement async form field validation, you simply have to return a promise, which
 will resolve the validation result. You can write validators which are both:
@@ -101,11 +110,18 @@ const specialValidator: Validator<string> = (val?: string) => {
     });
 }
 ```
+
 HINT: You should always validate the value `undefined` synchronously, because
 `morfi` determines the requirements by these criteria. So if you use the comfortable
 `async-await`-Syntax, you should split your validator into two parts.
 
-### Control your submit
+## Configuration
+
+You can bring your own comparison function in order to compare form values with each other using `Morfi.configure({ comparator })`.
+This check is used in order to determine the dirty state of the form. The default comparison is an identity check.
+
+## Control your submit
+
 When the user submits the form, the following will happen:
 
 1) The `submitting` property will be propagated as `true` to your `onChange`
@@ -116,7 +132,7 @@ When the user submits the form, the following will happen:
 
 ![morfi-Lifecycle](morfi-Lifecycle.png)
 
-### Types
+## Types
 
 **morfi** ships some important types that will be explained in this section.
 
@@ -162,17 +178,17 @@ And finally, there are the `FieldControls<F>` returned by `Morfi.useField(myFiel
 | `error`    | `MaybeError`         | The current error                                                                                               |
 | `name`     | `string`             | Inferred name by the given names of the (nested) data structure.                                                |
 
-### More examples
+## More examples
 
 See [here](https://github.com/fdc-viktor-luft/morfi/tree/master/docs_src/src/samples) for some
 provided samples. If you're missing something, let me know.
 
-### Testing
+## Testing
 
 Check out [morfi-test-utils](https://www.npmjs.com/package/morfi-test-utils) to simplify
 writing of your tests. The test util requires `react` version to be at least `18.0.0`.
 
-### FAQ
+## FAQ
   
 * Why are there no ready-to-use components exported like `FormSelect` 
   from the above examples?
@@ -183,7 +199,7 @@ writing of your tests. The test util requires `react` version to be at least `18
   In larger projects you want to have full control over all form components, and they are 
   very individual. Creating `Form*` wrappers is most often very straight forward.
 
-### Alternatives...
+## Alternatives
 
 The following table includes results from [bundlephobia](https://bundlephobia.com). At the end
 you'll find my personal recommendation.
@@ -234,7 +250,8 @@ not work a lot with the following pretty good packages.
 * [**react-form**](https://github.com/react-tools/react-form):
   Considered dead, as the last update was a long time ago.
 
-#### Conclusion 
+### Conclusion
+
 Thank you for reading parts of my docs. ✌️
 
 If you don't want to consider using `morfi` in your project for form handling, because it is
