@@ -5,13 +5,16 @@
 This is a test utility for [morfi](https://www.npmjs.com/package/morfi).
 
 ## Installation
-```
+
+```sh
 npm i -D morfi-test-utils
+pnpm add -D morfi-test-utils
 ```
 
 ## How-to
 
 ### Testing Forms
+
 ```tsx
 import { render } from '@testing-library/react';
 import { MorfiTestUtils } from 'morfi-test-utils';
@@ -60,6 +63,7 @@ it('interacts with my form', async () => {
 ```
 
 ### Testing Fields
+
 ```tsx
 import { render, fireEvent } from '@testing-library/react';
 import { MorfiTestUtils } from 'morfi-test-utils';
