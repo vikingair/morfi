@@ -39,7 +39,7 @@
     }
   },
   "overrides": [{
-    "files": ["test/**", "test-utils/**", "docs_src/**"],
+    "files": ["test/**", "test-utils/**", "docs/**"],
     "rules": {
       "@typescript-eslint/no-non-null-assertion": "off"
     }
