@@ -3,7 +3,7 @@
 [![GitHub Push][push-image]][push-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 
-# ![morfi logo](docs_src/public/images/form-logo.svg?sanitize=true) morfi
+# ![morfi logo](docs/public/images/form-logo.svg?sanitize=true) morfi
 
 Abstract form handling for any purpose (2.3 kb gzipped)
 
@@ -180,7 +180,7 @@ And finally, there are the `FieldControls<F>` returned by `Morfi.useField(myFiel
 
 ## More examples
 
-See [here](https://github.com/fdc-viktor-luft/morfi/tree/master/docs_src/src/samples) for some
+See [here](https://github.com/fdc-viktor-luft/morfi/tree/master/docs/src/samples) for some
 provided samples. If you're missing something, let me know.
 
 ## Testing

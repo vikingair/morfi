@@ -30,5 +30,5 @@
       "morfi": ["./src"]
     }
   },
-  "include": ["src", "test", "docs_src"]
+  "include": ["src", "test", "docs"]
 }
