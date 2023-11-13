@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
     plugins: [react()],
     base: '/morfi/',
-    root: 'docs_src',
+    root: 'docs',
     server: {
         port: 3333,
         strictPort: true,
