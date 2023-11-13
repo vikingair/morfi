@@ -17,5 +17,5 @@ jobs:
         run: pnpm test
       - name: Build
         run: pnpm publish:prepare
-      - name: Check docs updated
-        run: node .github/scripts/check-docs-updated.mjs
+      - name: Build docs
+        run: pnpm docs:build
