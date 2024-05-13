@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Validators } from '../../validators/validators';
-import { Morfi } from 'morfi';
+import { Morfi, type FormValidation } from 'morfi';
 import { type Gender, type Person, PersonTable } from './PersonTable';
 import { FormSelect, type SelectOption } from '../../fields/FormSelect';
 import { FormNumberInput } from '../../fields/FormNumberInput';
@@ -16,7 +16,7 @@ type MyFormValues = {
 
 const initialValues: MyFormValues = { firstName: 'Nick', lastName: '', gender: 'M', age: 21 };
 
-const validation = {
+const validation: FormValidation<MyFormValues> = {
     firstName: { onChange: Validators.string({ min: 1, max: 10 }) },
     lastName: { onBlur: Validators.string({ min: 1, max: 10 }) },
     age: { onChange: Validators.number({ minLength: 1, maxLength: 3 }) },

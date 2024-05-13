@@ -17,7 +17,7 @@ export type ValidationType = 'onChange' | 'onBlur' | 'onSubmit';
 type NonUndefined<T> = T extends undefined ? never : T;
 export type FieldValidation<F> = { [t in ValidationType]?: Validator<F> };
 export type FormValidation<V> = {
-    [name in keyof V]?: V[name] extends object
+    [name in keyof V]?: V[name] extends Record<string, unknown>
         ? FormValidation<V[name]> & FieldValidation<V[name]>
         : FieldValidation<NonUndefined<V[name]>>;
 };
@@ -26,7 +26,9 @@ export type FormDirty = { [name: FormField<any>]: boolean | undefined };
 // to losing type safety, because "description" is a reserved property for symbols and results into type collision.
 export type FormField<F> = { __TYPE__: F | ((t: F) => void) } & symbol;
 export type FormFields<V> = {
-    [name in keyof V]-?: V[name] extends object ? FormFields<V[name]> & FormField<V[name]> : FormField<V[name]>;
+    [name in keyof V]-?: V[name] extends Record<string, unknown>
+        ? FormFields<V[name]> & FormField<V[name]>
+        : FormField<V[name]>;
 } & FormField<V>;
 
 export type MorfiData<V extends Record<string, any>> = {
