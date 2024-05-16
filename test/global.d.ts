@@ -1,5 +1,5 @@
 declare global {
-    var nextTick: () => Promise<void>;
+  var nextTick: () => Promise<void>;
 }
 
 export {};
