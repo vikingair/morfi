@@ -27,7 +27,12 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["react", "@testing-library/react", "morfi"],
+      external: [
+        "react",
+        "@testing-library/react",
+        "morfi",
+        "react/jsx-runtime",
+      ],
       output: {
         dir: outputDir,
       },
