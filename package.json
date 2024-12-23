@@ -15,14 +15,14 @@
     "flow"
   ],
   "license": "MIT",
-  "author": "Viktor Luft <viktor.luft@freiheit.com> (https://github.com/fdc-viktor-luft)",
-  "homepage": "https://fdc-viktor-luft.github.io/morfi/",
+  "author": "Viktor Luft <viktor.luft@freiheit.com> (https://github.com/vikingair)",
+  "homepage": "https://vikingair.github.io/morfi/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fdc-viktor-luft/morfi"
+    "url": "https://github.com/vikingair/morfi"
   },
   "bugs": {
-    "url": "https://github.com/fdc-viktor-luft/morfi/issues"
+    "url": "https://github.com/vikingair/morfi/issues"
   },
   "scripts": {
     "dev": "vite --config vite.config.docs.ts",
