@@ -1,9 +1,9 @@
-@import "table";
-@import "Main";
-@import "DisplayValues";
-@import "Forms";
-@import "Sidebar";
-@import "App";
+@use "table";
+@use "Main";
+@use "DisplayValues";
+@use "Forms";
+@use "Sidebar";
+@use "App";
 
 body {
   margin: 0;

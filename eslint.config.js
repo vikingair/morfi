@@ -1,7 +1,6 @@
 // @ts-check
 
 import js from "@eslint/js";
-// @ts-expect-error https://github.com/import-js/eslint-plugin-import/issues/2948
 import imp from "eslint-plugin-import";
 import prettier from "eslint-plugin-prettier";
 // support will be added soon: https://github.com/jsx-eslint/eslint-plugin-react/pull/3727
