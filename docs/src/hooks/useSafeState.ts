@@ -15,7 +15,7 @@ export const useSafeState = <T>(initial: T): UseSafeStateReturnType<T> => {
 
   const safeSetState = useCallback(
     (v: SetStateAction<T>) => {
-      mounted.current && setState(v);
+      if (mounted.current) setState(v);
     },
     [mounted],
   );

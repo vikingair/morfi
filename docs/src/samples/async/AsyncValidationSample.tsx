@@ -46,8 +46,10 @@ const validateName = (setPending: (p: boolean) => void) => (name?: string) => {
   }
   const lowerCaseUserName = name!.toLowerCase();
   setPending(true);
-  lowerCaseUserName === everySecondTimeFailing_userName &&
+  if (lowerCaseUserName === everySecondTimeFailing_userName) {
     jackValidationCounter++;
+  }
+
   return Utils.sleep(1000).then(() => {
     setPending(false);
     if (lowerCaseUserName === alreadyRegistered_userName) {
@@ -94,11 +96,12 @@ export const AsyncValidationSample = () => {
   );
 
   const onSubmitFailed = useCallback((e: Error): void => {
-    Morfi.isValidationError(e) ||
+    if (!Morfi.isValidationError(e)) {
       setData((data) => ({
         ...data,
         errors: { ...data.errors, userName: { id: e.message } },
       }));
+    }
   }, []);
 
   const onSubmitFinished = useCallback((): void => {
