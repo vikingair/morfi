@@ -1,31 +1,33 @@
 // @ts-check
 
 import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import imp from "eslint-plugin-import";
 import prettier from "eslint-plugin-prettier";
 // support will be added soon: https://github.com/jsx-eslint/eslint-plugin-react/pull/3727
 import react from "eslint-plugin-react";
 // import reactRecommended from "eslint-plugin-react/configs/recommended.js";
-// support will be added soon: https://github.com/facebook/react/pull/28773
-import reactHooks from "eslint-plugin-react-hooks";
+// TODO: This is currently reporting lots of issues that need to be addressed
+// import reactHooks from "eslint-plugin-react-hooks";
 import simpleImpSort from "eslint-plugin-simple-import-sort";
-import ts from "typescript-eslint";
+import tseslint from "typescript-eslint";
 
-export default ts.config(
-  { ignores: ["node_modules", "**/dist"] },
+export default defineConfig(
+  { ignores: ["node_modules", "**/dist", "build", "coverage"] },
   {
     files: ["**/*.{j,t}s?(x)"],
     extends: [
       js.configs.recommended,
-      ...ts.configs.recommended,
+      tseslint.configs.recommended,
+      // reactHooks.configs.flat.recommended,
       // reactRecommended, // not compatible currently
       // reactHooks.configs.recommended, // not compatible currently
     ],
     plugins: {
+      "@typescript-eslint": tseslint.plugin,
       prettier,
       import: imp,
       "simple-import-sort": simpleImpSort,
-      "react-hooks": reactHooks,
       react,
     },
     rules: {
